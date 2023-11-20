@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,           // removes whitespace from both ends of a string
   },
+  role: {
+    type: String,
+    enum: ['user', 'support agent', 'manager'],
+    default: 'normal', // Default role if not provided
+  },
 });
 
 // Create the User model
