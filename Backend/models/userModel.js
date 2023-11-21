@@ -14,8 +14,8 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
-  age: {
-    type: Number,
+  birthdate: {
+    type: Date,
     required: true,
   },
   address: {
@@ -24,18 +24,14 @@ const userSchema = new mongoose.Schema({
     state: String,
     zip: String,
   },
-  isAdmin: {
-    type: Boolean,
-    default: false, // Default value if not provided
-  },
   password: {
     type: String,
-    required: true,
-    trim: true,           // removes whitespace from both ends of a string
-  },
+    required: true,        //*note to self error handle it in login backend*
+    trim: true,           // removes whitespace from both ends of a string 
+  },              
   role: {
     type: String,
-    enum: ['user', 'support agent', 'manager'],
+    enum: ['normal', 'support agent', 'manager','admin'], // Can only be one of these
     default: 'normal', // Default role if not provided
   },
 });
