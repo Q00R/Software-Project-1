@@ -2,12 +2,8 @@ const express = require("express");
 const cookieParser=require('cookie-parser')
 const app = express();
 const mongoose = require("mongoose");
-const productRouter = require("./Routes/products");
-const userRouter = require("./Routes/users");
-const authRouter = require("./Routes/auth");
 require('dotenv').config();
 
-const authenticationMiddleware = require("./Middleware/authenticationMiddleware");
 const cors = require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,10 +29,6 @@ app.use(
 //   next();
 // });
 
-app.use("/api/v1", authRouter);
-app.use(authenticationMiddleware);
-app.use("/api/v1/products", productRouter);
-app.use("/api/v1/users", userRouter);
 
 const db_name = process.env.DB_NAME;
 // * Cloud Connection

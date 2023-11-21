@@ -1,20 +1,19 @@
 const mongoose = require('mongoose');
-const productSchema = require('./productModel').Schema;
 const schemaOptions = {
   strict: false,
   timestamps: true,
 };
 const userschema = new mongoose.Schema(
   {
+    _id: { type: ObjectId },
     email:{type:String,required:true,unique:true},
     password:{type:String,required:true,minlength:5},
-    displayName:{type:String} ,
+    name:{type:String} ,
     role: {
       type: String,
       required: true,
       
     },
-    shoppingCart:[productSchema],
   },
   // schemaOptions
   {
