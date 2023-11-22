@@ -24,15 +24,14 @@ const userSchema = new mongoose.Schema({
     state: String,
     zip: String,
   },
-  password: {
-    type: String,
-    required: true,        //*note to self error handle it in login backend*
-    trim: true,           // removes whitespace from both ends of a string 
-  },              
   role: {
     type: String,
     enum: ['normal', 'support agent', 'manager','admin'], // Can only be one of these
     default: 'normal', // Default role if not provided
+  },
+  hashedPassword:{
+    type: String,
+    required: true,
   },
 });
 
