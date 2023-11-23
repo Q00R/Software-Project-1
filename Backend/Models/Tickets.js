@@ -4,8 +4,8 @@ const { ObjectId } = mongoose.Schema.Types;
 const TicketsSchema = new mongoose.Schema(
   {
 
-    _id: { type: ObjectId },  //Ticket ID
-    userId: {                 //User ID
+        _id: { type: ObjectId },  //Ticket ID
+        userId: {                 //User ID
         type: ObjectId,
         required: true,
         },
@@ -33,7 +33,7 @@ const TicketsSchema = new mongoose.Schema(
             enum: ['Software', 'Hardware', 'Network'],
             required: true,
           },
-          sub: {              //The sub category of the issue
+          sub: {              //The sub category of the issue (do we relate them to the main category?)
             type: String,
             enum: [
               'Desktops', 'Laptops', 'Printers', 'Servers', 'Networking equipment',
@@ -43,17 +43,18 @@ const TicketsSchema = new mongoose.Schema(
             required: true,
           },
         },
-        priority: {           //Low, Medium, High
+       /* priority: {           //Low, Medium, High
         type: String,
         enum : ['Low','Medium','High'],
         required: true,
         },
+        */
         assignedAgent: {       //The agent that will be assigned to the ticket
             type: ObjectId,
             required: false, 
         },
-        answer: [            // user to agent -> {flag:0 with no description}, agent -> user {flag:1 with the update description}
-        {                     //updated to array as we can have multiple updates for 1 ticket
+        answer:             // user to agent -> {flag:0 with no description}, agent -> user {flag:1 with the update description}
+        {                   //update to array if agent can respond multiple times to 1 ticket
               flag: {
                 type: Boolean,
                 required: true,
@@ -71,8 +72,7 @@ const TicketsSchema = new mongoose.Schema(
                 default: Date.now,
               },
         },
-      ],
-      rating: {             //The rating of the agent
+      rating: {             //The rating
         type: Number,
         min: 0,
         max: 5,
