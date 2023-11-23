@@ -14,10 +14,6 @@ const TicketsSchema = new mongoose.Schema(
         required: true,
         default: Date.now,
         },
-        expirationDate: {     //Date of expiration
-        type: Date,
-        required: false,
-        },
         title: {              //Title of the ticket
         type: String,
         required: true,
@@ -31,20 +27,20 @@ const TicketsSchema = new mongoose.Schema(
         enum : ['Opened','Closed','Pending'],
         required: true,
         },
-        category: {         //A main category and a sub category
-          main: {
+        issue:{
+          main: {             //The main category of the issue
             type: String,
             enum: ['Software', 'Hardware', 'Network'],
             required: true,
           },
-          sub: {
+          sub: {              //The sub category of the issue
             type: String,
             enum: [
               'Desktops', 'Laptops', 'Printers', 'Servers', 'Networking equipment',
               'Operating system', 'Application software', 'Custom software', 'Integration issues',
               'Email issues', 'Internet connection problems', 'Website errors'
             ],
-            required: false,
+            required: true,
           },
         },
         priority: {           //Low, Medium, High
@@ -52,15 +48,19 @@ const TicketsSchema = new mongoose.Schema(
         enum : ['Low','Medium','High'],
         required: true,
         },
-        assignedAgent: {       //The agent that will be assigned to the ticket (ask about this)
+        assignedAgent: {       //The agent that will be assigned to the ticket
             type: ObjectId,
             required: false, 
         },
-        updates: [            // user to agent -> {flag:0 with no description}, agent -> user {flag:1 with the update description}
+        answer: [            // user to agent -> {flag:0 with no description}, agent -> user {flag:1 with the update description}
         {                     //updated to array as we can have multiple updates for 1 ticket
               flag: {
                 type: Boolean,
                 required: true,
+              },
+              title: {
+                type: String,
+                required: false,
               },
               description: {
                 type: String,
@@ -72,6 +72,12 @@ const TicketsSchema = new mongoose.Schema(
               },
         },
       ],
+      rating: {             //The rating of the agent
+        type: Number,
+        min: 0,
+        max: 5,
+        required: false,
+      },
   }
 );
 
