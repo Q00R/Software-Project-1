@@ -8,14 +8,16 @@ const ChatSchema = new mongoose.Schema(
         ticketId: {                 //Ticket ID
         type: ObjectId,
         required: true,
+        ref:"Ticket"
         },
         Messages: {
             ClientMessages: Array,
             AgentMessages: Array,
             timestamp: Date,
-            
+
             required: true,
             },
+            tickets:TicketsSchema
     });
 
 module.exports = mongoose.model('Chat', ChatSchema);
