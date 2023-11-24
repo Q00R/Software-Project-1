@@ -4,9 +4,11 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const ChatSchema = new mongoose.Schema(
   {
 
-        _id: { type: ObjectId ,// Chat ID
-        required:true},  
-        ticketId: {                 // Ticket ID
+        _id: {  // Chat ID
+        type: ObjectId ,
+        required:true
+        },  
+        ticketId: {  // Ticket ID
         type: ObjectId,
         ref:"Ticket"
         },
@@ -35,7 +37,6 @@ const ChatSchema = new mongoose.Schema(
                     required: true,
                 }
           }],
-            required: true,
         },
     });
 
