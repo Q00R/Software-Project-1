@@ -34,4 +34,4 @@ const FAQSchema = new mongoose.Schema({
   },
   timestamps: true,
 });
-module.exports = mongoose.model("FAQ", SupportAgentSchema);
+module.exports = mongoose.model("FAQ", FAQSchema);
