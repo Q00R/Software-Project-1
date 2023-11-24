@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { ObjectId } = mongoose.Schema.Types;
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const FAQSchema = new mongoose.Schema({
   _id: { type: ObjectId }, //FAQ ID

@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
-const { ObjectId } = mongoose.Schema.Types;
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 
 const TicketsSchema = new mongoose.Schema({
-  _id: { type: ObjectId }, //Ticket ID
+  _id: { type: ObjectId,
+  required: true,
+  }, //Ticket ID
   userId: { // The user that created the ticket
     type: ObjectId,
     ref: "User",
@@ -110,7 +113,6 @@ const TicketsSchema = new mongoose.Schema({
           required: true,
         }
       }],
-    required: true,
   },
 });
 
