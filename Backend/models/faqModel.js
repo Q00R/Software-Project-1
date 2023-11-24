@@ -3,30 +3,28 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const FAQSchema = new mongoose.Schema({
   _id: { type: ObjectId }, //FAQ ID
-  issue: {
-    mainIssue: {
-      type: String,
-      enum: ["Software", "Hardware", "Network"],
-      required: true,
-    },
-    subIssue: {
-      type: String,
-      enum: [
-        "Desktops",
-        "Laptops",
-        "Printers",
-        "Servers",
-        "Networking equipment",
-        "Operating system",
-        "Application software",
-        "Custom software",
-        "Integration issues",
-        "Email issues",
-        "Internet connection problems",
-        "Website errors",
-      ],
-      required: true,
-    },
+  mainIssue: {
+    type: String,
+    enum: ["Software", "Hardware", "Network"],
+    required: true,
+  },
+  subIssue: {
+    type: String,
+    enum: [
+      "Desktops",
+      "Laptops",
+      "Printers",
+      "Servers",
+      "Networking equipment",
+      "Operating system",
+      "Application software",
+      "Custom software",
+      "Integration issues",
+      "Email issues",
+      "Internet connection problems",
+      "Website errors",
+    ],
+    required: true,
   },
   question:{
   type:String,
