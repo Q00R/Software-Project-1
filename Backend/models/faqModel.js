@@ -1,12 +1,8 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 
-const WorkflowsSchema = new mongoose.Schema({
-  _id: { type: ObjectId }, //Workflow ID
-  faqId: {
-    type: ObjectId,
-    required: true,
-  },
+const FAQSchema = new mongoose.Schema({
+  _id: { type: ObjectId }, //FAQ ID
   issue: {
     mainIssue: {
       type: String,
@@ -32,7 +28,10 @@ const WorkflowsSchema = new mongoose.Schema({
       required: true,
     },
   },
-  suggestions: [], //List of suggested solutions
+  solution: {
+    type: String,
+    required: true,
+  },
+  timestamps: true,
 });
-
-module.exports = mongoose.model("Workflows", WorkflowsSchema);
+module.exports = mongoose.model("FAQ", SupportAgentSchema);
