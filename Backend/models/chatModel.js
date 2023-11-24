@@ -13,6 +13,7 @@ const ChatSchema = new mongoose.Schema(
             ClientMessages: Array,
             AgentMessages: Array,
             timestamp: Date,
+            
             required: true,
             },
     });

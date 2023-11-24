@@ -6,10 +6,11 @@ const SupportAgentSchema = new mongoose.Schema(
   {
 
         _id: { type: ObjectId },  //Ticket ID
-        userId: {                 //User ID
-        type: ObjectId,
-        required: true,
-        },
+        userId: {
+            type: ObjectId,
+            ref: 'User', // Reference to the User model
+            required: true,
+          },
         rating:{
             type: Number,
             required: true,
@@ -28,7 +29,8 @@ const SupportAgentSchema = new mongoose.Schema(
             type: String,
             enum: ['Software', 'Hardware', 'Network'],
             required: true,
-          }
+          },
+          user: UserSchema, // Embedding the User schema
   }
 );
 

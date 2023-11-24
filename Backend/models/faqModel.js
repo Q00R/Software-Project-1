@@ -28,10 +28,19 @@ const FAQSchema = new mongoose.Schema({
       required: true,
     },
   },
+  question:{
+  type:String,
+  required:true
+  },
+  title:{
+  type:String,
+  required:true
+  },
   solution: {
     type: String,
     required: true,
   },
   timestamps: true,
 });
+
 module.exports = mongoose.model("FAQ", FAQSchema);

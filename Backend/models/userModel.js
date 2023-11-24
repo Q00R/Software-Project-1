@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema({
     middle_name: String,
     last_name: String,
   },
+  status:{
+    enum:["Deactivated","Activated"]
+  },
 });
 
 // Create the User model
