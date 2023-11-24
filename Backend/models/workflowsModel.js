@@ -3,34 +3,28 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const WorkflowsSchema = new mongoose.Schema({
   _id: { type: ObjectId }, //Workflow ID
-  faqId: {
-    type: ObjectId,
+  mainIssue: {
+    type: String,
+    enum: ["Software", "Hardware", "Network"],
     required: true,
   },
-  issue: {
-    mainIssue: {
-      type: String,
-      enum: ["Software", "Hardware", "Network"],
-      required: true,
-    },
-    subIssue: {
-      type: String,
-      enum: [
-        "Desktops",
-        "Laptops",
-        "Printers",
-        "Servers",
-        "Networking equipment",
-        "Operating system",
-        "Application software",
-        "Custom software",
-        "Integration issues",
-        "Email issues",
-        "Internet connection problems",
-        "Website errors",
-      ],
-      required: true,
-    },
+  subIssue: {
+    type: String,
+    enum: [
+      "Desktops",
+      "Laptops",
+      "Printers",
+      "Servers",
+      "Networking equipment",
+      "Operating system",
+      "Application software",
+      "Custom software",
+      "Integration issues",
+      "Email issues",
+      "Internet connection problems",
+      "Website errors",
+    ],
+    required: true,
   },
   suggestions: [], //List of suggested solutions
 });

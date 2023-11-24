@@ -36,8 +36,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["normal", "manager", "admin"], // Can only be one of these
-    default: "normal", // Default role if not provided
+    enum: ["client", "manager", "admin"], // Can only be one of these
+    default: "client", // Default role if not provided
   },
   name: {
     first_name: String,
@@ -50,6 +50,4 @@ const userSchema = new mongoose.Schema({
 });
 
 // Create the User model
-const User = mongoose.model("User", userSchema);
-
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);

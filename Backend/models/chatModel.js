@@ -4,20 +4,38 @@ const { ObjectId } = mongoose.Schema.Types;
 const ChatSchema = new mongoose.Schema(
   {
 
-        _id: { type: ObjectId },  //Workflow ID
-        ticketId: {                 //Ticket ID
+        _id: { type: ObjectId },  // Chat ID
+        ticketId: {                 // Ticket ID
         type: ObjectId,
-        required: true,
         ref:"Ticket"
         },
         Messages: {
-            ClientMessages: Array,
-            AgentMessages: Array,
-            timestamp: Date,
-
+            ClientMessages: [
+              {
+                message: {
+                    type: String,
+                    required: true,
+                },
+                timestamp: {
+                    type: Date,
+                    default: Date.now,
+                    required: true,
+                }
+            }],
+            AgentMessages: [
+              {
+                message: {
+                    type: String,
+                    required: true,
+                },
+                timestamp: {
+                    type: Date,
+                    default: Date.now,
+                    required: true,
+                }
+          }],
             required: true,
-            },
-            tickets:TicketsSchema
+        },
     });
 
 module.exports = mongoose.model('Chat', ChatSchema);
