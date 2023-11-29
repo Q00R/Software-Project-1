@@ -4,6 +4,11 @@ const app = express();
 const mongoose = require("mongoose");
 require('dotenv').config();
 
+const agentRouter = require("./Routes/agent");
+const knowlagebaseRouter = require("./routes/knowlagebase");
+
+
+
 const cors = require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -49,6 +54,10 @@ mongoose
   .catch((e) => {
     console.log(e);
   });
+
+  
+  app.use("/agent", agentRouter);
+  app.use("/knowlagebase", knowlagebaseRouter);
 
 app.use(function (req, res, next) {
   return res.status(404).send("404");
