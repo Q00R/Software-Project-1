@@ -4,10 +4,9 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 
 // * login
-router.post("/initiateLogin",userController.initiateLogin );
-router.post("/completeLogin",userController.completeLogin);
 
 // * register
 router.post("/register",userController.register);
+router.post("/verifyOTP",userController.verifyOTP);
 
 module.exports = router; // ! Don't forget to export the router

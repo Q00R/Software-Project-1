@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const speakeasy = require("speakeasy");
@@ -48,14 +49,10 @@ const userSchema = new mongoose.Schema({
   status:{
     enum:["Deactivated","Activated"]
   },
-  totpSecret: {
-    type: String,
-  },
-  totpExpiresAt: {
-    type: Date,
-    // otp by default expires after 2 minutes
-    default: Date.now() + 2 * 60 * 1000,
-    },
+  verified: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 userSchema.methods.enableTOTP = function () {

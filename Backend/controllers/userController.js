@@ -1,17 +1,41 @@
 const User = require("../models/userModel");
+const UserOTPVerification = require("../models/UserOTPVerificationModel");
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const secretKey =process.env.SECRET_KEY ;
 const bcrypt = require("bcrypt");
+
+
 const nodemailer = require("nodemailer");
-const userController = {
-  register: async (req, res) => {
+
+var transporter = nodemailer.createTransport({
+  host: "smtp-mail.outlook.com",
+  secureConnection: true,
+  port: 587,
+  auth: {
+     user: process.env.OUTLOOK_USER,
+     pass: process.env.OUTLOOK_APP_PASSWORD
+  },
+  tls: {
+     ciphers: 'TLSv1.2',
+     rejectUnauthorized: false
+  }
+});
+
+
+
+const userController = 
+{
+  register: async (req, res) => 
+  {
     const { username ,email, password, role, DOB, name, address } = req.body;
 
-    try {
+    try 
+    {
       // Check if the user already exists
       const existingUser = await User.findOne({ email });
-      if (existingUser) {
+      if (existingUser) 
+      {
         return res.status(400).json({ message: 'User already exists' });
       }
 
@@ -21,117 +45,123 @@ const userController = {
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // Create a new user with the hashed password
-      const newUser = new User({ username, email, hashedPassword, salt, role, DOB, name, address });
-      await newUser.save();
-
-      res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  },
-  initiateLogin: async (req, res) => {
-    try {
-      const { email, password } = req.body;
-
-      // Find the user by email
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "Email not found" });
-      }
-
-      const salt = await user.salt;
-      const hashedPassword = await bcrypt.hash(password, salt);
-      // Verify password
-      if (hashedPassword !== user.hashedPassword) {
-        return res.status(405).json({ message: "Incorrect password" });
-      }
-
-      // Generate TOTP code
-      const totpCode = user.generateTOTPCode();
-
-      // Send TOTP code to the user's email
-      await sendTOTPCodeByEmail(user.email, totpCode);
-
-      res.status(200).json({ message: "Initiated login. TOTP code sent to the user's email." });
-    } catch (error) {
-      console.error("Error initiating login:", error);
-      res.status(500).json({ message: "Server error" });
-    }
-  },
-
-  completeLogin: async (req, res) => {
-    try {
-      const { email, totpCode } = req.body;
-
-      // Find the user by email
-      const user = await userModel.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "Email not found" });
-      }
-
-      // Verify TOTP code
-      const isTOTPVerified = user.verifyTOTP(totpCode);
-      if (!isTOTPVerified) {
-        return res.status(406).json({ message: "Incorrect TOTP code" });
-      }
-
-      const currentDateTime = new Date();
-      const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
-
-      // Generate a JWT token
-      const token = jwt.sign(
-        { user: { userId: user._id, role: user.role } },
-        secretKey,
-        {
-          expiresIn: 3 * 60 * 60,
-        }
-      );
-
-      let newSession = new sessionModel({
-        userId: user._id,
-        token,
-        expiresAt: expiresAt,
+      const newUser = new User({ username, email, hashedPassword, salt, role, DOB, name, address, verified: false });
+      await newUser.save()
+      .then(result => 
+      {
+        sendOTPVerificationEmail(result, res);
+      })
+      .catch(err => 
+      {
+        console.log(err);
+        res.json({
+          status:"FAILED",
+          message: "User could not be created",
+          error: err.message,
+        });
       });
-
-      await newSession.save();
-
-      res
-        .cookie("token", token, {
-          expires: expiresAt,
-          withCredentials: true,
-          httpOnly: false,
-          SameSite: 'none',
-        })
-        .status(200)
-        .json({ message: "Login successful. TOTP code verified.", user });
-    } catch (error) {
-      console.error("Error completing login:", error);
-      res.status(500).json({ message: "Server error" });
+    }
+    catch (error) 
+    {
+      res.json({
+        status:"FAILED",
+        message: "User could not be created",
+        error: error.message,
+      });
     }
   },
-};
+  verifyOTP: async (req, res) =>
+  {
+    try {
+      const { userId, otp } = req.body;
+      const otpVerification = await UserOTPVerification.findOne({ userId });
+      if (!otpVerification) {
+        return res.json({
+          status:"FAILED",
+          message: "OTP verification failed",
+          error: "OTP record not found",
+        });
+      }
+      const isMatch = await bcrypt.compare(otp, otpVerification.otp);
+      if (!isMatch) {
+        return res.json({
+          status:"FAILED",
+          message: "OTP verification failed",
+          error: "OTP is incorrect",
+        });
+      }
+      if (Date.now() > otpVerification.expiresAt) {
+        return res.json({
+          status:"FAILED",
+          message: "OTP verification failed",
+          error: "OTP has expired",
+        });
+      }
+      await User.findByIdAndUpdate(userId, { verified: true });
+      res.json({
+        status:"SUCCESS",
+        message: "OTP verified successfully",
+      });
+    } catch (error) {
+      res.json({
+        status:"FAILED",
+        message: "OTP verification failed",
+        error: error.message,
+      });
+    }
+  }
+}
+
+
 module.exports = userController;
 
 
-// Function to send TOTP code to the user's email
-async function sendTOTPCodeByEmail(userEmail, totpCode) {
-  // Replace with your email configuration
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD, // Use the App Password here
-    },
-    secure: true, // Enable TLS (if not already set by default)
-  });
+const sendOTPVerificationEmail = async ({_id, email}, res) => {
+  try {
+    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
 
-  const mailOptions = {
-    from: process.env.GMAIL_USER,
-    to: userEmail,
-    subject: "Your TOTP Code",
-    text: `Your TOTP code is: ${totpCode}`,
-  };
-
-  await transporter.sendMail(mailOptions);
+    // mail options
+    const mailOptions = {
+      from: process.env.OUTLOOK_USER,
+      to: email,
+      subject: "OTP Verification",
+      html: `
+        <p>Hello!</p>
+        <p>Your OTP for verification is: <b>${otp}</b></p>
+        <p>Please enter this OTP in the app to verify your email address.</p>
+        <p>Remember, the OTP will expire in 1 hour.</p>
+        <p>If you didn't request this OTP, you can safely ignore this email.</p>
+        <p>Thank you!</p>
+      `,
+    };
+    
+    
+    // hash the otp
+    const saltRounds = 10;
+    const hashedOTP = await bcrypt.hash(otp, saltRounds);
+    const newOTPVerification = await new UserOTPVerification({
+      userId: _id,
+      otp: hashedOTP,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 3600000,
+    });
+    // save the OTP record in the database
+    await newOTPVerification.save();
+    await transporter.sendMail(mailOptions);
+    res.json({
+      status:"PENDING",
+      message: "OTP sent successfully",
+      data: {
+        userId:_id,
+        email,
+      },
+    });
+  } catch (error) {
+    res.json({
+      status:"FAILED",
+      message: "OTP could not be sent",
+      error: error.message,
+    });
+  }
 }
+
