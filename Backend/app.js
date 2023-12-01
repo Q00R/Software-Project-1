@@ -6,9 +6,9 @@ require('dotenv').config();
 
 const agentRouter = require("./Routes/agent");
 const managerRouter = require("./Routes/manager");
+const userRouter = require("./Routes/user");
 
 const knowlagebaseRouter = require("./routes/knowlagebase");
-
 
 
 const cors = require("cors");
@@ -58,6 +58,8 @@ mongoose
   });
 
   
+  
+  app.use("/user", userRouter);
   app.use("/agent", agentRouter);
   app.use("/manager", managerRouter);
   app.use("/knowlagebase", knowlagebaseRouter);

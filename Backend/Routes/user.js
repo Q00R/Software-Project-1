@@ -1,7 +1,8 @@
-/*const express = require("express");
+const express = require("express");
 const router = express.Router();
-const userController = require("../controller/userController");
-const authorizationMiddleware=require('../Middleware/authorizationMiddleware')
+const userController = require("../controllers/userController");
+
+//respond to user ticket
+router.put("/respond/:ticketId", userController.respondToAgentTicket);
 
 module.exports = router;
-*/

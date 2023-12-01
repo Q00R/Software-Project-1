@@ -16,11 +16,9 @@ const agentController = {
             const response = req.body.response;
             const ticketStatus = req.body.ticketStatus;
 
-            console.log(id);
-            console.log(agentId);
-            console.log(response);
-            console.log(ticketStatus);
-
+            if(!id || !response){
+                return res.status(400).json({ error: "Missing required fields!" });
+            }
             const ticket = await ticketModel.findById(id);
             console.log(ticket);
             if (!ticket) {
@@ -63,16 +61,16 @@ const agentController = {
                 const transporter = nodemailer.createTransport({
                   service: "gmail",
                   auth: {
-                    user: "test@gmail.com", // Use the agent's email as the sender
-                    pass: "testPass", // I'm not sure about this. Securitists please verify
+                    user: "keinenahmad@gmail.com", // Use the agent's email as the sender
+                    pass: "rpkwdbwmelhvpsfg", // I'm not sure about this. Securitists please verify
                   },
                 });
         
                 const user = await userModel.findById(ticket.userId);
                 if (user) {
                   const mailOptions = {
-                    from: "test@gmail.com", // Use the agent's email as the sender
-                    to: "omarmohamedasaad2004@gmail.com",
+                    from: "keinenahmad@gmail.com", // Use the agent's email as the sender
+                    to: user.email,
                     subject: "Response to Your Ticket",
                     text: `Dear ${user.username},\n\nYour support ticket has been updated. Here is the latest response:\n\n${response}`,
                   };

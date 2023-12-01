@@ -95,8 +95,7 @@ const TicketsSchema = new mongoose.Schema({
         },
         timestamp: {
           type: Date,
-          default: Date.now,
-          required: true,
+          default: Date.now
         }
       }],
     AgentMessages: [
