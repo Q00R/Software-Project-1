@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 // Define the user schema
 const userSchema = new mongoose.Schema({
-  _id: { type: ObjectId, required: true }, //User ID
-
   username: {
     type: String,
     required: true,
@@ -37,7 +35,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["client", "manager", "admin"], // Can only be one of these
+    enum: ["client", "manager", "admin","agent"], // Can only be one of these
     default: "client", // Default role if not provided
   },
   name: {
@@ -46,7 +44,9 @@ const userSchema = new mongoose.Schema({
     last_name: String,
   },
   status:{
-    enum:["Deactivated","Activated"]
+    type:String,
+    enum:["Deactivated","Activated"],
+    required:true
   },
 });
 

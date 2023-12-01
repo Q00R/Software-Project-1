@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 const FAQSchema = new mongoose.Schema({
-  _id: { type: ObjectId }, //FAQ ID
   mainIssue: {
     type: String,
     enum: ["Software", "Hardware", "Network"],
@@ -27,12 +26,12 @@ const FAQSchema = new mongoose.Schema({
     required: true,
   },
   question:{
-  type:String,
-  required:true
+    type:String,
+    required:true
   },
   title:{
-  type:String,
-  required:true
+    type:String,
+    required:true
   },
   solution: {
     type: String,
