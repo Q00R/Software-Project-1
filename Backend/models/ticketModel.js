@@ -1,18 +1,8 @@
 const mongoose = require("mongoose");
-<<<<<<< HEAD
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
-
-const TicketsSchema = new mongoose.Schema({
-  _id: { type: ObjectId,
-  required: true,
-  }, //Ticket ID
-=======
 const { ObjectId } = mongoose.Types;
 
 
 const TicketsSchema = new mongoose.Schema({
->>>>>>> ba63d9228bbc434c83351653ffdfa2dfd44e2172
   userId: { // The user that created the ticket
     type: ObjectId,
     ref: "User",
@@ -22,10 +12,7 @@ const TicketsSchema = new mongoose.Schema({
     //The agent that will be assigned to the ticket
     type: ObjectId,
     ref: "Support_Agent",
-<<<<<<< HEAD
-=======
-    required: true,
->>>>>>> ba63d9228bbc434c83351653ffdfa2dfd44e2172
+    required: false, //DONIA
   },
   creationDate: {
     //Date of creation
@@ -43,18 +30,11 @@ const TicketsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  status: {
-<<<<<<< HEAD
-    //Opened, Closed, 
-    type: String,
-    default: "Opened",
-    enum: ["Opened", "Closed"],
-=======
+  ticketStatus: { //
     //Opened, In Progress, Closed, 
     type: String,
     default: "Opened",
     enum: ["Opened", "In Progress", "Closed"],
->>>>>>> ba63d9228bbc434c83351653ffdfa2dfd44e2172
     required: true,
   },
   mainIssue: {
@@ -90,21 +70,13 @@ const TicketsSchema = new mongoose.Schema({
     },
     description: {
       type: String,
-<<<<<<< HEAD
-      required: true,
-=======
       required: false,
->>>>>>> ba63d9228bbc434c83351653ffdfa2dfd44e2172
     },
   },
   resolutionDate: { // The timestamp of when the ticket was resolved
       type: Date,
       default: Date.now,
-<<<<<<< HEAD
-      required: true,
-=======
       required: false,
->>>>>>> ba63d9228bbc434c83351653ffdfa2dfd44e2172
     },
 
   rating: {
@@ -112,11 +84,7 @@ const TicketsSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     max: 5,
-<<<<<<< HEAD
-    required: false,
-=======
     default: 0,
->>>>>>> ba63d9228bbc434c83351653ffdfa2dfd44e2172
   },
   Messages: {
     ClientMessages: [
@@ -140,10 +108,6 @@ const TicketsSchema = new mongoose.Schema({
         timestamp: {
           type: Date,
           default: Date.now,
-<<<<<<< HEAD
-          required: true,
-=======
->>>>>>> ba63d9228bbc434c83351653ffdfa2dfd44e2172
         }
       }],
   },
