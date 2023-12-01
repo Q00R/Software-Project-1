@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Session = require("../models/sessionModel");
 const UserOTPVerification = require("../models/UserOTPVerificationModel");
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
@@ -108,6 +109,108 @@ const userController =
         message: "OTP verification failed",
         error: error.message,
       });
+    }
+  },
+  enableMFA: async (req, res) => {
+    const { userId } = req.body;
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.json({
+          status: "FAILED",
+          message: "User not found",
+        });
+      }
+  
+      // Update MFAEnabled property
+      user.MFAEnabled = true;
+  
+      // Save the changes to the database
+      await user.save();
+  
+      res.json({
+        status: "SUCCESS",
+        message: "MFA enabled successfully",
+      });
+    } catch (error) {
+      res.json({
+        status: "FAILED",
+        message: "MFA could not be enabled",
+        error: error.message,
+      });
+    }
+  },
+  
+  disabdisableMFA: async (req, res) =>
+  {
+    const {userId} = req.body;
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.json({
+          status:"FAILED",
+          message: "User not found",
+        });
+      }
+      user.MFAEnabled = false;
+    } catch (error) {
+      res.json({
+        status:"FAILED",
+        message: "MFA could not be disabled",
+        error: error.message,
+      });
+    }
+  },
+
+  login: async (req, res) =>
+  {
+    // we need to check first if the user enables the MFA or not.
+    try {
+      const { email, password } = req.body;
+
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "email not found" });
+      }
+
+      console.log("password: ", user.hashedPassword);
+      // Check if the password is correct
+
+
+      const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
+      if (!passwordMatch) {
+        return res.status(405).json({ message: "incorect password" });
+      }
+
+      const currentDateTime = new Date();
+      const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
+      // Generate a JWT token
+      const token = jwt.sign(
+        { user: { userId: user._id, role: user.role } },
+        secretKey,
+        {
+          expiresIn: 3 * 60 * 60,
+        }
+      );
+      let newSession = new Session({
+        userId: user._id,
+        token,
+        expiresAt: expiresAt,
+      });
+      await newSession.save();
+      return res
+        .cookie("token", token, {
+          expires: expiresAt,
+          withCredentials: true,
+          httpOnly: false,
+          SameSite:'none'
+        })
+        .status(200)
+        .json({ message: "login successfully", user });
+    } catch (error) {
+      console.error("Error logging in:", error);
+      res.status(500).json({ message: "Server error" });
     }
   }
 }

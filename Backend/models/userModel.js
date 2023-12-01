@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema({
   status:{
     enum:["Deactivated","Activated"]
   },
+  MFAEnabled:{
+    type: Boolean,
+    default: false,
+  },
   verified: {
     type: Boolean,
     default: false,
