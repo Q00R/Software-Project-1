@@ -11,12 +11,18 @@ const agentController = {
     //respond to user ticket
     respondToTicket: async (req, res) => {
         try {
-            const id = req.params.id;
+            const id = req.params.ticketId;
             const agentId = req.body.agentId; //for now we will use the agentId from the body
             const response = req.body.response;
             const ticketStatus = req.body.ticketStatus;
 
+            console.log(id);
+            console.log(agentId);
+            console.log(response);
+            console.log(ticketStatus);
+
             const ticket = await ticketModel.findById(id);
+            console.log(ticket);
             if (!ticket) {
                 return res.status(400).json({ error: "Ticket not found!" });
               }
@@ -24,8 +30,11 @@ const agentController = {
               if (ticket.status === "Closed") {
                 return res.status(400).json({ error: "Ticket is closed!" });
               }
+
+              console.log(ticket.assignedAgent);
+                console.log(agentId);
         
-              if (ticket.agentId !== agentId) {
+              if (ticket.assignedAgent != agentId) {
                 return res.status(400).json({ error: "Wrong Agent!" });
               }
         
@@ -54,16 +63,16 @@ const agentController = {
                 const transporter = nodemailer.createTransport({
                   service: "gmail",
                   auth: {
-                    user: agent.user.email, // Use the agent's email as the sender
-                    pass: agent.user.hashedPassword, // I'm not sure about this. Securitists please verify
+                    user: "test@gmail.com", // Use the agent's email as the sender
+                    pass: "testPass", // I'm not sure about this. Securitists please verify
                   },
                 });
         
                 const user = await userModel.findById(ticket.userId);
                 if (user) {
                   const mailOptions = {
-                    from: agent.user.email, // Use the agent's email as the sender
-                    to: user.email,
+                    from: "test@gmail.com", // Use the agent's email as the sender
+                    to: "omarmohamedasaad2004@gmail.com",
                     subject: "Response to Your Ticket",
                     text: `Dear ${user.username},\n\nYour support ticket has been updated. Here is the latest response:\n\n${response}`,
                   };

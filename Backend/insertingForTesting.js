@@ -243,7 +243,7 @@ const tickets = [
       mainIssue: "Software",
       subIssue: "Application software",
       assignedAgent: new ObjectId("6569dd02a516f32581a358c9"),
-    }
+    },
 ];
 
 
