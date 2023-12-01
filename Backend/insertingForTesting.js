@@ -90,58 +90,13 @@ const faqs = [
     }
 ];
 
-/*
-username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  hashedPassword: {
-    type: String,
-    required: true,
-  },
-  salt: {
-    type: String,
-    required: true,
-  },
-  DOB: {
-    type: Date,
-    required: true,
-  },
-  address: {
-    street: String,
-    city: String,
-    state: String,
-    zip: String,
-  },
-  role: {
-    type: String,
-    enum: ["client", "manager", "admin"], // Can only be one of these
-    default: "client", // Default role if not provided
-  },
-  name: {
-    first_name: String,
-    middle_name: String,
-    last_name: String,
-  },
-  status:{
-    enum:["Deactivated","Activated"]
-  },
-*/
 const users = [
     {
-        username: "user1",
-        email: "abc@gmail.com",
-        hashedPassword: "123456",
+        username: "user20",
+        email: "user20@gmail.com",
+        hashedPassword: "user20",
         salt: "123456",
-        DOB: "2000-01-01",
+        DOB: "1999-01-01",
         address: {
             street: "street1",
             city: "city1",
@@ -150,12 +105,53 @@ const users = [
         },
         role: "client",
         name: {
-            first_name: "Very",
-            middle_name: "Big",
-            last_name: "MO",
+            first_name: "user",
+            middle_name: "20",
+            last_name: "Testing",
         },
         status: "Activated"
     },
+    {
+      username: "user21",
+      email: "user21@gmail.com",
+      hashedPassword: "user21",
+      salt: "123456",
+      DOB: "1999-01-01",
+      address: {
+          street: "street1",
+          city: "city1",
+          state: "state1",
+          zip: "zip1",
+      },
+      role: "client",
+      name: {
+          first_name: "user",
+          middle_name: "21",
+          last_name: "Testing",
+      },
+      status: "Activated"
+  },
+   
+  {
+    username: "user22",
+    email: "user22@gmail.com",
+    hashedPassword: "user22",
+    salt: "123456",
+    DOB: "1999-01-01",
+    address: {
+        street: "street1",
+        city: "city1",
+        state: "state1",
+        zip: "zip1",
+    },
+    role: "client",
+    name: {
+        first_name: "user",
+        middle_name: "22",
+        last_name: "Testing",
+    },
+    status: "Activated"
+}
 ]
 
 const agents = [
@@ -185,17 +181,68 @@ const agents = [
       ],
       main_role: 'Software',
     }, 
+    { user: {
+      username: "Agent 2",
+      email: "agent2@gmail.com",
+      hashedPassword: "agent2",
+      salt: "123456",
+      DOB: "2000-01-01",
+      address: {
+          street: "street2",
+          city: "city2",
+          state: "state2",
+          zip: "zip2",
+      },
+      role: "agent",
+      name: {
+          first_name: "Agent",
+          middle_name: "2",
+          last_name: "Moumi",
+      },
+      status: "Activated"
+  },
+  active_tickets: [
+      new ObjectId("65699f4b99b23af29445dd1b")
+    ],
+    main_role: 'Hardware',
+  },
+  { user: {
+    username: "Agent 3",
+    email: "agent3@gmail.com",
+    hashedPassword: "agent3",
+    salt: "123456",
+    DOB: "2000-01-01",
+    address: {
+        street: "street2",
+        city: "city2",
+        state: "state2",
+        zip: "zip2",
+    },
+    role: "agent",
+    name: {
+        first_name: "Agent",
+        middle_name: "3",
+        last_name: "Moumi",
+    },
+    status: "Activated"
+},
+active_tickets: [
+    new ObjectId("65699f4b99b23af29445dd1b")
+  ],
+  main_role: 'Software',
+}
 ];
         
     
 
 const tickets = [
     {
-      userId: new ObjectId("6567a075eabe2c8e8788080c"),
+      userId: new ObjectId("6569d9f8889e3838e01d4bf0"),
       title: "Issue with software installation",
       description: "I am facing issues while trying to install a new software.",
       mainIssue: "Software",
-      subIssue: "Desktops",
+      subIssue: "Application software",
+      assignedAgent: new ObjectId("6569dd02a516f32581a358c9"),
     }
 ];
 
@@ -217,14 +264,20 @@ mongoose
   });
 
 // ! Inserting Data
-// const obj = new userModel(users[0]);
-// obj.save().then(() => console.log("Inserted: " + users[0]));
+//  const obj1 = new userModel(users[0]);//[0]
+//  const obj2 = new userModel(users[1]);//[0]
+//  const obj3 = new userModel(users[2]);//[0]
 
-// const obj = new ticketModel(tickets[0]);
-// obj.save().then(() => console.log("Inserted: " + tickets[0]));
+//  obj1.save().then(() => console.log("Inserted: " + users[0]));
+//  obj2.save().then(() => console.log("Inserted: " + users[1]));
+//  obj3.save().then(() => console.log("Inserted: " + users[2]));
 
-const obj = new agentModel(agents[0]);
-obj.save().then(() => console.log("Inserted: " + agents[0]));
+
+const obj2 = new ticketModel(tickets[0]);
+obj2.save().then(() => console.log("Inserted: " + tickets[0]));
+
+// const obj = new agentModel(agents[2]);
+// obj.save().then(() => console.log("Inserted: " + agents[2]));
 
 
 // faqs.forEach(element => {

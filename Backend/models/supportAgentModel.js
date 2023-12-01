@@ -36,7 +36,7 @@ const SupportAgentSchema = new mongoose.Schema(
       },
       role: {
         type: String,
-        enum: ["client", "manager", "admin"], // Can only be one of these
+        enum: ["client", "manager", "admin","agent"], // Can only be one of these
         default: "client", // Default role if not provided
       },
       name: {
@@ -54,6 +54,7 @@ const SupportAgentSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       max: 5,
+      default: 0
     },
     active_tickets: [{
       type: ObjectId,

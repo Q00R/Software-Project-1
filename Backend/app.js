@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 
 const agentRouter = require("./Routes/agent");
+const managerRouter = require("./Routes/manager");
+
 const knowlagebaseRouter = require("./routes/knowlagebase");
 
 
@@ -57,6 +59,7 @@ mongoose
 
   
   app.use("/agent", agentRouter);
+  app.use("/manager", managerRouter);
   app.use("/knowlagebase", knowlagebaseRouter);
 
 app.use(function (req, res, next) {

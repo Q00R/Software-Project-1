@@ -84,7 +84,7 @@ const TicketsSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     max: 5,
-    required: false,
+    default: 0,
   },
   Messages: {
     ClientMessages: [
