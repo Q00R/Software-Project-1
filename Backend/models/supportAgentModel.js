@@ -1,11 +1,8 @@
-const { array } = require('joi');
 const mongoose = require('mongoose');
-const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Types;
 
 const SupportAgentSchema = new mongoose.Schema(
   {
-
-    _id: { type: ObjectId }, //Support Agent ID
     user: {
       username: {
         type: String,
@@ -39,7 +36,7 @@ const SupportAgentSchema = new mongoose.Schema(
       },
       role: {
         type: String,
-        enum: ["client", "manager", "admin"], // Can only be one of these
+        enum: ["client", "manager", "admin","agent"], // Can only be one of these
         default: "client", // Default role if not provided
       },
       name: {
@@ -48,13 +45,16 @@ const SupportAgentSchema = new mongoose.Schema(
         last_name: String,
       },
       status: {
-        enum: ["Deactivated", "Activated"]
+        type: String,
+        enum: ["Deactivated", "Activated"],
+        required: true
       },
     }, // Embedding the User schema
     rating: {
       type: Number,
       min: 0,
       max: 5,
+      default: 0
     },
     active_tickets: [{
       type: ObjectId,

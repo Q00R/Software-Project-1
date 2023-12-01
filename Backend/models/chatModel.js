@@ -1,13 +1,8 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 const ChatSchema = new mongoose.Schema(
-  {
-
-        _id: {  // Chat ID
-        type: ObjectId ,
-        required:true
-        },  
+  {  
         ticketId: {  // Ticket ID
         type: ObjectId,
         ref:"Ticket"

@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 
 const TicketsSchema = new mongoose.Schema({
-  _id: { type: ObjectId,
-  required: true,
-  }, //Ticket ID
   userId: { // The user that created the ticket
     type: ObjectId,
     ref: "User",
@@ -15,6 +12,7 @@ const TicketsSchema = new mongoose.Schema({
     //The agent that will be assigned to the ticket
     type: ObjectId,
     ref: "Support_Agent",
+    required: true,
   },
   creationDate: {
     //Date of creation
@@ -33,10 +31,10 @@ const TicketsSchema = new mongoose.Schema({
     required: true,
   },
   status: {
-    //Opened, Closed, 
+    //Opened, In Progress, Closed, 
     type: String,
     default: "Opened",
-    enum: ["Opened", "Closed"],
+    enum: ["Opened", "In Progress", "Closed"],
     required: true,
   },
   mainIssue: {
@@ -72,13 +70,13 @@ const TicketsSchema = new mongoose.Schema({
     },
     description: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   resolutionDate: { // The timestamp of when the ticket was resolved
       type: Date,
       default: Date.now,
-      required: true,
+      required: false,
     },
 
   rating: {
@@ -86,7 +84,7 @@ const TicketsSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     max: 5,
-    required: false,
+    default: 0,
   },
   Messages: {
     ClientMessages: [
@@ -110,7 +108,6 @@ const TicketsSchema = new mongoose.Schema({
         timestamp: {
           type: Date,
           default: Date.now,
-          required: true,
         }
       }],
   },
