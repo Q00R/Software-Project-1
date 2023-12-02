@@ -21,7 +21,7 @@ const FAQSchema = new mongoose.Schema({
       "Integration issues",
       "Email issues",
       "Internet connection problems",
-      "Website errors",
+      "Website errors"
     ],
     required: true,
   },

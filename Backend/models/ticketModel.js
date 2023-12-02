@@ -59,6 +59,7 @@ const TicketsSchema = new mongoose.Schema({
       "Email issues",
       "Internet connection problems",
       "Website errors",
+      "Other"
     ],
     required: true,
   },
@@ -95,8 +96,7 @@ const TicketsSchema = new mongoose.Schema({
         },
         timestamp: {
           type: Date,
-          default: Date.now,
-          required: true,
+          default: Date.now
         }
       }],
     AgentMessages: [

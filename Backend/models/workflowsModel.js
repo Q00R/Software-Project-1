@@ -22,6 +22,7 @@ const WorkflowsSchema = new mongoose.Schema({
       "Email issues",
       "Internet connection problems",
       "Website errors",
+      "Other"
     ],
     required: true,
   },

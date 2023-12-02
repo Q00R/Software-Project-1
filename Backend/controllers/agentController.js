@@ -11,12 +11,16 @@ const agentController = {
     //respond to user ticket
     respondToTicket: async (req, res) => {
         try {
-            const id = req.params.id;
+            const id = req.params.ticketId;
             const agentId = req.body.agentId; //for now we will use the agentId from the body
             const response = req.body.response;
             const ticketStatus = req.body.ticketStatus;
 
+            if(!id || !response){
+                return res.status(400).json({ error: "Missing required fields!" });
+            }
             const ticket = await ticketModel.findById(id);
+            console.log(ticket);
             if (!ticket) {
                 return res.status(400).json({ error: "Ticket not found!" });
               }
@@ -24,8 +28,11 @@ const agentController = {
               if (ticket.status === "Closed") {
                 return res.status(400).json({ error: "Ticket is closed!" });
               }
+
+              console.log(ticket.assignedAgent);
+                console.log(agentId);
         
-              if (ticket.agentId !== agentId) {
+              if (ticket.assignedAgent != agentId) {
                 return res.status(400).json({ error: "Wrong Agent!" });
               }
         
@@ -51,24 +58,31 @@ const agentController = {
               // Send email to the user from the agent's email
               const agent = await supportAgentModel.findById(agentId);
               if (agent) {
-                const transporter = nodemailer.createTransport({
+                const transporter = nodemailer.createTransport({ // as if we are logging in by gmail
                   service: "gmail",
                   auth: {
-                    user: agent.user.email, // Use the agent's email as the sender
-                    pass: agent.user.hashedPassword, // I'm not sure about this. Securitists please verify
+                    user: process.env.GMAIL_USER,
+                    pass: process.env.GMAIL_APP_PASSWORD,
                   },
                 });
         
                 const user = await userModel.findById(ticket.userId);
                 if (user) {
-                  const mailOptions = {
-                    from: agent.user.email, // Use the agent's email as the sender
+                  let emailText = `Dear ${user.username},\n\nYour support ticket has been updated. Here is the latest response:\n\n${response}`
+                  if (ticketStatus === "Closed") {
+                    emailText += `\n\nThe ticket has been closed. If you are not satisfied, you can request a live chat by visiting our website and requesting a live chat on the my tickets page.`
+                  }
+                  else{
+                    emailText += `\n\nYou can respond to this ticket by visiting our website and responding on the my tickets page.`
+                  }
+                  const mailOptions = {  // the content of the email that will be sent to the user
+                    from: "DarwinsAgents@gmail.com",
                     to: user.email,
                     subject: "Response to Your Ticket",
-                    text: `Dear ${user.username},\n\nYour support ticket has been updated. Here is the latest response:\n\n${response}`,
+                    text: emailText,
                   };
         
-                  transporter.sendMail(mailOptions, (error, info) => {
+                  transporter.sendMail(mailOptions, (error, info) => { // send the email
                     if (error) {
                       console.error(error);
                     } else {
