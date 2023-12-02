@@ -4,9 +4,9 @@ const app = express();
 const cors = require("cors");
 require('dotenv').config();
 
-const db_url = process.env.DB_URL + process.env.DB_NAME; 
+const db_url = 'mongodb+srv://MostafaHossam:Minecraft1234@cluster0.c2fztvl.mongodb.net/projData'; 
 
-const knowlagebaseRouter = require("./routes/knowlagebase");
+const knowledgebaseRouter = require("./routes/knowledgebase");
 
 // app.use(
 //   cors({
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/knowlagebase", knowlagebaseRouter);
+app.use("/knowledgebase", knowledgebaseRouter);
 
 
 // ! Mongoose Driver Connection
@@ -44,4 +44,5 @@ mongoose
 app.use(function (req, res, next) {
   return res.status(404).send("404");
 });
-app.listen(process.env.PORT, () => console.log("server started at port " + process.env.PORT));
+
+app.listen(3000, () => console.log("server started at port " + 3000));
