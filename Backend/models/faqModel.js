@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 const FAQSchema = new mongoose.Schema({
   mainIssue: {
@@ -21,7 +21,7 @@ const FAQSchema = new mongoose.Schema({
       "Integration issues",
       "Email issues",
       "Internet connection problems",
-      "Website errors",
+      "Website errors"
     ],
     required: true,
   },
