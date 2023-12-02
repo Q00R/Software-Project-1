@@ -183,6 +183,23 @@ const userController =
         return res.status(405).json({ message: "incorect password" });
       }
 
+      // Check if the user has enabled MFA
+      if (user.MFAEnabled) 
+      {
+        // loop to make all other MFA tokens expired and set a new one
+        const currentDateTime = new Date();
+        const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
+        // Generate a JWT token
+        const token = jwt.sign(
+          { user: { userId: user._id, role: user.role } },
+          secretKey,
+          {
+            expiresIn: 3 * 60 * 60,
+          }
+        );
+        
+      }
+
       const currentDateTime = new Date();
       const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
       // Generate a JWT token
