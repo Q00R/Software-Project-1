@@ -30,25 +30,22 @@ const clientController = {
             mainIssue: req.body.mainIssue,
             subIssue: req.body.subIssue
         });
-        
+
         //attempt to assign ticket to an agent who's main role is that of the main issue of the ticket
         const mainAgent = await supportAgentModel.findOne({ main_role: issue }); //DONIA
         const totalTickets = mainAgent.active_tickets.Software.length + mainAgent.active_tickets.Hardware.length + mainAgent.active_tickets.Network.length;
         const assigned = false;
-        if((mainAgent.active_tickets[req.body.mainIssue].length == 0)||(mainAgent.active_tickets[req.body.mainIssue].length/totalTickets < 0.9))
-        {
+        if ((mainAgent.active_tickets[req.body.mainIssue].length == 0) || (mainAgent.active_tickets[req.body.mainIssue].length / totalTickets < 0.9)) {
             ticket.assignedAgent = mainAgent._id;
             mainAgent.active_tickets[req.body.mainIssue].push(ticket._id);
             assigned = true;
         }
-        else
-        {
-            const subAgenst = await supportAgentModel.find({ main_role: {$ne: issue }});
+        else {
+            const subAgenst = await supportAgentModel.find({ main_role: { $ne: issue } });
             for (let i = 0; i < subAgenst.length; i++) {
                 const agent = subAgenst[i];
                 const totalTickets = agent.active_tickets.Software.length + agent.active_tickets.Hardware.length + agent.active_tickets.Network.length;
-                if((mainAgent.active_tickets[req.body.mainIssue].length == 0)||(agent.active_tickets[req.body.mainIssue].length/totalTickets < 0.05))
-                {
+                if ((mainAgent.active_tickets[req.body.mainIssue].length == 0) || (agent.active_tickets[req.body.mainIssue].length / totalTickets < 0.05)) {
                     ticket.assignedAgent = agent._id;
                     agent.active_tickets[req.body.mainIssue].push(ticket._id);
                     assigned = true;
