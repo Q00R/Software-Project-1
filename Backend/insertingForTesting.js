@@ -230,7 +230,82 @@ active_tickets: [
     new ObjectId("65699f4b99b23af29445dd1b")
   ],
   main_role: 'Software',
-}
+},
+{
+    user: {
+         username: " Nunez",
+         email: "Nunez@gmail.com",
+         hashedPassword: "Nunez",
+         salt: "097",
+         DOB: "2000-01-01",
+         address: {
+             street: "street1",
+             city: "city1",
+             state: "state1",
+             zip: "zip1",
+         },
+         role: "agent",
+         name: {
+             first_name: "Agent",
+             middle_name: "Agent",
+             last_name: "Agent",
+         },
+         status: "Activated"
+     },
+     active_tickets: [],
+       main_role: 'Software',
+       rating: 5
+     },
+     {
+        user: {
+             username: "Agent4",
+             email: "Agent4@gmail.com",
+             hashedPassword: "Agent4",
+             salt: "123456",
+             DOB: "2000-01-01",
+             address: {
+                 street: "street1",
+                 city: "city1",
+                 state: "state1",
+                 zip: "zip1",
+             },
+             role: "agent",
+             name: {
+                 first_name: "Agent4",
+                 middle_name: "Agent4",
+                 last_name: "Agent4",
+             },
+             status: "Activated"
+         },
+         active_tickets: [],
+           main_role: 'Software',
+         },
+         {
+            user: {
+                 username: "Agent5",
+                 email: "Agent5@gmail.com",
+                 hashedPassword: "123456",
+                 salt: "123456",
+                 DOB: "2000-01-01",
+                 address: {
+                     street: "street1",
+                     city: "city1",
+                     state: "state1",
+                     zip: "zip1",
+                 },
+                 role: "agent",
+                 name: {
+                     first_name: "Agent5",
+                     middle_name: "Agent5",
+                     last_name: "Agent5",
+                 },
+                 status: "Activated"
+             },
+             active_tickets:[],
+               main_role: 'Software',
+               rating: 3
+             }
+
 ];
         
     
@@ -273,11 +348,18 @@ mongoose
 //  obj3.save().then(() => console.log("Inserted: " + users[2]));
 
 
-const obj2 = new ticketModel(tickets[0]);
-obj2.save().then(() => console.log("Inserted: " + tickets[0]));
+// const obj1 = new ticketModel(tickets[0]);
+// obj1.save().then(() => console.log("Inserted: " + tickets[0]));
 
-// const obj = new agentModel(agents[2]);
-// obj.save().then(() => console.log("Inserted: " + agents[2]));
+const obj2 = new agentModel(agents[3]);
+obj2.save().then(() => console.log("Inserted: " + agents[3]));
+
+const obj3 = new agentModel(agents[4]);
+obj3.save().then(() => console.log("Inserted: " + agents[4]));
+
+const obj4 = new agentModel(agents[5]);
+obj4.save().then(() => console.log("Inserted: " + agents[5]));
+
 
 
 // faqs.forEach(element => {
