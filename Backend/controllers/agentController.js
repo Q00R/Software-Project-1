@@ -58,24 +58,31 @@ const agentController = {
               // Send email to the user from the agent's email
               const agent = await supportAgentModel.findById(agentId);
               if (agent) {
-                const transporter = nodemailer.createTransport({
+                const transporter = nodemailer.createTransport({ // as if we are logging in by gmail
                   service: "gmail",
                   auth: {
-                    user: "keinenahmad@gmail.com", // Use the agent's email as the sender
-                    pass: "rpkwdbwmelhvpsfg", // I'm not sure about this. Securitists please verify
+                    user: "DarwinsAgents@gmail.com",
+                    pass: "mombjfhrqmlofkdj",
                   },
                 });
         
                 const user = await userModel.findById(ticket.userId);
                 if (user) {
-                  const mailOptions = {
-                    from: "keinenahmad@gmail.com", // Use the agent's email as the sender
+                  let emailText = `Dear ${user.username},\n\nYour support ticket has been updated. Here is the latest response:\n\n${response}`
+                  if (ticketStatus === "Closed") {
+                    emailText += `\n\nThe ticket has been closed. If you are not satisfied, you can request a live chat by visiting our website and requesting a live chat on the my tickets page.`
+                  }
+                  else{
+                    emailText += `\n\nYou can respond to this ticket by visiting our website and responding on the my tickets page.`
+                  }
+                  const mailOptions = {  // the content of the email that will be sent to the user
+                    from: "DarwinsAgents@gmail.com",
                     to: user.email,
                     subject: "Response to Your Ticket",
-                    text: `Dear ${user.username},\n\nYour support ticket has been updated. Here is the latest response:\n\n${response}`,
+                    text: emailText,
                   };
         
-                  transporter.sendMail(mailOptions, (error, info) => {
+                  transporter.sendMail(mailOptions, (error, info) => { // send the email
                     if (error) {
                       console.error(error);
                     } else {

@@ -13,19 +13,27 @@ const userController = {
         try {
             const id = req.params.ticketId;
             const response = req.body.response;
+            const userId = req.body.userId;
             if(!id || !response){
                 return res.status(400).json({ error: "Missing required fields!" });
             }
 
             const ticket = await ticketModel.findById(id);
-            console.log(ticket);
+            
+           
             if (!ticket) {
                 return res.status(400).json({ error: "Ticket not found!" });
               }
+
+              if(ticket.userId != userId){
+                return res.status(400).json({ error: "Wrong User!" });
+            }
         
               if (ticket.status === "Closed") {
-                return res.status(400).json({ error: "Ticket is closed!" });
+                return res.status(400).json({ error: "Ticket is closed! If you are not satisfied, you can request a live chat by pressing on the below button." });
               }
+
+
               ticket.Messages.ClientMessages.push({
                 message: response,
               });
