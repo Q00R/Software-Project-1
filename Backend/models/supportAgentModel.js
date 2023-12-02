@@ -56,18 +56,11 @@ const SupportAgentSchema = new mongoose.Schema(
       max: 5,
       default: 0
     },
-    active_tickets_network: [{
-      type: ObjectId,
-      ref: 'Ticket', // Reference to the Ticket model
-    }],
-    active_tickets_software: [{
-      type: ObjectId,
-      ref: 'Ticket', // Reference to the Ticket model
-    }],
-    active_tickets_hardware: [{
-      type: ObjectId,
-      ref: 'Ticket', // Reference to the Ticket model
-    }],
+    active_tickets:{
+      Software: [{type : ObjectId, ref: 'Ticket'}],
+      Hardware: [{type : ObjectId, ref: 'Ticket'}],
+      Network: [{type : ObjectId, ref: 'Ticket'}]
+    },
     resolved_tickets: [{
       type: ObjectId,
       ref: 'Ticket', // Reference to the Ticket model
