@@ -12,9 +12,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 <<<<<<< HEAD
+<<<<<<< HEAD
   -webkit-text-size-adjust: 100%;
 =======
 >>>>>>> 5ca0402fe7c9f530fc3224cfcbbd6e64d53117ff
+=======
+>>>>>>> 84aecd3d3c6eb1fb72c393a6e97846583d81a4b4
 }
 
 a {
@@ -29,16 +32,22 @@ a:hover {
 body {
   margin: 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* display: flex; */
   /* place-items: center; */
   /* min-width: 320px;
   min-height: 100vh; */
 =======
+=======
+>>>>>>> 84aecd3d3c6eb1fb72c393a6e97846583d81a4b4
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+<<<<<<< HEAD
 >>>>>>> 5ca0402fe7c9f530fc3224cfcbbd6e64d53117ff
+=======
+>>>>>>> 84aecd3d3c6eb1fb72c393a6e97846583d81a4b4
 }
 
 h1 {

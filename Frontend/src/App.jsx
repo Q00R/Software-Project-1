@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
@@ -38,6 +39,8 @@ function App() {
 
 export default App;
 =======
+=======
+>>>>>>> 84aecd3d3c6eb1fb72c393a6e97846583d81a4b4
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
@@ -73,4 +76,7 @@ function App() {
 }
 
 export default App
+<<<<<<< HEAD
 >>>>>>> 5ca0402fe7c9f530fc3224cfcbbd6e64d53117ff
+=======
+>>>>>>> 84aecd3d3c6eb1fb72c393a6e97846583d81a4b4
