@@ -8,8 +8,8 @@ router.get("/ticketrequest", authMiddleware(['client']), clientController);
 //WAIT FOR DONIA RESPONSE
 
 //get workflow for the issue
-router.get("/ticketrequest/?mainIssue=&subIssue=", authMiddleware(['client']), clientController.generateWorkflow);
-//WAIT FOR DONIAS RESPONSE
+router.get("/ticketrequest/?mainIssue=mi&subIssue=si", authMiddleware(['client']), clientController.generateWorkflow);
+
 
 //post (insert) ticket into db
 router.post("/ticketrequest", authMiddleware(['client']), clientController.createTicket);
