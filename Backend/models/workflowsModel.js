@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 const WorkflowsSchema = new mongoose.Schema({
-  _id: { type: ObjectId }, //Workflow ID
   mainIssue: {
     type: String,
     enum: ["Software", "Hardware", "Network"],
@@ -23,6 +22,7 @@ const WorkflowsSchema = new mongoose.Schema({
       "Email issues",
       "Internet connection problems",
       "Website errors",
+      "Other"
     ],
     required: true,
   },

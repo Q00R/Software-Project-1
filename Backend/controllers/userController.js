@@ -1,5 +1,6 @@
-const User = require("../models/userModel");
 const Session = require("../models/sessionModel");
+const userModel = require("../models/userModel");
+const ticketModel = require("../models/ticketModel");
 const UserOTPVerification = require("../models/UserOTPVerificationModel");
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
@@ -27,6 +28,42 @@ var transporter = nodemailer.createTransport({
 
 const userController = 
 {
+   //respond to user ticket
+   respondToAgentTicket: async (req, res) => {
+    try {
+        const id = req.params.ticketId;
+        const response = req.body.response;
+        const userId = req.body.userId;
+        if(!id || !response){
+            return res.status(400).json({ error: "Missing required fields!" });
+        }
+
+        const ticket = await ticketModel.findById(id);
+        
+       
+        if (!ticket) {
+            return res.status(400).json({ error: "Ticket not found!" });
+          }
+
+          if(ticket.userId != userId){
+            return res.status(400).json({ error: "Wrong User!" });
+        }
+    
+          if (ticket.status === "Closed") {
+            return res.status(400).json({ error: "Ticket is closed! If you are not satisfied, you can request a live chat by pressing on the below button." });
+          }
+
+
+          ticket.Messages.ClientMessages.push({
+            message: response,
+          });
+          await ticket.save();
+          return res.status(200).json({ message: "Response Sent Successfully!" });
+        } catch (e) {
+          console.error(e);
+          return res.status(500).json({ error: "An Error has Occured" });
+        }
+      },
   register: async (req, res) => 
   {
     const { username ,email, password, role, DOB, name, address } = req.body;
@@ -34,7 +71,7 @@ const userController =
     try 
     {
       // Check if the user already exists
-      const existingUser = await User.findOne({ email });
+      const existingUser = await userModel.findOne({ email });
       if (existingUser) 
       {
         return res.status(400).json({ message: 'User already exists' });
@@ -46,7 +83,7 @@ const userController =
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // Create a new user with the hashed password
-      const newUser = new User({ username, email, hashedPassword, salt, role, DOB, name, address, verified: false });
+      const newUser = new userModel({ username, email, hashedPassword, salt, role, DOB, name, address, verified: false });
       await newUser.save()
       .then(result => 
       {
@@ -98,7 +135,7 @@ const userController =
           error: "OTP has expired",
         });
       }
-      await User.findByIdAndUpdate(userId, { verified: true });
+      await userModel.findByIdAndUpdate(userId, { verified: true });
       res.json({
         status:"SUCCESS",
         message: "OTP verified successfully",
@@ -114,7 +151,7 @@ const userController =
   enableMFA: async (req, res) => {
     const { userId } = req.body;
     try {
-      const user = await User.findById(userId);
+      const user = await userModel.findById(userId);
       if (!user) {
         return res.json({
           status: "FAILED",
@@ -145,7 +182,7 @@ const userController =
   {
     const {userId} = req.body;
     try {
-      const user = await User.findById(userId);
+      const user = await userModel.findById(userId);
       if (!user) {
         return res.json({
           status:"FAILED",
@@ -169,7 +206,7 @@ const userController =
       const { email, password } = req.body;
 
       // Find the user by email
-      const user = await User.findOne({ email });
+      const user = await userModel.findOne({ email });
       if (!user) {
         return res.status(404).json({ message: "email not found" });
       }

@@ -1,13 +1,37 @@
 const express = require("express");
-// require the usermodel
-const mongoose = require("mongoose")
-const cors = require("cors")
-const app = express()
-const authRouter = require("./routes/authentication");
+const cookieParser=require('cookie-parser')
+const app = express();
+const mongoose = require("mongoose");
+const cors = require("cors");
+require('dotenv').config();
 
+const authRouter = require("./routes/authentication");
+const agentRouter = require("./Routes/agent");
+const userRouter = require("./Routes/user");
+const knowledgebaseRouter = require("./routes/knowledgebase");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+app.use(cookieParser())
+
+app.use(
+  cors({
+    origin: process.env.ORIGIN,
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    credentials: true,
+  })
+);
+
+const db_name = process.env.DB_NAME;
+const db_url = `${process.env.DB_URL}/${db_name}`;
+
+
+// ! Mongoose Driver Connection
 
 const connectionOptions = {
   useUnifiedTopology: true,
@@ -22,30 +46,20 @@ app.use(
   })
 );
 // Routes
-app.use("/api/v1", authRouter);
 
-const db_url = "mongodb+srv://MostafaHossam:Minecraft1234@cluster0.c2fztvl.mongodb.net/projData"; 
-
-
-console.log('here');
 mongoose
-.connect(db_url)
+.connect(db_url, connectionOptions)
 .then(() => console.log("mongoDB connected"))
 .catch((e) => {
   console.log(e);
 });
-console.log('here'); 
-const User = require("./models/userModel");
-const Ticket = require("./models/ticketModel");
-const FAQ = require("./models/faqModel");
-const Chat = require("./models/chatModel");
-const Support_Agent = require("./models/supportAgentModel");
-const Workflow = require("./models/workflowsModel");
 
+app.use("/api/v1", authRouter);
+app.use("/user", userRouter);
+app.use("/agent", agentRouter);
+app.use("/knowledgebase", knowledgebaseRouter);
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.use(function (req, res, next) {
+  return res.status(404).send("404");
 });
-
+app.listen(process.env.PORT, () => console.log("server started"));
