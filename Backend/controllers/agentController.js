@@ -15,6 +15,7 @@ const agentController = {
             const agentId = req.body.agentId; //for now we will use the agentId from the body
             const response = req.body.response;
             const ticketStatus = req.body.ticketStatus;
+            
 
             if(!id || !response){
                 return res.status(400).json({ error: "Missing required fields!" });
@@ -24,8 +25,10 @@ const agentController = {
             if (!ticket) {
                 return res.status(400).json({ error: "Ticket not found!" });
               }
+
+              // const ticketType = ticket.mainIssue;
         
-              if (ticket.status === "Closed") {
+              if (ticket.ticketStatus === "Closed") {
                 return res.status(400).json({ error: "Ticket is closed!" });
               }
 
@@ -36,24 +39,34 @@ const agentController = {
                 return res.status(400).json({ error: "Wrong Agent!" });
               }
         
-              if (ticketStatus === "Closed") {
-                ticket.status = "Closed";
-                ticket.resolutionDate = Date.now();
-                await ticket.save();
-        
-                const agent = await supportAgentModel.findById(agentId);
-                if (agent) {
-                  agent.active_tickets.pull(id);
-                  agent.resolved_tickets.push(id);
-                  await agent.save();
-                }
-              }
-        
               // Add the agent message to the ticket
               ticket.Messages.AgentMessages.push({
                 message: response,
               });
               await ticket.save();
+
+              if (ticketStatus === "Closed") {
+                
+        
+                const agent = await supportAgentModel.findById(agentId);
+                if (agent) {
+                  
+                   // Find the index of the ticket in the active_tickets array
+                  const index = agent.active_tickets[agent.main_role].indexOf(id);
+
+                  // If the ticket is found, remove it from the array
+                  if (index !== -1) {
+                   agent.active_tickets[agent.main_role].splice(index, 1);
+                   }
+
+                  agent.resolved_tickets.push(id);
+                  await agent.save();
+                }
+
+                ticket.ticketStatus = "Closed";
+                ticket.resolutionDate = Date.now();
+                await ticket.save();
+              }
         
               // Send email to the user from the agent's email
               const agent = await supportAgentModel.findById(agentId);
