@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware=require('../middleware/authorizationMiddleware');
 const clientController = require("../controllers/clientController");
-
+const dbBackupController = require("../controllers/dbBackupController")
 //get ticket form 
 router.get("/ticketrequest", authMiddleware(['client']), clientController);
 //WAIT FOR DONIA RESPONSE
@@ -22,3 +22,5 @@ router.get("/tickets/:status", authMiddleware(['client']), clientController.getT
 
 //get this ticket
 router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.getTicket);
+
+router.post("/createBackup",dbBackupController.createBackup);

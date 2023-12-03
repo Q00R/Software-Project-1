@@ -85,8 +85,5 @@ userSchema.methods.verifyTOTP = function (token) {
   );
 };
 
-
-
-
 // Create the User model
 module.exports = mongoose.model("User", userSchema);

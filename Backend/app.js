@@ -1,10 +1,10 @@
 const express = require("express");
-const cookieParser=require('cookie-parser')
+const cookieParser = require("cookie-parser");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
-require('dotenv').config();
-
+require("dotenv").config();
+const clientRouter = require("./Routes/clientRouter");
 const authRouter = require("./routes/authentication");
 const agentRouter = require("./Routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebase");
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -28,7 +28,6 @@ app.use(
 
 const db_name = process.env.DB_NAME;
 const db_url = `${process.env.DB_URL}/${db_name}`;
-
 
 // ! Mongoose Driver Connection
 
@@ -47,17 +46,19 @@ app.use(
 // Routes
 
 mongoose
-.connect(db_url, connectionOptions)
-.then(() => console.log("mongoDB connected"))
-.catch((e) => {
-  console.log(e);
-});
+  .connect(db_url, connectionOptions)
+  .then(() => console.log("mongoDB connected"))
+  .catch((e) => {
+    console.log(e);
+  });
 
 app.use("/api/v1", authRouter);
 app.use("/agent", agentRouter);
 app.use("/knowledgebase", knowledgebaseRouter);
+app.use("/client", clientRouter);
 
 app.use(function (req, res, next) {
   return res.status(404).send("404");
 });
+
 app.listen(process.env.PORT, () => console.log("server started"));

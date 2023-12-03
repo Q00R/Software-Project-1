@@ -1,5 +1,5 @@
 const Session = require("../models/sessionModel");
-const userModel = require("../models/userModel");
+const userModel = require("../Models/userModel");
 const UserOTPVerification = require("../models/UserOTPVerificationModel");
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
