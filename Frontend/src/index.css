@@ -11,10 +11,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-<<<<<<< HEAD
+
   -webkit-text-size-adjust: 100%;
-=======
->>>>>>> 5ca0402fe7c9f530fc3224cfcbbd6e64d53117ff
+
 }
 
 a {
@@ -28,17 +27,17 @@ a:hover {
 
 body {
   margin: 0;
-<<<<<<< HEAD
+
   /* display: flex; */
   /* place-items: center; */
   /* min-width: 320px;
   min-height: 100vh; */
-=======
+
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
->>>>>>> 5ca0402fe7c9f530fc3224cfcbbd6e64d53117ff
+
 }
 
 h1 {

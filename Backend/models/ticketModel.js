@@ -12,7 +12,7 @@ const TicketsSchema = new mongoose.Schema({
     //The agent that will be assigned to the ticket
     type: ObjectId,
     ref: "Support_Agent",
-    required: true,
+    required: false, //DONIA
   },
   creationDate: {
     //Date of creation
@@ -30,7 +30,7 @@ const TicketsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  status: {
+  ticketStatus: { //
     //Opened, In Progress, Closed, 
     type: String,
     default: "Opened",
@@ -59,6 +59,7 @@ const TicketsSchema = new mongoose.Schema({
       "Email issues",
       "Internet connection problems",
       "Website errors",
+      "Other"
     ],
     required: true,
   },
@@ -95,8 +96,7 @@ const TicketsSchema = new mongoose.Schema({
         },
         timestamp: {
           type: Date,
-          default: Date.now,
-          required: true,
+          default: Date.now
         }
       }],
     AgentMessages: [
