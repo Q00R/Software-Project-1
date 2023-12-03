@@ -88,17 +88,6 @@ const TicketsSchema = new mongoose.Schema({
     default: 0,
   },
   Messages: {
-    ClientMessages: [
-      {
-        message: {
-          type: String,
-          required: true,
-        },
-        timestamp: {
-          type: Date,
-          default: Date.now
-        }
-      }],
     AgentMessages: [
       {
         message: {

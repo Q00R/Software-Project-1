@@ -1,6 +1,6 @@
 const supportAgentModel = require("../Models/supportAgentModel");
 const userModel = require("../models/userModel");
-const ticketModel = require("../models/ticketModel");
+const ticketModel = require("../Models/ticketModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secretKey = process.env.SECRET_KEY;
@@ -73,7 +73,7 @@ const agentController = {
                     emailText += `\n\nThe ticket has been closed. If you are not satisfied, you can request a live chat by visiting our website and requesting a live chat on the my tickets page.`
                   }
                   else{
-                    emailText += `\n\nYou can respond to this ticket by visiting our website and responding on the my tickets page.`
+                    emailText += `\n\nThe ticket is still in progress, we will send you another response soon!`
                   }
                   const mailOptions = {  // the content of the email that will be sent to the user
                     from: "DarwinsAgents@gmail.com",
