@@ -67,6 +67,9 @@ const agentController = {
                 ticket.resolutionDate = Date.now();
                 await ticket.save();
               }
+
+              ticket.ticketStatus = "In Progress";
+              await ticket.save();
         
               // Send email to the user from the agent's email
               const agent = await supportAgentModel.findById(agentId);
