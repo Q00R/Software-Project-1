@@ -1,58 +1,51 @@
+// MFAPage.jsx
+
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+
 
 const defaultTheme = createTheme();
 const backend_url = 'http://localhost:3000/api/v1';
 
-export default function SignInSide() {
+const MFAPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [otp, setOtp] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { email } = useParams();
 
-  const handleSubmit = async (e) => {
+  const handleVerification = async (e) => {
     e.preventDefault();
     try {
-      // Make a POST request to the login endpoint
+      // show email as notification on screen
       const response = await axios.post(
-        `${backend_url}/login`,
+        `${backend_url}/verifyOTP`,
         {
           email,
-          password,
+          otp,
         },
         { withCredentials: true }
       );
 
-      const { status, data } = response;
-      if (status === 200) 
-      { 
-          
-          // If MFA is required, redirect to MFA page with email as a parameter
-          navigate(`/mfa/${email}`);       
+      const { status, message } = response;
+      if (status === 200) {
+        navigate('/dashboard');
       } else {
-        setErrorMessage(data.message || 'Login failed');
+        setErrorMessage(error.response.data.message || 'Verification failed');  
       }
     } catch (error) {
-      console.error(error);
-      setErrorMessage(error.message);
+      setErrorMessage(error.response.data.message || 'An error occurred');
     }
-
-    // Clear the input values after submission
-    setEmail('');
-    setPassword('');
   };
 
   return (
@@ -89,33 +82,20 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              MFA Verification
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} style={{ mt: 1 }}>
+            <Box component="form" noValidate onSubmit={handleVerification} style={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="otp"
+                label="Enter OTP"
+                name="OTP"
+                autoComplete="OTP"
                 autoFocus
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <TextField
-                style={{paddingBottom:'1rem'}}
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
               />
               <Button
                 type="submit"
@@ -123,23 +103,11 @@ export default function SignInSide() {
                 variant="contained"
                 style={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Verify
               </Button>
-              <Grid container>
-                <Grid item style={{marginLeft:"auto", marginRight:"auto"}}>
-                  <Link href="#"  variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
               {errorMessage && (
                 <Typography color="error" style={{ marginTop: '1rem' }}>
                   {errorMessage}
-                </Typography>
-              )}
-              {successMessage && (
-                <Typography style={{ marginTop: '1rem' }}>
-                  {successMessage}
                 </Typography>
               )}
             </Box>
@@ -148,4 +116,6 @@ export default function SignInSide() {
       </Grid>
     </ThemeProvider>
   );
-}
+};
+
+export default MFAPage;

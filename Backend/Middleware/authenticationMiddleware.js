@@ -1,3 +1,4 @@
+// Just a copy of Donia's
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRET_KEY;
 
@@ -25,4 +26,8 @@ module.exports = function authenticationMiddleware(req, res, next) {
     req.user = decoded.user;
     next();
   });
+  // if user is has canPass = false, then redirect to /verifyOTP
+  if(!req.user.canPass){
+    res.redirect("/verifyOTP");
+  }
 };

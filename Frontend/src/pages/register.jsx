@@ -11,11 +11,14 @@ const Signup = () => {
     email: "",
     password: "",
     username: "",
+    DOB: "",
+    name: "",
+    address: "",
   });
   const [successMessage, setSucessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { email, password, username } = inputValue;
+  const { email, password, username, DOB, name, address } = inputValue;
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     console.log(name);
@@ -26,15 +29,6 @@ const Signup = () => {
     }));
   };
 
-  //   const handleError = (err) =>
-  //     toast.error(err, {
-  //       position: "bottom-left",
-  //     });
-  //   const handleSuccess = (msg) =>
-  //     toast.success(msg, {
-  //       position: "bottom-right",
-  //     });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -43,7 +37,7 @@ const Signup = () => {
         {
           ...inputValue,
           displayName:username,
-          role: "customer",
+          role: "client",
         },
         { withCredentials: true }
       );
@@ -57,7 +51,6 @@ const Signup = () => {
       } else {
         setErrorMessage(message);
 
-        // handleError(message);
       }
     } catch (error) {
       console.log(error);
@@ -67,7 +60,10 @@ const Signup = () => {
       ...inputValue,
       email: "",
       password: "",
-      // displayName: "",
+      username: "",
+      DOB: "",
+      name: "",
+      address: "",
     });
   };
 
@@ -105,12 +101,43 @@ const Signup = () => {
             onChange={handleOnChange}
           />
         </div>
+        <div>
+          <label htmlFor="DOB">DOB</label>
+          <input
+            type="text"
+            name="DOB"
+            value={DOB}
+            placeholder="Enter your DOB"
+            onChange={handleOnChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="name">name</label>
+          <input
+            type="text"
+            name="name"
+            value={name}
+            placeholder="Enter your name"
+            onChange={handleOnChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="address">address</label>
+          <input
+            type="text"
+            name="address"
+            value={address}
+            placeholder="Enter your address"
+            onChange={handleOnChange}
+          />
+        </div>
+          
         <button type="submit">Submit</button>
         <span>
           {errorMessage} {successMessage}
         </span>
         <span>
-          Already have an account? <Link to={"/login"}>Login</Link>
+          Already have an account? <Link to={"/login"}>Login</Link>33
         </span>
       </form>
       {/* <ToastContainer /> */}

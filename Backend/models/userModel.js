@@ -53,10 +53,16 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  verified: {
+  verifiedEmail: {
     type: Boolean,
     default: false,
-  }
+  },
+  // if MFA is enabled, did the user verify their OTP?
+  canPass:{
+    type: Boolean,
+    default: true
+  },
+  
 });
 
 userSchema.methods.enableTOTP = function () {
