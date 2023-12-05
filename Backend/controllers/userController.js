@@ -83,7 +83,7 @@ const userController =
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // Create a new user with the hashed password
-      const newUser = new userModel({ username, email, hashedPassword, salt, role, DOB, name, address, verified: false });
+      const newUser = new userModel({ username, email, hashedPassword, salt, role, DOB, name, address, verifiedEmail: false });
       await newUser.save()
       .then(result => 
       {
@@ -108,10 +108,12 @@ const userController =
       });
     }
   },
-  verifyOTP: async (req, res) =>
+  verifyEmail: async (req, res) =>
   {
     try {
-      const { userId, otp } = req.body;
+      const { email, otp } = req.body;
+      const user = await userModel.findOne({ email });
+      const userId = user._id;
       const otpVerification = await UserOTPVerification.findOne({ userId });
       if (!otpVerification) {
         return res.json({
@@ -135,7 +137,7 @@ const userController =
           error: "OTP has expired",
         });
       }
-      await userModel.findByIdAndUpdate(userId, { verified: true });
+      await userModel.findByIdAndUpdate(userId, { verifiedEmail: true });
       res.json({
         status:"SUCCESS",
         message: "OTP verified successfully",
@@ -161,6 +163,7 @@ const userController =
   
       // Update MFAEnabled property
       user.MFAEnabled = true;
+      user.canPass = false;
   
       // Save the changes to the database
       await user.save();
@@ -190,6 +193,7 @@ const userController =
         });
       }
       user.MFAEnabled = false;
+      user.canPass = true;
     } catch (error) {
       res.json({
         status:"FAILED",
@@ -199,31 +203,73 @@ const userController =
     }
   },
 
-  login: async (req, res) =>
-  {
-    // we need to check first if the user enables the MFA or not.
-    try {
-      const { email, password } = req.body;
-
-      // Find the user by email
+  verifyOTPLogin: async (req, res) => {
+    try
+    {
+      console.log("reached");
+      const { email, otp } = req.body;
+      console.log("reached 1");
       const user = await userModel.findOne({ email });
       if (!user) {
+        return res.status(405).json({ status: "FAILED", message: "User not found" });
+      }
+      const userId = user._id;
+      console.log("reached 2");
+      const otpVerification = await UserOTPVerification.findOne({ userId });
+      if (!otpVerification) 
+      {
+        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
+      }
+      const isMatch = await bcrypt.compare(otp, otpVerification.otp);
+      if (!isMatch) 
+      {
+        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
+      }
+      console.log("reached 3");
+      if (Date.now() > otpVerification.expiresAt) 
+      {
+        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
+      }
+      // Update canPass property
+      user.canPass = true;
+      res.status(200).json({ status: "SUCCESS", message: "OTP verified successfully" });
+    } 
+    catch (error) 
+    {
+      console.log(error);
+      res.status(400).json({ status: "FAILED", message: "OTP verification failed" });
+    }
+  },
+
+
+  login: async (req, res) =>
+  {
+    try 
+    {
+      const { email, password } = req.body;
+      // Find the user by email
+      const user = await userModel.findOne({ email });
+      if (!user) 
+      {
         return res.status(404).json({ message: "email not found" });
       }
-
-      console.log("password: ", user.hashedPassword);
       // Check if the password is correct
-
-
       const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
-      if (!passwordMatch) {
+      if (!passwordMatch) 
+      {
         return res.status(405).json({ message: "incorect password" });
       }
-
       // Check if the user has enabled MFA
-      if (user.MFAEnabled) 
+      if (user.MFAEnabled)
       {
-        // loop to make all other MFA tokens expired and set a new one
+        // delete all the previous MFA tokens
+        await UserOTPVerification.deleteMany({ userId: user._id });
+        // generate a new MFA token
+        sendOTPVerificationEmail(user, res);
+      }
+      else
+      {
+        // establish a session and log user in
         const currentDateTime = new Date();
         const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
         // Generate a JWT token
@@ -233,40 +279,32 @@ const userController =
           {
             expiresIn: 3 * 60 * 60,
           }
-        );
-        
-      }
-
-      const currentDateTime = new Date();
-      const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
-      // Generate a JWT token
-      const token = jwt.sign(
-        { user: { userId: user._id, role: user.role } },
-        secretKey,
-        {
-          expiresIn: 3 * 60 * 60,
+          );
+          let newSession = new Session({
+            userId: user._id,
+            token,
+            expiresAt: expiresAt,
+          });
+          await newSession.save();
+          return res
+          .cookie("token", token, {
+            expires: expiresAt,
+            withCredentials: true,
+            httpOnly: false,
+            SameSite:'none',
+            MFAEnabled: user.MFAEnabled,
+          })
+          .status(200)
+          .json({ message: "login successfully", user });
         }
-      );
-      let newSession = new Session({
-        userId: user._id,
-        token,
-        expiresAt: expiresAt,
-      });
-      await newSession.save();
-      return res
-        .cookie("token", token, {
-          expires: expiresAt,
-          withCredentials: true,
-          httpOnly: false,
-          SameSite:'none'
-        })
-        .status(200)
-        .json({ message: "login successfully", user });
-    } catch (error) {
-      console.error("Error logging in:", error);
+          
+    } 
+    catch (error)
+    {
       res.status(500).json({ message: "Server error" });
     }
-  }
+  },
+
 }
 
 
@@ -274,9 +312,8 @@ module.exports = userController;
 
 
 const sendOTPVerificationEmail = async ({_id, email}, res) => {
+  const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
   try {
-    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
-
     // mail options
     const mailOptions = {
       from: process.env.OUTLOOK_USER,
@@ -291,8 +328,6 @@ const sendOTPVerificationEmail = async ({_id, email}, res) => {
         <p>Thank you!</p>
       `,
     };
-    
-    
     // hash the otp
     const saltRounds = 10;
     const hashedOTP = await bcrypt.hash(otp, saltRounds);
@@ -314,11 +349,54 @@ const sendOTPVerificationEmail = async ({_id, email}, res) => {
       },
     });
   } catch (error) {
-    res.json({
-      status:"FAILED",
-      message: "OTP could not be sent",
-      error: error.message,
-    });
+    try 
+    {
+      var transporter = nodemailer.createTransport({
+        host: "smtp-mail.outlook.com",
+        secureConnection: true,
+        port: 587,
+        auth: {
+           user: process.env.OUTLOOK_USER2,
+           pass: process.env.OUTLOOK_APP_PASSWORD
+        },
+        tls: {
+           ciphers: 'TLSv1.2',
+           rejectUnauthorized: false
+        }
+      });
+      const mailOptions = {  // the content of the email that will be sent to the user
+        from: process.env.OUTLOOK_USER2,
+        to: email,
+        subject: "OTP Token",
+        html: `
+        <p>Hello!</p>
+        <p>Your OTP for verification is: <b>${otp}</b></p>
+        <p>Please enter this OTP in the app to verify your email address.</p>
+        <p>Remember, the OTP will expire in 1 hour.</p>
+        <p>If you didn't request this OTP, you can safely ignore this email.</p>
+        <p>Thank you!</p>
+      `,
+      };
+
+      await transporter.sendMail(mailOptions);
+      res.json({
+        status:"PENDING",
+        message: "OTP sent successfully",
+        data: {
+          userId:_id,
+          email,
+        },
+      });
+    }
+    catch (error)
+    {
+      res.json({
+        status:"FAILED",
+        message: "OTP could not be sent",
+        error: error.message,
+      });
+    };
+    
   }
 }
 

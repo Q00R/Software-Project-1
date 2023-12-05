@@ -7,8 +7,9 @@ const userController = require("../controllers/userController");
 
 // * register
 router.post("/register",userController.register);
-router.post("/verifyOTP",userController.verifyOTP);
+router.post("/verifyEmail",userController.verifyEmail);
 router.post("/enableMFA",userController.enableMFA);
 router.post("/login",userController.login);
+router.post("/verifyOTP",userController.verifyOTPLogin);
 
 module.exports = router; // ! Don't forget to export the router
