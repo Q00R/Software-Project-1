@@ -157,7 +157,7 @@ const users = [
 const agents = [
     {
    user: {
-        username: "Darwin Nunez",
+        username: "Darwin Nunez2",
         email: "darwizzy@gmail.com",
         hashedPassword: "123456",
         salt: "123456",
@@ -176,61 +176,13 @@ const agents = [
         },
         status: "Activated"
     },
-    active_tickets: [
-        new ObjectId("6567a5c5d0963167c3a6976e")
-      ],
+    active_tickets: {
+        Software: [],
+        Hardware: [],
+        Network: [],
+      },
       main_role: 'Software',
     }, 
-    { user: {
-      username: "Agent 2",
-      email: "agent2@gmail.com",
-      hashedPassword: "agent2",
-      salt: "123456",
-      DOB: "2000-01-01",
-      address: {
-          street: "street2",
-          city: "city2",
-          state: "state2",
-          zip: "zip2",
-      },
-      role: "agent",
-      name: {
-          first_name: "Agent",
-          middle_name: "2",
-          last_name: "Moumi",
-      },
-      status: "Activated"
-  },
-  active_tickets: [
-      new ObjectId("65699f4b99b23af29445dd1b")
-    ],
-    main_role: 'Hardware',
-  },
-  { user: {
-    username: "Agent 3",
-    email: "agent3@gmail.com",
-    hashedPassword: "agent3",
-    salt: "123456",
-    DOB: "2000-01-01",
-    address: {
-        street: "street2",
-        city: "city2",
-        state: "state2",
-        zip: "zip2",
-    },
-    role: "agent",
-    name: {
-        first_name: "Agent",
-        middle_name: "3",
-        last_name: "Moumi",
-    },
-    status: "Activated"
-},
-active_tickets: [
-    new ObjectId("65699f4b99b23af29445dd1b")
-  ],
-  main_role: 'Software',
-}
 ];
         
     
@@ -242,7 +194,7 @@ const tickets = [
       description: "I am facing issues while trying to install a new software.",
       mainIssue: "Software",
       subIssue: "Application software",
-      assignedAgent: new ObjectId("6569dd02a516f32581a358c9"),
+      assignedAgent: new ObjectId("656f412397f03a93ad7ea0e7"),
     },
 ];
 
@@ -273,11 +225,11 @@ mongoose
 //  obj3.save().then(() => console.log("Inserted: " + users[2]));
 
 
-const obj2 = new ticketModel(tickets[0]);
-obj2.save().then(() => console.log("Inserted: " + tickets[0]));
+// const obj2 = new ticketModel(tickets[0]);
+// obj2.save().then(() => console.log("Inserted: " + tickets[0]));
 
-// const obj = new agentModel(agents[2]);
-// obj.save().then(() => console.log("Inserted: " + agents[2]));
+// const obj = new agentModel(agents[0]);
+// obj.save().then(() => console.log("Inserted: " + agents[0]));
 
 
 // faqs.forEach(element => {
