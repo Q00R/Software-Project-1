@@ -7,7 +7,6 @@ require('dotenv').config();
 
 const authRouter = require("./routes/authentication");
 const agentRouter = require("./Routes/agent");
-const userRouter = require("./Routes/user");
 const knowledgebaseRouter = require("./routes/knowledgebase");
 
 app.use(express.json());
@@ -55,7 +54,6 @@ mongoose
 });
 
 app.use("/api/v1", authRouter);
-app.use("/user", userRouter);
 app.use("/agent", agentRouter);
 app.use("/knowledgebase", knowledgebaseRouter);
 
