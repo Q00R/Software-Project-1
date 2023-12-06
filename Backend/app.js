@@ -32,11 +32,6 @@ const db_url = `${process.env.DB_URL}/${db_name}`;
 
 // ! Mongoose Driver Connection
 
-const connectionOptions = {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-};
-
 app.use(
   cors({
     origin: process.env.ORIGIN,
@@ -47,7 +42,7 @@ app.use(
 // Routes
 
 mongoose
-.connect(db_url, connectionOptions)
+.connect(db_url)
 .then(() => console.log("mongoDB connected"))
 .catch((e) => {
   console.log(e);

@@ -6,14 +6,14 @@ import viteLogo from "/vite.svg";
 import { Route  , Router, Routes } from "react-router-dom";
 import Homepage from "./pages/HomePage";
 import Login from "./pages/login";
-import Signup from "./pages/register";
+import Register from "./pages/register";
 import MFA from "./pages/MFA";
 function App() {
   return (
     <>
         <Routes>
           <Route path="/login" element={<Login  />} />
-          <Route path="/signup" element={<Signup/>}/>
+          <Route path="/register" element={<Register/>}/>
           <Route path="/mfa/:email" element={<MFA/>}/>
           
           <Route path="/" element={<Homepage />} />
