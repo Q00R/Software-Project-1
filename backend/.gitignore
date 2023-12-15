@@ -1,0 +1,4 @@
+node_modules
+.env
+
+# never ever add package.json to gitignore or you will be sorry
