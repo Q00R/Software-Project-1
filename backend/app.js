@@ -56,3 +56,13 @@ app.use(function (req, res, next) {
   return res.status(404).send("404");
 });
 app.listen(process.env.PORT, () => console.log("server started"));
+
+
+const schedule = require('node-schedule');
+// Run every midnight
+//The first 0 represents the minute (0-59).
+//The second 0 represents the hour (0-23).
+const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
+  backupDatabaseController.updateDatabaseBackup(null, null);
+  console.log("Database Backed Up Successfully!")
+});
