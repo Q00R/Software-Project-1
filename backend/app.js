@@ -4,7 +4,7 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 require('dotenv').config();
-
+const backupDatabaseController = require("./controllers/dbBackupController")
 const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
@@ -55,14 +55,18 @@ app.use("/knowledgebase", knowledgebaseRouter);
 app.use(function (req, res, next) {
   return res.status(404).send("404");
 });
-app.listen(process.env.PORT, () => console.log("server started"));
-
 
 const schedule = require('node-schedule');
-// Run every midnight
+//Run every midnight
 //The first 0 represents the minute (0-59).
 //The second 0 represents the hour (0-23).
-const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
-  backupDatabaseController.updateDatabaseBackup(null, null);
+//The third 0 represents the day of the month.
+//The fourth 0 represents the month.
+//The fifth 0 represents the day of the week.
+const scheduledJob = schedule.scheduleJob('* * * * *', () => {
+  backupDatabaseController.updateDatabaseBackup();
   console.log("Database Backed Up Successfully!")
 });
+
+app.listen(process.env.PORT, () => console.log("server started"));
+

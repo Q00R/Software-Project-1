@@ -22,3 +22,5 @@ router.get("/tickets/:status", authMiddleware(['client']), clientController.getT
 
 //get this ticket
 router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.getTicket);
+
+module.exports = router;

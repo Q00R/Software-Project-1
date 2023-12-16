@@ -1,26 +1,11 @@
 const { MongoClient } = require('mongodb');
 
-const mongoose = require("mongoose");
-const ticketForm = require("./clientController");
-const UserOTPVerification = require("../models/UserOTPVerificationModel");
-const chatModel = require("../Models/chatModel");
-const faqModel = require("../Models/faqModel");
-const sessionModel = require("../Models/sessionModel");
-const supportAgentModel = require("../Models/supportAgentModel");
-const ticketModel = require("../Models/ticketModel");
-const userModel = require("../Models/userModel");
-const userOTPModel = require("../models/UserOTPVerificationModel");
-const workflowsModel = require("../models/workflowsModel");
-
 const dbBackup = {
-  updateDatabaseBackup: async (req, res) => {
+  updateDatabaseBackup: async () => {
     const sourceUri = process.env.DB_URL + '/' + process.env.DB_NAME;
     const destinationUri = process.env.DB_URL + '/' + process.env.DB_BACKUP_NAME;
-    console.log('Here1');
     const sourceClient = new MongoClient(sourceUri, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('Here2');
     const destinationClient = new MongoClient(destinationUri, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('Here3');
 
     try {
       await sourceClient.connect();

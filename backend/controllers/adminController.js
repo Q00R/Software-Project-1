@@ -1,5 +1,4 @@
-const { findByIdAndUpdate } = require("../models/faqModel");
-const userModel = require("../models/userModel");
+const userModel = require("../models/userModel.js"); // lookup what to do in this 
 
 const adminController = {
     adminChangeRole: async (req, res) => {
