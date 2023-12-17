@@ -1,16 +1,9 @@
 const ticketModel = require("../Models/ticketModel");
 const workflowModel = require("../models/workflowsModel");
 const supportAgentModel = require("../Models/supportAgentModel");
+const {Queue, HighPriority, MediumPriority, LowPriority} = require("../Queue");
 
 const clientController = {
-    ticketForm: async (req, res) => {
-        try {
-
-        } catch (error) {
-
-        }
-    },
-
     generateWorkflow: async (req, res) => {
         try {
             const { main, sub } = req.params;
@@ -28,31 +21,44 @@ const clientController = {
             description: req.body.description,
             ticketStatus,
             mainIssue: req.body.mainIssue,
-            subIssue: req.body.subIssue
+            subIssue: req.body.subIssue,
+            priority: req.body.priority,
         });
 
-        //attempt to assign ticket to an agent who's main role is that of the main issue of the ticket
-        const mainAgent = await supportAgentModel.findOne({ main_role: issue }); //DONIA
-        const totalTickets = mainAgent.active_tickets.Software.length + mainAgent.active_tickets.Hardware.length + mainAgent.active_tickets.Network.length;
-        const assigned = false;
-        if ((mainAgent.active_tickets[req.body.mainIssue].length == 0) || (mainAgent.active_tickets[req.body.mainIssue].length / totalTickets < 0.9)) {
-            ticket.assignedAgent = mainAgent._id;
-            mainAgent.active_tickets[req.body.mainIssue].push(ticket._id);
-            assigned = true;
+        switch (req.body.priority) {
+            case "High":
+                HighPriority.enqueue(ticket);
+                break;
+            case "Medium":
+                MediumPriority.enqueue(ticket);
+                break;
+            case "Low":
+                LowPriority.enqueue(ticket);
+                break;
         }
-        else {
-            const subAgenst = await supportAgentModel.find({ main_role: { $ne: issue } });
-            for (let i = 0; i < subAgenst.length; i++) {
-                const agent = subAgenst[i];
-                const totalTickets = agent.active_tickets.Software.length + agent.active_tickets.Hardware.length + agent.active_tickets.Network.length;
-                if ((mainAgent.active_tickets[req.body.mainIssue].length == 0) || (agent.active_tickets[req.body.mainIssue].length / totalTickets < 0.05)) {
-                    ticket.assignedAgent = agent._id;
-                    agent.active_tickets[req.body.mainIssue].push(ticket._id);
-                    assigned = true;
-                    break;
-                }
-            }
-        }
+
+        // //attempt to assign ticket to an agent who's main role is that of the main issue of the ticket
+        // const mainAgent = await supportAgentModel.findOne({ main_role: issue }); //DONIA
+        // const totalTickets = mainAgent.active_tickets.Software.length + mainAgent.active_tickets.Hardware.length + mainAgent.active_tickets.Network.length;
+        // const assigned = false;
+        // if ((mainAgent.active_tickets[req.body.mainIssue].length == 0) || (mainAgent.active_tickets[req.body.mainIssue].length / totalTickets < 0.9)) {
+        //     ticket.assignedAgent = mainAgent._id;
+        //     mainAgent.active_tickets[req.body.mainIssue].push(ticket._id);
+        //     assigned = true;
+        // }
+        // else {
+        //     const subAgenst = await supportAgentModel.find({ main_role: { $ne: issue } });
+        //     for (let i = 0; i < subAgenst.length; i++) {
+        //         const agent = subAgenst[i];
+        //         const totalTickets = agent.active_tickets.Software.length + agent.active_tickets.Hardware.length + agent.active_tickets.Network.length;
+        //         if ((mainAgent.active_tickets[req.body.mainIssue].length == 0) || (agent.active_tickets[req.body.mainIssue].length / totalTickets < 0.05)) {
+        //             ticket.assignedAgent = agent._id;
+        //             agent.active_tickets[req.body.mainIssue].push(ticket._id);
+        //             assigned = true;
+        //             break;
+        //         }
+        //     }
+        // }
         try {
             const insertTicket = await ticket.save();
             return res.status(201).json(insertTicket);
