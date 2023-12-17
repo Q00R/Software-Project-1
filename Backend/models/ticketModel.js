@@ -111,6 +111,11 @@ const TicketsSchema = new mongoose.Schema({
         }
       }],
   },
+  Priority: {
+    type: String,
+    enum: ["Low", "Medium", "High"],
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Ticket", TicketsSchema);

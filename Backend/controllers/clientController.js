@@ -3,14 +3,6 @@ const workflowModel = require("../models/workflowsModel");
 const supportAgentModel = require("../models/supportAgentModel");
 
 const clientController = {
-    ticketForm: async (req, res) => {
-        try {
-
-        } catch (error) {
-
-        }
-    },
-
     generateWorkflow: async (req, res) => {
         try {
             const { main, sub } = req.params;
