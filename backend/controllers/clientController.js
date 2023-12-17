@@ -1,6 +1,6 @@
-const ticketModel = require("../Models/ticketModel");
+const ticketModel = require("../models/ticketModel");
 const workflowModel = require("../models/workflowsModel");
-const supportAgentModel = require("../Models/supportAgentModel");
+const supportAgentModel = require("../models/supportAgentModel");
 
 const clientController = {
     ticketForm: async (req, res) => {

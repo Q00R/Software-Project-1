@@ -1,6 +1,6 @@
-const supportAgentModel = require("../Models/supportAgentModel");
-const userModel = require("../models/uerModel");
-const ticketModel = require("../Models/ticketModel");
+const supportAgentModel = require("../models/supportAgentModel");
+const userModel = require("../models/userModel");
+const ticketModel = require("../models/ticketModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secretKey = process.env.SECRET_KEY;

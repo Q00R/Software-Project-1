@@ -4,8 +4,8 @@ const dbBackup = {
   updateDatabaseBackup: async () => {
     const sourceUri = process.env.DB_URL + '/' + process.env.DB_NAME;
     const destinationUri = process.env.DB_URL + '/' + process.env.DB_BACKUP_NAME;
-    const sourceClient = new MongoClient(sourceUri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const destinationClient = new MongoClient(destinationUri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const sourceClient = new MongoClient(sourceUri);
+    const destinationClient = new MongoClient(destinationUri);
 
     try {
       await sourceClient.connect();
