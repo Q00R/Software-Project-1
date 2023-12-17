@@ -1,5 +1,5 @@
 const supportAgentModel = require("../Models/supportAgentModel");
-const userModel = require("../models/userModel");
+const userModel = require("../models/uerModel");
 const ticketModel = require("../Models/ticketModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
