@@ -1,4 +1,4 @@
 node_modules
 .env
-
-# never ever add package.json to gitignore or you will be sorry
+.DS_Store
+# never ever add package.json + package-lock to gitignore or you will be sorry
