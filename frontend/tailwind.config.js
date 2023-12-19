@@ -7,15 +7,14 @@ export default withMT({
       colors: {
         sky: {
           "light-blue": "#9cdbff",
-          cyan: "#9cdbff",
+          "cyan": "#9cdbff",
         },
       },
       fontFamily: {
         sans: ["Open Sans", "sans-serif"],
       },
       screens: {
-        sm: "640px",
-        // rest of the breakpoints
+        
       },
     },
   },
