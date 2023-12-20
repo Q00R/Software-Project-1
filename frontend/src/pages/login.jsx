@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
+
+
 const defaultTheme = createTheme();
 const backend_url = 'http://localhost:3000/api/v1';
 
@@ -56,6 +58,7 @@ export default function SignInSide() {
   };
 
   return (
+    <>
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" style={{ height: '100vh' }}>
         <CssBaseline />
@@ -146,5 +149,6 @@ export default function SignInSide() {
         </Grid>
       </Grid>
     </ThemeProvider>
+    </>
   );
 }
