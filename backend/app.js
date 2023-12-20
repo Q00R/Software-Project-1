@@ -2,7 +2,9 @@ const express = require("express");
 const cookieParser=require('cookie-parser')
 const app = express();
 const mongoose = require("mongoose");
+const http = require("http");
 const cors = require("cors");
+const { Server } = require("socket.io");
 require('dotenv').config();
 const backupDatabaseController = require("./controllers/dbBackupController")
 const authRouter = require("./routes/authentication");
@@ -25,6 +27,30 @@ app.use(
     credentials: true,
   })
 );
+
+const io = new Server(server, {
+  cors: {
+    origin: process.env.ORIGIN,
+    methods: ["GET", "POST", "DELETE", "PUT"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on("join_room", (data) => {
+    socket.join(data);
+    console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  });
+
+  socket.on("send_message", (data) => {
+    socket.to(data.room).emit("receive_message", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User Disconnected", socket.id);
+  });
+});
 
 const db_name = process.env.DB_NAME;
 const db_url = `${process.env.DB_URL}/${db_name}`;

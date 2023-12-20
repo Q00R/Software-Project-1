@@ -23,6 +23,7 @@
     "nodemailer-dkim": "^1.0.5",
     "openssl": "^2.0.0",
     "qrcode": "^1.5.3",
+    "socket.io": "^4.7.2",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {
