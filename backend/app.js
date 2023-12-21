@@ -63,7 +63,7 @@ const schedule = require('node-schedule');
 //The third 0 represents the day of the month.
 //The fourth 0 represents the month.
 //The fifth 0 represents the day of the week.
-const scheduledJob = schedule.scheduleJob('* * * * *', () => {
+const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
   backupDatabaseController.updateDatabaseBackup();
   console.log("Database Backed Up Successfully!")
 });
