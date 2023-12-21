@@ -9,6 +9,8 @@ import Admin from "./pages/adminDashboard";
 import Knowledgebase from "./pages/Knowledgebase";
 import './index.css'; // Import your CSS file
 
+import AgentDashboard from "./pages/AgentDashboard";
+
 function App() {
   return (
     <>
