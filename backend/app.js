@@ -6,11 +6,14 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 require('dotenv').config();
+const authorizationMiddleware = require("./middleware/authorizationMiddleware");
+const authenticationMiddleware = require("./middleware/authenticationMiddleware");
 const backupDatabaseController = require("./controllers/dbBackupController")
 const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const server = http.createServer(app);
+const adminRouter = require("./routes/adminRouter");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -67,8 +70,12 @@ mongoose
 
 // Routes
 app.use("/api/v1", authRouter);
-app.use("/agent", agentRouter);
+app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
 app.use("/knowledgebase", knowledgebaseRouter);
+app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
+
+
+
 
 app.use(function (req, res, next) {
   return res.status(404).send("404");

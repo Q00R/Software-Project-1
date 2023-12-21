@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
+
+
 const defaultTheme = createTheme();
 const backend_url = 'http://localhost:3000/api/v1';
 
@@ -35,13 +37,20 @@ export default function SignInSide() {
         },
         { withCredentials: true }
       );
+      
 
       const { status, data } = response;
+      console.log(data.MFAEnabled);
       if (status === 200) 
-      { 
-          
-          // If MFA is required, redirect to MFA page with email as a parameter
+      {
+        if(data.MFAEnabled == true)
+        {
           navigate(`/mfa/${email}`);       
+        }
+        else
+        {
+          return navigate('/admin');
+        }
       } else {
         setErrorMessage(data.message || 'Login failed');
       }
@@ -56,6 +65,7 @@ export default function SignInSide() {
   };
 
   return (
+    <>
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" style={{ height: '100vh' }}>
         <CssBaseline />
@@ -146,5 +156,6 @@ export default function SignInSide() {
         </Grid>
       </Grid>
     </ThemeProvider>
+    </>
   );
 }
