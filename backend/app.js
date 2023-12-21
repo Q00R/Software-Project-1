@@ -14,6 +14,7 @@ const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const server = http.createServer(app);
 const adminRouter = require("./routes/adminRouter");
+const chatRouter = require("./routes/chatRouter");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -73,7 +74,7 @@ app.use("/api/v1", authRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
 app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
-
+app.use("/chat", chatRouter);
 
 
 
