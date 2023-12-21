@@ -5,6 +5,7 @@ import Homepage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
+import AgentDashboard from "./pages/AgentDashboard";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/mfa/:email" element={<MFA />} />
+        <Route path= "/agents" element= {<AgentDashboard />} />
       </Routes>
     </>
   );
