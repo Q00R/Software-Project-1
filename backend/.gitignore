@@ -1,0 +1,4 @@
+node_modules
+.env
+.DS_Store
+# never ever add package.json + package-lock to gitignore or you will be sorry
