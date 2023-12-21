@@ -1,12 +1,40 @@
 const faqModel = require("../models/faqModel");
 
+const categories = {
+    Software: [
+        "Operating system",
+        "Application software",
+        "Custom software",
+        "Integration issues"
+    ],
+    Hardware: [
+        "Desktops",
+        "Laptops",
+        "Printers",
+        "Servers",
+        "Networking equipment"
+    ],
+    Network: [
+        "Email issues",
+        "Internet connection problems",
+        "Website errors"
+    ]
+  };
+
 const knowledgeController = {
+    categoryAndSubIssue: async (req, res) => {
+        try{
+            return res.status(200).json({ categories: categories });
+        } catch (e){
+            return res.status(400).json({ error: 'Couldnt retrieve categories and sub-issues!' });
+        }
+    },
     faqsBySubIssue: async (req, res) => {
         try{
             const category = req.params.category;
             if (faqModel.schema.path('subIssue').enumValues.includes(category)){
                 //returning only id, title, question, and timestamps
-                const faqs = await faqModel.find({ 'subIssue': category }).select('_id title question timestamps');
+                const faqs = await faqModel.find({ 'subIssue': category }).select('title question solution mainIssue subIssue timestamps');
                 return res.status(200).json(faqs);
             }
             else{

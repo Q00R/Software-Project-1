@@ -51,7 +51,10 @@ const userController =
       await newUser.save()
       .then(result => 
       {
-        sendOTPVerificationEmail(result, res);
+        //sendOTPVerificationEmail(result, res);
+        console.log("hello");
+        // return with successful status code
+        res.status(200).json({result});
       })
       .catch(err => 
       {
@@ -205,6 +208,17 @@ const userController =
     }
   },
 
+  logout: async (req, res) => {
+    try {
+      const { token } = req.cookies;
+      await Session.deleteOne({ token });
+      res.clearCookie("token");
+      res.status(200).json({ message: "logout successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  },
+
 
   login: async (req, res) =>
   {
@@ -259,7 +273,7 @@ const userController =
             MFAEnabled: user.MFAEnabled,
           })
           .status(200)
-          .json({ message: "login successfully", user });
+          .json({ message: "login successfully", MFAEnabled: user.MFAEnabled });
         }
           
     } 

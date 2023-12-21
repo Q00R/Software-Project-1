@@ -1,28 +1,36 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
-const FAQSchema = new mongoose.Schema({
-  mainIssue: {
-    type: String,
-    enum: ["Software", "Hardware", "Network"],
-    required: true,
-  },
-  subIssue: {
-    type: String,
-    enum: [
+const categories = {
+  Software: [
+      "Operating system",
+      "Application software",
+      "Custom software",
+      "Integration issues"
+  ],
+  Hardware: [
       "Desktops",
       "Laptops",
       "Printers",
       "Servers",
-      "Networking equipment",
-      "Operating system",
-      "Application software",
-      "Custom software",
-      "Integration issues",
+      "Networking equipment"
+  ],
+  Network: [
       "Email issues",
       "Internet connection problems",
       "Website errors"
-    ],
+  ]
+};
+
+const FAQSchema = new mongoose.Schema({
+  mainIssue: {
+    type: String,
+    enum: Object.keys(categories),
+    required: true,
+  },
+  subIssue: {
+    type: String,
+    enum: Object.values(categories).flat(),
     required: true,
   },
   question:{

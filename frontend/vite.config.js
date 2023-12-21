@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
-import reactRefresh from '@vitejs/plugin-react-refresh'
-import WindiCSS from 'vite-plugin-windicss'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh(), WindiCSS()],
+  plugins: [react()],
 })

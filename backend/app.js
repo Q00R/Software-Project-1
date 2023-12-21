@@ -4,15 +4,21 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 require('dotenv').config();
+const authorizationMiddleware = require("./middleware/authorizationMiddleware");
+const authenticationMiddleware = require("./middleware/authenticationMiddleware");
 const backupDatabaseController = require("./controllers/dbBackupController")
 const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
+const adminRouter = require("./routes/adminRouter");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
 
@@ -32,13 +38,6 @@ const db_url = `${process.env.DB_URL}/${db_name}`;
 
 // ! Mongoose Driver Connection
 
-app.use(
-  cors({
-    origin: process.env.ORIGIN,
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true,
-  })
-);
 // Routes
 
 mongoose
@@ -48,9 +47,10 @@ mongoose
   console.log(e);
 });
 
-app.use("/api/v1", authRouter);
-app.use("/agent", agentRouter);
 app.use("/knowledgebase", knowledgebaseRouter);
+app.use("/api/v1", authRouter);
+app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
+app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
 
 app.use(function (req, res, next) {
   return res.status(404).send("404");

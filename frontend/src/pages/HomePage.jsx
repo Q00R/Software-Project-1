@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import AppNavBar from "../components/navigationBar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 let backend_url = "http://localhost:3000/api/v1";
 
 export default function HomePage() {
-  const navigate = useNavigate();
-  const [cookies, removeCookies] = useCookies([]);
-  const [userName, setUserName] = useState("");
+  // const navigate = useNavigate();
+  // const [cookies] = useCookies([]);
+  // const [userName, setUserName] = useState("");
   // useeffect to fetch username
   useEffect(() => {
     async function fetchData() {
@@ -41,10 +40,7 @@ export default function HomePage() {
   }, [cookies, navigate]);
   return (
     <>
-      <AppNavBar />
-      <h1 style={{ textAlign: "center", margin: "30px",color:'white' }}>
-        Welcome {userName}
-      </h1>
+      
     </>
   );
 }

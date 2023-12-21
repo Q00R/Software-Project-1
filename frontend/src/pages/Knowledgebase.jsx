@@ -1,152 +1,67 @@
-import React from "react";
-import ComplexNavbar from "../components/navigationBar"
-import {
-  Card,
-  Typography,
-  List,
-  ListItem,
-  ListItemPrefix,
-  ListItemSuffix,
-  Chip,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from "@material-tailwind/react";
-import {
-  PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  InboxIcon,
-  PowerIcon,
-} from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
- 
-export default function App() {
-  const [open, setOpen] = React.useState(0);
- 
-  const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const knowledgebaseURL = 'http://localhost:3000/knowledgebase';
+
+export default function Knowledgebase() {
+  const [categories, setCategories] = useState([]);
+  const [faqs, setFaqs] = useState([]);
+
+  const getCategories = async () => {
+    const { categories } = (await axios.get(`${knowledgebaseURL}/categories`, { withCredentials: true })).data;
+    return categories;
   };
- 
-console.log("Shit")
+
+  const fetchFaqs = async (subcategory) => {
+    const faqsData = (await axios.get(`${knowledgebaseURL}/category/${subcategory}`, { withCredentials: true })).data;
+    setFaqs(faqsData);
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categos = await getCategories();
+      setCategories(categos);
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <>
-      <ComplexNavbar/>
-      <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
-        <div className="mb-2 p-4">
-          <Typography variant="h5" color="blue-gray">
-            Sidebar
-          </Typography>
-        </div>
-        <List>
-          <Accordion
-            open={open === 1}
-            icon={
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
-              />
-            }
-          >
-            <ListItem className="p-0" selected={open === 1}>
-              <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
-                <ListItemPrefix>
-                  <PresentationChartBarIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
-                  Dashboard
-                </Typography>
-              </AccordionHeader>
-            </ListItem>
-            <AccordionBody className="py-1">
-              <List className="p-0">
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Analytics
-                </ListItem>
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Reporting
-                </ListItem>
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Projects
-                </ListItem>
-              </List>
-            </AccordionBody>
-          </Accordion>
-          <Accordion
-            open={open === 2}
-            icon={
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`mx-auto h-4 w-4 transition-transform ${open === 2 ? "rotate-180" : ""}`}
-              />
-            }
-          >
-            <ListItem className="p-0" selected={open === 2}>
-              <AccordionHeader onClick={() => handleOpen(2)} className="border-b-0 p-3">
-                <ListItemPrefix>
-                  <ShoppingBagIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
-                  E-Commerce
-                </Typography>
-              </AccordionHeader>
-            </ListItem>
-            <AccordionBody className="py-1">
-              <List className="p-0">
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Orders
-                </ListItem>
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Products
-                </ListItem>
-              </List>
-            </AccordionBody>
-          </Accordion>
-          <ListItem>
-            <ListItemPrefix>
-              <InboxIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Inbox
-            <ListItemSuffix>
-              <Chip value="14" size="sm" variant="ghost" color="blue-gray" className="rounded-full" />
-            </ListItemSuffix>
-          </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <UserCircleIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Profile
-          </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <Cog6ToothIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Settings
-          </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <PowerIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Log Out
-          </ListItem>
-        </List>
-      </Card>
+      <ul className="menu bg-base-200 w-56 rounded-box" style={{ position: 'fixed', width: '15%', height: '93%', top: '7%', left: 0 }}>
+        {Object.entries(categories).map(([key, value], index) => (
+          <li key={index}>
+            <details open>
+              <summary>{key}</summary>
+              <ul>
+                {value.map((subcategory, subIndex) => (
+                  <li key={subIndex}>
+                    <a onClick={() => fetchFaqs(subcategory)}>{subcategory}</a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </li>
+        ))}
+      </ul>
+      <div style={{ width: '85%', height: '100%', marginLeft:"15%", overflowY: 'auto' }}>
+        {faqs.map((faq, index) => (
+          <div className="collapse bg-base-200" style={{ width: '90%', left: '5%', marginBottom: '1%' }} key={index}>
+            <input type="checkbox" />
+            <div className="collapse-title text-xl font-medium">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1%' }}>
+                <div className="font-bold text-2xl">Title: {faq.title}</div>
+                <div className="font-mono text-1xl">{faq.mainIssue + "(" + faq.subIssue + ")"}</div>
+              </div>
+              <div className="font-mono text-1xl">
+                <div>Question: {faq.question}</div>
+              </div>
+            </div>
+            <div className="collapse-content text-1xl">
+              <p>Answer: {faq.solution}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </>
   );
 }

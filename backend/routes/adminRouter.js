@@ -6,4 +6,5 @@ const userController = require('../controllers/userController')
 
 //create new user
 router.post('/createUser', authMiddleware(['admin']), userController.register);
+router.get("/viewAllUsers",  authMiddleware(['admin']), adminController.getAllUsers);
 module.exports = router;

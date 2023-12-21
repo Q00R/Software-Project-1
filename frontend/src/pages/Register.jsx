@@ -79,24 +79,12 @@ const Register = () => {
         >
           {/* Logo and Company Name Section */}
           <Grid item xs={12} sx={{ textAlign: 'left', mb: 4, paddingLeft: 2, paddingRight: 2 }}>
-            <div style={{
-              backgroundColor: '#f0f0f0', // Set your desired background color here
-              padding: '20px',
-              borderRadius: '10px',
-              border: '2px solid #ccc',
-              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-            }}>
-              <img src={logo} alt="Logo" style={{ height: '80px', maxWidth: '100%', marginRight: '10px' }} />
-              <Typography variant="h2" sx={{ mt: 1, display: 'inline-block', maxHeight: '80px', overflow: 'hidden' }}>GIU Help Desk</Typography>
-            </div>
+            
+              <img src={logo} alt="Logo" style={{ height: '100px', maxWidth: '100%', marginRight: '10px' }} />
+              <Typography variant="h2" sx={{ mt: 1, display: 'inline-block', maxHeight: '80px', overflow: 'hidden' }}>Sign up</Typography>
           </Grid>
 
           <Grid item xs={10} sm={8} md={6}>
-            <Typography component="h1" variant="h4" sx={{ mb: 3 }}>
-              Sign Up
-            </Typography>
             <form onSubmit={handleSubmit} autoComplete="off">
             <TextField
                 fullWidth

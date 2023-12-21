@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import AppNavBar from "../components/navbar";
+import AppNavBar from "../components/Navbar";
 
 export default function TryParams() {
   const searchParams = useParams();
