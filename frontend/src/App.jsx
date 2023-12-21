@@ -60,6 +60,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/mfa/:email" element={<MFA />} />
+        <Route path="agent" element={<AgentDashboard />} />
       </Routes>
     </>
   );
