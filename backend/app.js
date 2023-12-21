@@ -10,6 +10,7 @@ const backupDatabaseController = require("./controllers/dbBackupController")
 const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
+const server = http.createServer(app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -27,6 +28,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 const io = new Server(server, {
   cors: {
@@ -52,20 +54,9 @@ io.on("connection", (socket) => {
   });
 });
 
+// ! Mongoose Driver Connection
 const db_name = process.env.DB_NAME;
 const db_url = `${process.env.DB_URL}/${db_name}`;
-
-
-// ! Mongoose Driver Connection
-
-app.use(
-  cors({
-    origin: process.env.ORIGIN,
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true,
-  })
-);
-// Routes
 
 mongoose
 .connect(db_url)
@@ -74,6 +65,7 @@ mongoose
   console.log(e);
 });
 
+// Routes
 app.use("/api/v1", authRouter);
 app.use("/agent", agentRouter);
 app.use("/knowledgebase", knowledgebaseRouter);
