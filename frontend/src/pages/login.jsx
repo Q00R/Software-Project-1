@@ -35,13 +35,20 @@ export default function SignInSide() {
         },
         { withCredentials: true }
       );
+      
 
       const { status, data } = response;
+      console.log(data.MFAEnabled);
       if (status === 200) 
-      { 
-          
-          // If MFA is required, redirect to MFA page with email as a parameter
+      {
+        if(data.MFAEnabled == true)
+        {
           navigate(`/mfa/${email}`);       
+        }
+        else
+        {
+          return navigate('/admin');
+        }
       } else {
         setErrorMessage(data.message || 'Login failed');
       }
