@@ -28,7 +28,7 @@ const MFA = () => {
     try {
       // show email as notification on screen
       const response = await axios.post(
-        `${backend_url}/verifyOTP`,
+        backend_url/verifyOTP,
         {
           email,
           otp,

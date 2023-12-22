@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import NavbarDefault from "../components/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";

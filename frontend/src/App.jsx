@@ -7,11 +7,14 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
+import Knowledgebase from "./pages/Knowledgebase";
 import Navbar from "./components/Navbar";
 import ViewProfile from "./pages/viewProfile";
 import profileImage from "./assets/userIcon.png";
 import axios from "axios";
+import ClientHome from "./pages/ClientHome";
 
+import AgentDashboard from "./pages/AgentDashboard";
 
 function App() {
 
@@ -46,6 +49,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/viewProfile" element={<ViewProfile />} />
       </Routes>
+      </div>
     </>
   );
 }

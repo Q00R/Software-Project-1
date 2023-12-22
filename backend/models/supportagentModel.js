@@ -36,7 +36,7 @@ const SupportAgentSchema = new mongoose.Schema(
       },
       role: {
         type: String,
-        enum: ["client", "manager", "admin","agent"], // Can only be one of these
+        enum: ["client", "manager", "admin", "agent"], // Can only be one of these
         default: "client", // Default role if not provided
       },
       name: {
@@ -54,12 +54,12 @@ const SupportAgentSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       max: 5,
-      default: 0
+      default: -1
     },
-    active_tickets:{
-      Software: [{type : ObjectId, ref: 'Ticket'}],
-      Hardware: [{type : ObjectId, ref: 'Ticket'}],
-      Network: [{type : ObjectId, ref: 'Ticket'}]
+    active_tickets: {
+      Software: [{ type: ObjectId, ref: 'Ticket' }],
+      Hardware: [{ type: ObjectId, ref: 'Ticket' }],
+      Network: [{ type: ObjectId, ref: 'Ticket' }]
     },
     resolved_tickets: [{
       type: ObjectId,

@@ -11,11 +11,15 @@ const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const adminRouter = require("./routes/adminRouter");
+const managerRouter = require("./routes/manager");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
 
@@ -44,14 +48,11 @@ mongoose
   console.log(e);
 });
 
+app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
-app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
-
-
-
-
+app.use("/manager", managerRouter);
 app.use(function (req, res, next) {
   return res.status(404).send("404");
 });

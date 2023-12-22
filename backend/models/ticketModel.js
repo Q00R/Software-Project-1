@@ -84,7 +84,7 @@ const TicketsSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     max: 5,
-    default: 0,
+    default: -1,
   },
   Messages: {
     AgentMessages: [
@@ -98,6 +98,11 @@ const TicketsSchema = new mongoose.Schema({
           default: Date.now,
         }
       }],
+  },
+  priority: {
+    type: String,
+    enum: ["High", "Medium", "Low"],
+    required: true,
   },
 });
 
