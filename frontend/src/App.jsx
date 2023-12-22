@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
-import chatApp from "./pages/ChatApp"
+import ChatApp from "./pages/ChatApp"
 import Knowledgebase from "./pages/Knowledgebase";
 import './index.css'; // Import your CSS file
 import ClientHome from "./pages/ClientHome";
@@ -66,7 +66,7 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="agent" element={<AgentDashboard />} />
           <Route path="/client" element={<ClientHome />} />
-          <Route path="/chat" element={<chatApp />} />
+          <Route path="/chat" element={<ChatApp />} />
       </Routes>
       </div>
     </>

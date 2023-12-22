@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import axios from "axios";
-let backend_url = "http://localhost:3000/";
+let backend_url = "http://localhost:3000";
 
-function chat({ socket, chatId }) {
+function Chat({ socket, chatId }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
@@ -28,11 +28,11 @@ function chat({ socket, chatId }) {
           ":" +
           new Date(Date.now()).getMinutes(),
       };
-      const response = await axios.put(`${backend_url}/chat/${chatId}`,
-        {
-          ...messageData,
-        });
-
+      const response = await axios.put(`${backend_url}/chat/${chatId}`, {
+        ...messageData,
+      });
+      
+      
       await socket.emit("send_message", messageData);
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
@@ -90,4 +90,4 @@ function chat({ socket, chatId }) {
   );
 }
 
-export default chat;
+export default Chat;

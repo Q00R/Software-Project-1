@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173/");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
@@ -36,12 +36,11 @@ app.use(
   })
 );
 
-
 const io = new Server(server, {
-  cors: {
+  cors: ({
     origin: process.env.ORIGIN,
     methods: ["GET", "POST", "DELETE", "PUT"],
-  },
+  }),
 });
 
 io.on("connection", (socket) => {

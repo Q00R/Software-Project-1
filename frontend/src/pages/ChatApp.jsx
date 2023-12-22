@@ -1,12 +1,12 @@
 import axios from "axios";
 import io from "socket.io-client";
 import { useState } from "react";
-import chat from "./Chat";
-let backend_url = "http://localhost:3000/";
+import Chat from "./Chat";
+let backend_url = "http://localhost:3000";
 
 const socket = io.connect("http://localhost:5173/");
 
-function chatApp({ ticketId, agentId }) {
+function ChatApp({ ticketId, agentId }) {
   const [showChat, setShowChat] = useState(false);
   const [room, setRoom] = useState(0);
   const username = localStorage.getItem("username");
@@ -41,10 +41,10 @@ function chatApp({ ticketId, agentId }) {
           <button onClick={joinRoom}>Join A Room</button>
         </div>
       ) : (
-        <chat socket={socket} username={username} room={room} />
+        <Chat socket={socket} username={username} room={room} />
       )}
     </div>
   );
 }
 
-export default chatApp;
+export default ChatApp;
