@@ -11,6 +11,7 @@ import logo from '../assets/Final logo.png';
 
 const backend_url = 'http://localhost:3000/api/v1';
 
+
 const Register = () => {
   const navigate = useNavigate(); // Ensure that useNavigate is called within the functional component body
 
@@ -43,11 +44,9 @@ const Register = () => {
       );
       console.log(response);
       const { status, data } = response;
-      if (status === 201) {
+      if (status === 200) {
         setSuccessMessage('SignUp successful');
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
+        navigate('/login');
       } else {
         setErrorMessage(data.message);
       }

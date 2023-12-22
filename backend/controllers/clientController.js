@@ -1,6 +1,8 @@
 const ticketModel = require("../models/ticketModel");
 const workflowModel = require("../models/workflowsModel");
 const supportAgentModel = require("../models/supportAgentModel");
+const userModel = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 const clientController = {
     ticketForm: async (req, res) => {
@@ -68,6 +70,8 @@ const clientController = {
             return res.status(400).json({ message: error.message });
         }
     },
+
+
     getTicketByStatus: async (req, res) => {
         try {
             const tickets = await ticketModel.find({ $and: [{ userId: req.userId }, { ticketStatus: req.params.status }] });
@@ -83,6 +87,6 @@ const clientController = {
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }
-    }
+    },
 };
 module.exports = clientController;

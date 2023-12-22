@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware=require('../middleware/authorizationMiddleware');
 const clientController = require("../controllers/clientController");
+const userController = require("../controllers/userController");
 
 //get ticket form 
 router.get("/ticketrequest", authMiddleware(['client']), clientController);
@@ -22,5 +23,8 @@ router.get("/tickets/:status", authMiddleware(['client']), clientController.getT
 
 //get this ticket
 router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.getTicket);
+
+router.get("/getUser", authMiddleware(['client', 'admin']), clientController.getUser);
+
 
 module.exports = router;
