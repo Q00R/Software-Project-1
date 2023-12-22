@@ -3,7 +3,7 @@ const router = express.Router();
 const agentController = require("../controllers/agentContoller");
 
 //respond to user ticket
-router.put("/respond/:ticketId", agentController.respondToTicket);
+router.put("/respond/:ticketId", authMiddleware(['agent']), agentController.respondToTicket);
 //Resolve ticket
 router.put("/resolve/:ticketId", agentController.resolveTicket);
 //View assigned agent's tickets
