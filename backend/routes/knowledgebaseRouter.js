@@ -11,4 +11,7 @@ router.get('/id/:id', knowledgebaseController.faqById);
 //getting by a search term
 router.get('/search/:term', knowledgebaseController.faqBySearch);
 
+//getting categories with their subcategories
+router.get('/categories', knowledgebaseController.categoryAndSubIssue);
+
 module.exports = router;

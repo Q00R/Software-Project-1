@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
+  purge: ['./src/**/*.{js,jsx,ts,tsx}'], // add this line
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}"
   ],
   theme: {
     extend: {},
@@ -11,4 +11,4 @@ export default {
   daisyui: {
     themes: ["light", "dark", "cupcake", "valentine", "halloween", "nord"],
   },
-}
+};
