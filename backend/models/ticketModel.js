@@ -34,6 +34,7 @@ const TicketsSchema = new mongoose.Schema({
     //Opened, In Progress, Closed, 
     type: String,
     enum: ["Opened", "In Progress", "Closed"],
+    default: "Opened",
     required: true,
   },
   mainIssue: {

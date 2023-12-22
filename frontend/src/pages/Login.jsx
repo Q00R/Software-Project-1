@@ -41,6 +41,9 @@ export default function SignInSide() {
       console.log(data.MFAEnabled);
       if (status === 200) 
       {
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('userRole', data.userRole);
+        localStorage.setItem('userName', data.userName);
         if(data.MFAEnabled == true)
         {
           navigate(`/mfa/${email}`);       

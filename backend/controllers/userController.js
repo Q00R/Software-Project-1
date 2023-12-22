@@ -219,7 +219,6 @@ const userController =
     }
   },
 
-
   login: async (req, res) =>
   {
     try 
@@ -273,7 +272,7 @@ const userController =
             MFAEnabled: user.MFAEnabled,
           })
           .status(200)
-          .json({ message: "login successfully", MFAEnabled: user.MFAEnabled });
+          .json({ message: "login successfully", MFAEnabled: user.MFAEnabled, user});
         }
           
     } 

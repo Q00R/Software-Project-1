@@ -37,6 +37,41 @@ const ClientTickets = () => {
         priority="priority"
         status="status"
       />
+      <TicketCardClient
+        title="title"
+        mainIssue="main issue"
+        subIssue="sub issue"
+        priority="priority"
+        status="status"
+      />
+      <TicketCardClient
+        title="title"
+        mainIssue="main issue"
+        subIssue="sub issue"
+        priority="priority"
+        status="status"
+      />
+      <TicketCardClient
+        title="title"
+        mainIssue="main issue"
+        subIssue="sub issue"
+        priority="priority"
+        status="status"
+      />
+      <TicketCardClient
+        title="title"
+        mainIssue="main issue"
+        subIssue="sub issue"
+        priority="priority"
+        status="status"
+      />
+      <TicketCardClient
+        title="title"
+        mainIssue="main issue"
+        subIssue="sub issue"
+        priority="priority"
+        status="status"
+      />
     </section>
   );
 };
