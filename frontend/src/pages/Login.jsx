@@ -13,8 +13,6 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const defaultTheme = createTheme();
 const backend_url = 'http://localhost:3000/api/v1';
 

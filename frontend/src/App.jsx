@@ -7,13 +7,16 @@ import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
 import Chat from "./pages/ChatApp"
+import Knowledgebase from "./pages/Knowledgebase";
 import './index.css'; // Import your CSS file
+import ClientHome from "./pages/ClientHome";
 
+import AgentDashboard from "./pages/AgentDashboard";
 
 function App() {
   return (
     <>
-      <div className="navbar bg-transparent">
+      <div className="navbar bg-transparent" style={{ position: 'fixed', width: '100%', height: '7%', top: 0, left: 0 }}>
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -54,15 +57,19 @@ function App() {
         </div>
       </div>
 
-
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/mfa/:email" element={<MFA />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/chat" element={<Chat />} />
+      <div style={{ position: 'fixed', width: '100%', height: '93%', top: '7%', left: 0 }}>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/knowledgebase" element={<Knowledgebase />} />
+          <Route path="/mfa/:email" element={<MFA />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="agent" element={<AgentDashboard />} />
+          <Route path="/client" element={<ClientHome />} />
+          <Route path="/chat" element={<ClientHome />} />
       </Routes>
+      </div>
     </>
   );
 }
