@@ -6,6 +6,8 @@ const adminController = require('../controllers/adminController');
 
 //create new user
 router.post('/createUser', authMiddleware(['admin']), adminController.createNewUser);
+// get user
+
 //view all users
 router.get("/viewAllUsers",  authMiddleware(['admin']), adminController.getAllUsers);
 //admin changing the role of users

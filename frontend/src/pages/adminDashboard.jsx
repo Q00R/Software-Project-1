@@ -9,7 +9,6 @@ const AdminDashboard = () => {
     try {
       const response = await axios.get('http://localhost:3000/admin/viewAllUsers', { withCredentials: true });
       const { data } = response;
-      console.log('Users Data:', data);
       setUsers(data || []);
     } catch (error) {
       console.error('Error fetching users:', error);

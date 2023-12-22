@@ -54,7 +54,7 @@ const SupportAgentSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       max: 5,
-      default: 0
+      default: -1
     },
     active_tickets: {
       Software: [{ type: ObjectId, ref: 'Ticket' }],
