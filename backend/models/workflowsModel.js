@@ -2,54 +2,33 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
 const WorkflowsSchema = new mongoose.Schema({
-  Software: [
-    {
-      subIssue: {
-        type: String,
-        enum: [
-          "Operating system",
-          "Application software",
-          "Custom software",
-          "Integration issues",
-        ],
-        required: true,
-      },
-      commonIssues: [], //List of common issues
-      suggestions: [], //List of suggested solutions
+  workflow: {
+    mainIssue: {
+      type: String,
+      enum: ["Software", "Hardware", "Network"],
+      required: true,
     },
-  ],
-  Hardware: [
-    {
-      subIssue: {
-        type: String,
-        enum: [
-          "Desktops",
-          "Laptops",
-          "Printers",
-          "Servers",
-          "Netowrking equipment",
-        ],
-        required: true,
-      },
-      commonIssues: [], //List of common issues
-      suggestions: [], //List of suggested solutions
+    subIssue: {
+      type: String,
+      enum: [
+        "Desktops",
+        "Laptops",
+        "Printers",
+        "Servers",
+        "Networking equipment",
+        "Operating system",
+        "Application software",
+        "Custom software",
+        "Integration issues",
+        "Email issues",
+        "Internet connection problems",
+        "Website errors",
+      ],
+      required: true,
     },
-  ],
-  Netwrok: [
-    {
-      subIssue: {
-        type: String,
-        enum: [
-          "Email issues",
-          "Internet Connection Problems",
-          "Website Errors",
-        ],
-        required: true,
-      },
-      commonIssues: [], //List of common issues
-      suggestions: [], //List of suggested solutions
-    },
-  ],
+    commonIssues: [], //List of common issues
+    suggestions: [], //List of suggested solutions
+  },
 });
 
 module.exports = mongoose.model("Workflows", WorkflowsSchema);
