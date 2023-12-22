@@ -1,5 +1,5 @@
 // import '../public/styles/bootstrap.min.css'
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./index.css";
 import Homepage from "./pages/HomePage";
 import Login from "./pages/Login";
@@ -8,10 +8,21 @@ import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
 import Knowledgebase from "./pages/Knowledgebase";
 import './index.css'; // Import your CSS file
+import { useState, useEffect } from 'react';
 
 import AgentDashboard from "./pages/AgentDashboard";
 
 function App() {
+  const location = useLocation();
+  const [update, setUpdate] = useState(false);
+
+  console.log(location.pathname); // result: '/secondpage'
+
+  useEffect(() => {
+    console.log(location.pathname); // result: '/secondpage'
+    setUpdate(!update);
+  }, [location]);
+
   return (
     <>
       <div className="navbar bg-transparent" style={{ position: 'fixed', width: '100%', height: '7%', top: 0, left: 0 }}>
@@ -56,14 +67,21 @@ function App() {
       </div>
 
       <div style={{ position: 'fixed', width: '100%', height: '93%', top: '7%', left: 0 }}>
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/knowledgebase" element={<Knowledgebase />} />
-          <Route path="/mfa/:email" element={<MFA />} />
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
+        {
+          location.pathname === '/' ?
+            <Homepage />:
+          location.pathname === '/login' ?
+            <Login />:
+          location.pathname === '/register' ?
+            <Register />:
+          location.pathname === '/knowledgebase' ?
+            <Knowledgebase />:
+          location.pathname === '/mfa/:email' ?
+            <MFA />:
+          location.pathname === '/admin' ?
+            <Admin />:
+          null
+        }
       </div>
     </>
   );

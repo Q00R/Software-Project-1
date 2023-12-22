@@ -35,7 +35,6 @@ app.use(
 const db_name = process.env.DB_NAME;
 const db_url = `${process.env.DB_URL}/${db_name}`;
 
-
 // ! Mongoose Driver Connection
 
 // Routes
@@ -47,6 +46,8 @@ mongoose
   console.log(e);
 });
 
+const clientRouter = require("./routes/clientRouter");
+app.use("/client", clientRouter)
 app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);

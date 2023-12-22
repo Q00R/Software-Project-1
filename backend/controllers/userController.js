@@ -27,11 +27,10 @@ var transporter = nodemailer.createTransport({
 
 const userController = 
 {
-  register: async (req, res) => 
+  register: async (req, res) =>
   {
     const { username ,email, password, role, DOB, name, address } = req.body;
 
-    console.log(req.body)
     try 
     {
       // Check if the user already exists
@@ -47,13 +46,14 @@ const userController =
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // Create a new user with the hashed password
-      const newUser = new userModel({ username, email, hashedPassword, salt, role, DOB, name, address, verifiedEmail: false });
+      const newUser = new userModel({ username, email, hashedPassword, salt, DOB, address, role, name});
+      console.log("presult" + newUser);
       await newUser.save()
       .then(result => 
       {
         //sendOTPVerificationEmail(result, res);
-        console.log("hello");
         // return with successful status code
+        console.log("result" + result);
         res.status(200).json({result});
       })
       .catch(err => 
@@ -147,8 +147,20 @@ const userController =
       });
     }
   },
+  isLoggedIn: async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        if (!token) return res.json(false);
+
+        jwt.verify(token, process.env.SECRET_KEY);
+
+        res.send(true);
+    } catch (error) {
+        res.json(false);
+    }
+  },
   
-  disabdisableMFA: async (req, res) =>
+  disableMFA: async (req, res) =>
   {
     const {userId} = req.body;
     try {
@@ -169,6 +181,8 @@ const userController =
       });
     }
   },
+
+
 
   verifyOTPLogin: async (req, res) => {
     try
@@ -210,9 +224,7 @@ const userController =
 
   logout: async (req, res) => {
     try {
-      const { token } = req.cookies;
-      await Session.deleteOne({ token });
-      res.clearCookie("token");
+      res.clearCookie('token');
       res.status(200).json({ message: "logout successfully" });
     } catch (error) {
       res.status(500).json({ message: "Server error" });
@@ -257,24 +269,30 @@ const userController =
           {
             expiresIn: 3 * 60 * 60,
           }
-          );
-          let newSession = new Session({
-            userId: user._id,
-            token,
-            expiresAt: expiresAt,
-          });
-          await newSession.save();
-          return res
-          .cookie("token", token, {
-            expires: expiresAt,
-            withCredentials: true,
-            httpOnly: false,
-            SameSite:'none',
-            MFAEnabled: user.MFAEnabled,
-          })
-          .status(200)
-          .json({ message: "login successfully", MFAEnabled: user.MFAEnabled });
-        }
+        );
+        let newSession = new Session({
+          userId: user._id,
+          token,
+          expiresAt: expiresAt,
+        });
+        await newSession.save();
+        return res
+        .cookie("token", token, {
+          expires: expiresAt,
+          withCredentials: true,
+          httpOnly: false,
+          SameSite:'none',
+          MFAEnabled: user.MFAEnabled,
+        }).cookie("role", user.role, {
+          expires: expiresAt,
+          withCredentials: true,
+          httpOnly: false,
+          SameSite:'none',
+          MFAEnabled: user.MFAEnabled,
+        })
+        .status(200)
+        .json({ message: "login successfully", MFAEnabled: user.MFAEnabled, role: user.role });
+      }
           
     } 
     catch (error)

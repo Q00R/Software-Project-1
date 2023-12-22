@@ -43,24 +43,35 @@ export default function Knowledgebase() {
           </li>
         ))}
       </ul>
-      <div style={{ width: '85%', height: '100%', marginLeft:"15%", overflowY: 'auto' }}>
-        {faqs.map((faq, index) => (
-          <div className="collapse bg-base-200" style={{ width: '90%', left: '5%', marginBottom: '1%' }} key={index}>
-            <input type="checkbox" />
-            <div className="collapse-title text-xl font-medium">
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1%' }}>
-                <div className="font-bold text-2xl">Title: {faq.title}</div>
-                <div className="font-mono text-1xl">{faq.mainIssue + "(" + faq.subIssue + ")"}</div>
-              </div>
-              <div className="font-mono text-1xl">
-                <div>Question: {faq.question}</div>
-              </div>
+      <div className="border rounded-box" style={{ width: '85%', height: '100%', marginLeft:"15%", }}>
+        <div className="border rounded-box" style={{ width: '100%', height: '8%', display: 'flex', marginBottom: '1%' }}>
+          <div className="font-bold text-5xl" style={{ marginLeft: "5%" }}>FAQs</div>
+          <div style={{ display: 'flex', marginLeft: "10%", width:"30%" }}>
+            <div className="label" style={{ width:"10%" }}>
+              <span className="label-text">Search FAQs</span>
             </div>
-            <div className="collapse-content text-1xl">
-              <p>Answer: {faq.solution}</p>
-            </div>
+            <input  style={{ width:"90%" }} type="text" placeholder="Search Keyword" className="input input-bordered input-info" />
           </div>
-        ))}
+        </div>
+        <div style={{ maxHeight: '90%', overflowY: 'auto' }}>
+          {faqs.map((faq, index) => (
+            <div className="collapse bg-base-200" style={{ width: '90%', left: '5%', marginBottom: '1%' }} key={index}>
+              <input type="checkbox" />
+              <div className="collapse-title text-xl font-medium">
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1%' }}>
+                  <div className="font-bold text-2xl">Title: {faq.title}</div>
+                  <div className="font-mono text-1xl">{faq.mainIssue + "(" + faq.subIssue + ")"}</div>
+                </div>
+                <div className="font-mono text-1xl">
+                  <div>Question: {faq.question}</div>
+                </div>
+              </div>
+              <div className="collapse-content text-1xl">
+                <p>Answer: {faq.solution}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
