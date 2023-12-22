@@ -3,7 +3,7 @@ import ScrollToBottom from "react-scroll-to-bottom";
 import axios from "axios";
 let backend_url = "http://localhost:3000/";
 
-function Chat({ socket, chatId }) {
+function chat({ socket, chatId }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
@@ -19,7 +19,6 @@ function Chat({ socket, chatId }) {
   }
 
   const sendMessage = async () => {
-    !todo()
     if (currentMessage !== "") {
       const messageData = {
         author: localStorage.getItem("userId"),
@@ -91,4 +90,4 @@ function Chat({ socket, chatId }) {
   );
 }
 
-export default Chat;
+export default chat;
