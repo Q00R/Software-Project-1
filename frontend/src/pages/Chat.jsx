@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import axios from "axios";
+let backend_url = "http://localhost:3000/";
 
-function Chat({ socket, username, room }) {
+function Chat({ socket, chatId }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
+  window.onload = async () => {
+    const response = await axios.post(`${backend_url}/chat/${chatId}`);
+    const { status, oldChatList } = response;
+    if (status == 200) {
+      setMessageList(oldChatList);
+    }
+    else {
+      console.log("There has been error in loading the old chat");
+    }
+  }
+
   const sendMessage = async () => {
+    !todo()
     if (currentMessage !== "") {
       const messageData = {
-        room: room,
-        author: username,
+        author: localStorage.getItem("userId"),
         message: currentMessage,
         time:
           new Date(Date.now()).getHours() +
           ":" +
           new Date(Date.now()).getMinutes(),
       };
+      const response = await axios.put(`${backend_url}/chat/${chatId}`,
+        {
+          ...messageData,
+        });
 
       await socket.emit("send_message", messageData);
       setMessageList((list) => [...list, messageData]);
@@ -41,7 +57,7 @@ function Chat({ socket, username, room }) {
             return (
               <div
                 className="message"
-                id={username === messageContent.author ? "you" : "other"}
+                id={localStorage.getItem("userId") === messageContent.author ? "you" : "other"}
               >
                 <div>
                   <div className="message-content">

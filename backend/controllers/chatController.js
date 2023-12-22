@@ -17,10 +17,10 @@ const chatController = {
         }
     },
     addMessage: async (req, res) => {
-        const { chatId, newMessage } = req.body;
+        const { newMessage } = req.body;
         try {
             await chatModel.update(
-                { _id: chatId },
+                { _id: req.params.id },
                 { $push: { messages: newMessage } }
             );
         }
