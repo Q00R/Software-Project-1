@@ -15,6 +15,7 @@ const WorkflowsSchema = new mongoose.Schema({
           ],
           required: true,
         },
+        commonIssues: [], //List of common issues
         suggestions: [], //List of suggested solutions
       },
     ],
@@ -31,6 +32,7 @@ const WorkflowsSchema = new mongoose.Schema({
           ],
           required: true,
         },
+        commonIssues: [], //List of common issues
         suggestions: [], //List of suggested solutions
       },
     ],
@@ -45,6 +47,7 @@ const WorkflowsSchema = new mongoose.Schema({
           ],
           required: true,
         },
+        commonIssues: [], //List of common issues
         suggestions: [], //List of suggested solutions
       },
     ],
