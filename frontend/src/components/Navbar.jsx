@@ -80,7 +80,6 @@ export default function AppNavBar() {
               </div>
               <button className="btn btn-ghost btn-circle" onClick={() => 
                 {
-                  window.location.reload();
                   navigate('/login')}
                 }>Logout</button>
             </div>

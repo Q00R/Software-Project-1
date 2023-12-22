@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const agentController = require("../controllers/agentContoller");
+const authMiddleware = require("../middleware/authorizationMiddleware");
 
 //respond to user ticket
 router.put("/respond/:ticketId", authMiddleware(['agent']), agentController.respondToTicket);
