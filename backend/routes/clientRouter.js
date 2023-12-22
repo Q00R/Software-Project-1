@@ -22,5 +22,7 @@ router.get("/tickets/:status", authMiddleware(['client']), clientController.getT
 
 //get this ticket
 router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.getTicket);
+// rate ticket
+router.post("/tickets/rate/:ticketId", authMiddleware(['client']), clientController.rateTicket);
 
 module.exports = router;
