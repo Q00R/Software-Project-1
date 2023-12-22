@@ -37,6 +37,12 @@ export default function SignInSide() {
     }
   };
 
+  useEffect(() => {
+    // Check login status when the component mounts
+    checkLoginStatus();
+
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

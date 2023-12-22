@@ -222,6 +222,18 @@ const userController =
     }
   },
 
+  getUser: async (req, res) => {
+    try {
+        if (!req.cookies.token) return res.status(401).json("unauthorized access");
+        const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+        const userId = decoded.user.userId;
+        const user = await userModel.findById(userId);
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+},
+
   logout: async (req, res) => {
     try {
       res.clearCookie('token');
@@ -269,30 +281,24 @@ const userController =
           {
             expiresIn: 3 * 60 * 60,
           }
-        );
-        let newSession = new Session({
-          userId: user._id,
-          token,
-          expiresAt: expiresAt,
-        });
-        await newSession.save();
-        return res
-        .cookie("token", token, {
-          expires: expiresAt,
-          withCredentials: true,
-          httpOnly: false,
-          SameSite:'none',
-          MFAEnabled: user.MFAEnabled,
-        }).cookie("role", user.role, {
-          expires: expiresAt,
-          withCredentials: true,
-          httpOnly: false,
-          SameSite:'none',
-          MFAEnabled: user.MFAEnabled,
-        })
-        .status(200)
-        .json({ message: "login successfully", MFAEnabled: user.MFAEnabled, role: user.role });
-      }
+          );
+          let newSession = new Session({
+            userId: user._id,
+            token,
+            expiresAt: expiresAt,
+          });
+          await newSession.save();
+          return res
+          .cookie("token", token, {
+            expires: expiresAt,
+            withCredentials: true,
+            httpOnly: false,
+            SameSite:'none',
+            MFAEnabled: user.MFAEnabled,
+          })
+          .status(200)
+          .json({ message: "login successfully", MFAEnabled: user.MFAEnabled, role: user.role });
+        }
           
     } 
     catch (error)

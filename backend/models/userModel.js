@@ -39,9 +39,8 @@ const userSchema = new mongoose.Schema({
     default: "client", // Default role if not provided
   },
   name: {
-    first_name: String,
-    middle_name: String,
-    last_name: String,
+    type: String,
+    required: true,
   },
   status:{
     type:String,
