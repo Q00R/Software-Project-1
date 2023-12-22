@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
 import './index.css'; // Import your CSS file
+import ClientHome from "./pages/ClientHome";
 
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/mfa/:email" element={<MFA />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/client" element={<ClientHome />} />
       </Routes>
     </>
   );
