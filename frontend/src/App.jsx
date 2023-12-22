@@ -49,7 +49,6 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/viewProfile" element={<ViewProfile />} />
       </Routes>
-      </div>
     </>
   );
 }
