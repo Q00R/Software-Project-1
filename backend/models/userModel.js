@@ -28,10 +28,8 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   address: {
-    street: String,
-    city: String,
-    state: String,
-    zip: String,
+    type: String,
+    required: true,
   },
   role: {
     type: String,

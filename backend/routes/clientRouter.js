@@ -28,5 +28,7 @@ router.post("/tickets/rate/:ticketId", authMiddleware(['client']), clientControl
 
 router.get("/getUser", authMiddleware(['client', 'admin']), clientController.getUser);
 
+// router.put('/updateName', authMiddleware(['client', 'admin']), clientController.updateName);
+
 
 module.exports = router;
