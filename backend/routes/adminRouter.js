@@ -7,6 +7,7 @@ const clientController = require('../controllers/clientController')
 
 //create new user
 router.post('/createUser', authMiddleware(['admin']), userController.register);
+router.put('/changeRole', authMiddleware(['admin']), adminController.adminChangeRole);
 
 // get user
 
