@@ -248,9 +248,24 @@ const clientController = {
         await agent.save();
 
         return res.status(200).json(updatedTicket);
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+    updateName: async (req, res) => {
+        try {
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.id;
+            const name = req.body.name;
+            if(!userId || !name) return res.status(400).json({ message: "User ID and Name are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+            user.name = name;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
     }
-}
 };
 module.exports = clientController;
