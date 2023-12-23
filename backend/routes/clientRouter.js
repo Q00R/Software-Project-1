@@ -21,9 +21,14 @@ router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.ge
 // rate ticket
 router.post("/tickets/rate/:ticketId", authMiddleware(['client']), clientController.rateTicket);
 
-//router.get("/getUser", authMiddleware(['client', 'admin']), clientController.getUser);
+router.get("/getUser", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.getUser);
 
-// router.put('/updateName', authMiddleware(['client', 'admin']), clientController.updateName);
+router.put("/updateName", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.updateName);
+router.put("/updateUsername", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.updateUsername);
+router.put("/updateEmail", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.updateEmail);
+router.put("/updateDOB", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.updateDOB);
+router.put("/updateAddress", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.updateAddress);
+router.put("/changePassword", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.changePassword);
 
 
 module.exports = router;

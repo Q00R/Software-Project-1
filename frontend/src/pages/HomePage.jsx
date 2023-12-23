@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
-let backend_url = "http://localhost:3000/api/v1";
+let backend_url = "http://localhost:3000/client";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -14,15 +14,15 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         // Check if cookies or 'token' cookie is not available, then navigate to login
-        if (!cookies || !cookies.token) {
-          navigate("/login");
+        if (!cookies.token) {
+          navigate('/login');
           return;
         }
 
         const uid = localStorage.getItem("userId");
         console.log(uid);
 
-        const response = await axios.get(`${backend_url}/users/${uid}`, {
+        const response = await axios.get(`${backend_url}/getUser`, {
           withCredentials: true,
         });
         console.log("response", response);
@@ -39,7 +39,7 @@ const HomePage = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
         // Handle errors, e.g., navigate to login page
-        navigate("/login");
+        navigate('/login');
       }
     };
 

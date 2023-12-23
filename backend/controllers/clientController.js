@@ -1,9 +1,9 @@
 const ticketModel = require("../models/ticketModel");
 const workflowModel = require("../models/workflowsModel");
-const supportAgentModel = require("../models/supportagentModel");
+const supportAgentModel = require("../models/supportAgentModel");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
-
+const bcrypt = require("bcrypt");
+const userModel = require("../models/userModel");
 const {
   Queue,
   HighPriority,
@@ -254,18 +254,131 @@ const clientController = {
     },
     updateName: async (req, res) => {
         try {
+            if (!req.cookies.token) return res.status(401).json("unauthorized access");
             const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.id;
-            const name = req.body.name;
-            if(!userId || !name) return res.status(400).json({ message: "User ID and Name are required" });
+            const userId = decoded.user.userId;
+
+            const newName = req.body.newName;
+            if(!userId || !newName) return res.status(400).json({ message: "User ID and Name are required" });
             const user = await userModel.findById(userId);
             if(!user) return res.status(400).json({ message: "User not found" });
-            user.name = name;
+            user.name = newName;
             const updatedUser = await user.save();
             return res.status(200).json(updatedUser);
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }
-    }
+    },
+
+    updateUsername: async (req, res) => {
+        try {
+            if (!req.cookies.token) return res.status(401).json("unauthorized access");
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.userId;
+
+            const newUsername = req.body.newUsername;
+            if(!userId || !newUsername) return res.status(400).json({ message: "User ID and Name are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+            user.username = newUsername
+            ;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
+    updateEmail: async (req, res) => {
+        try {
+            if (!req.cookies.token) return res.status(401).json("unauthorized access");
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.userId;
+
+            const newEmail = req.body.newEmail;
+            if(!userId || !newEmail) return res.status(400).json({ message: "User ID and Email are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+            user.email = newEmail;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
+    updateDOB: async (req, res) => {
+        try {
+            if (!req.cookies.token) return res.status(401).json("unauthorized access");
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.userId;
+            const newDOB = req.body.newDOB;
+            if(!userId || !newDOB) return res.status(400).json({ message: "User ID and DOB are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+            user.DOB = newDOB;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
+    updateAddress: async (req, res) => {
+        try {
+            if (!req.cookies.token) return res.status(401).json("unauthorized access");
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.userId;
+            const newAddress = req.body.newAddress;
+            if(!userId || !newAddress) return res.status(400).json({ message: "User ID and Address are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+            user.address = newAddress;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+    
+    changePassword: async (req, res) => {
+        try {
+            if (!req.cookies.token) return res.status(401).json("unauthorized access");
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.userId;
+            const oldPassword = req.body.oldPassword;
+            const newPassword = req.body.newPassword;
+            if(!userId || !newPassword || !oldPassword) return res.status(400).json({ message: "User ID and Password are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+
+            const passwordMatch = await bcrypt.compare(oldPassword, user.hashedPassword);
+            if (!passwordMatch) 
+            {
+              return res.status(405).json({ message: "incorect password" });
+            }
+            const saltRounds = 10;
+            const salt = await bcrypt.genSalt(saltRounds);
+            const newHashedPassword = await bcrypt.hash(newPassword, salt);
+            user.hashedPassword = newHashedPassword;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
+
+    getUser: async (req, res) => {
+        try {
+            if (!req.cookies.token) return res.status(401).json("unauthorized access");
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.userId;
+            const user = await userModel.findById(userId);
+            return res.status(200).json(user);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
 };
 module.exports = clientController;
