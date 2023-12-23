@@ -14,6 +14,7 @@ const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const adminRouter = require("./routes/adminRouter");
 const chatRouter = require("./routes/chatRouter");
+const clientRouter = require("./routes/clientRouter")
 const managerRouter = require("./routes/manager");
 
 app.use(express.json());
@@ -50,7 +51,9 @@ app.use("/chat", chatRouter);
 
 
 
+app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);
 app.use("/manager", managerRouter);
+
 app.use(function (req, res, next) {
   return res.status(404).send("404");
 });

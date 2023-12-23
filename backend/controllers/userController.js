@@ -150,19 +150,6 @@ const userController =
       });
     }
   },
-  isLoggedIn: async (req, res) => {
-    try {
-        const token = req.cookies.token;
-        if (!token) return res.json(false);
-
-        jwt.verify(token, process.env.SECRET_KEY);
-
-        res.send(true);
-    } catch (error) {
-        res.json(false);
-    }
-  },
-  
   disableMFA: async (req, res) =>
   { 
      // Check if the user has cookies
@@ -260,17 +247,7 @@ const userController =
     }
   },
 
-  getUser: async (req, res) => {
-    try {
-        if (!req.cookies.token) return res.status(401).json("unauthorized access");
-        const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-        const userId = decoded.user.userId;
-        const user = await userModel.findById(userId);
-        return res.status(200).json(user);
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
-    }
-},
+  
 
   logout: async (req, res) => {
     try {
@@ -280,7 +257,6 @@ const userController =
       res.status(500).json({ message: "Server error" });
     }
   },
-
 
   login: async (req, res) =>
   {
