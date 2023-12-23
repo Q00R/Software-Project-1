@@ -1,18 +1,20 @@
 const chatModel = require("../models/chatModel");
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 const chatController = {
     createChat: async (req, res) => {
         try {
             const { ticketId, clientId, agentId } = req.body;
             const newChat = new chatModel({
-                ticketId: ticketId,
-                clientId: clientId,
-                agentId: agentId,
+                ticketId: new ObjectId(ticketId),
+                clientId: new ObjectId(clientId),
+                agentId: new ObjectId(agentId),
                 messages: []
             })
             await newChat.save();
             return res.status(200).json(newChat);
-        } catch {
+        } catch(error) {
             return res.status(500).json({ message: error.message });
         }
     },
@@ -24,7 +26,7 @@ const chatController = {
                 { $push: { messages: newMessage } }
             );
         }
-        catch {
+        catch(error) {
             return res.status(500).json({ message: error.message });
         }
     },
@@ -33,7 +35,7 @@ const chatController = {
             const chat = await chatModel.findById(req.params.id);
             return res.status(200).json(chat);
         }
-        catch {
+        catch(error) {
             return res.status(500).json({ message: error.message });
         }
     }

@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173/");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
@@ -32,33 +32,9 @@ app.use(
   cors({
     origin: process.env.ORIGIN,
     methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true,
+    credentials: true
   })
 );
-
-const io = new Server(server, {
-  cors: ({
-    origin: process.env.ORIGIN,
-    methods: ["GET", "POST", "DELETE", "PUT"],
-  }),
-});
-
-io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`);
-
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(`User with ID: ${socket.id} joined room: ${data}`);
-  });
-
-  socket.on("send_message", (data) => {
-    socket.to(data.room).emit("receive_message", data);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User Disconnected", socket.id);
-  });
-});
 
 // ! Mongoose Driver Connection
 const db_name = process.env.DB_NAME;
@@ -96,5 +72,30 @@ const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
   console.log("Database Backed Up Successfully!")
 });
 
-app.listen(process.env.PORT, () => console.log("server started"));
+const io = new Server(server, {
+  cors: ({
+    origin: "http://localhost:5173",
+    allowedHeaders: "Access-Control-Allow-Origin: *",
+    methods: ["GET", "POST", "DELETE", "PUT"],
+  }),
+});
+
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on("join_room", (data) => {
+    socket.join(data);
+    console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  });
+
+  socket.on("send_message", (data) => {
+    socket.to(data.room).emit("receive_message", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User Disconnected", socket.id);
+  });
+});
+
+server.listen(process.env.PORT, () => console.log("server started"));
 

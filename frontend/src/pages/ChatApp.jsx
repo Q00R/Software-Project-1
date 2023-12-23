@@ -4,7 +4,7 @@ import { useState } from "react";
 import Chat from "./Chat";
 let backend_url = "http://localhost:3000";
 
-const socket = io.connect("http://localhost:5173/");
+const socket = io.connect("http://localhost:3000");
 
 function ChatApp({ ticketId, agentId }) {
   const [showChat, setShowChat] = useState(false);
@@ -13,9 +13,9 @@ function ChatApp({ ticketId, agentId }) {
 
   const joinRoom = async () => {
     const request = {
-      ticketId: ticketId,
-      userId: localStorage.getItem("userId"),
-      agentId: agentId
+      ticketId: 1,
+      userId: 2,//localStorage.getItem("userId"),
+      agentId: 3
     }
     const response = await axios.post(
       `${backend_url}/chat`,
@@ -31,7 +31,7 @@ function ChatApp({ ticketId, agentId }) {
     } else {
       console.log("ChatApp, join_room");
     }
-    
+
   };
 
   return (
