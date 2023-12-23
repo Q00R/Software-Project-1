@@ -1,18 +1,23 @@
 // import '../public/styles/bootstrap.min.css'
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./index.css";
-import Homepage from "./pages/HomePage";
-import Login from "./pages/login";
-import Register from "./pages/Register";
-import MFA from "./pages/MFA";
-import Admin from "./pages/adminDashboard";
-import Knowledgebase from "./pages/Knowledgebase";
+import {
+  HomePage,
+  Login,
+  Register,
+  MFA,
+  Admin,
+  Knowledgebase,
+  AgentDashboard,
+  ClientHome,
+  TrySearchParams,
+  viewProfile,
+} from "./pages";
 import "./index.css"; // Import your CSS file
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "./components/Navbar";
 
-import AgentDashboard from "./pages/AgentDashboard";
 
 function App() {
   const location = useLocation();
@@ -27,25 +32,36 @@ function App() {
 
   return (
     <>
-      <Navbar/>
-      <div style={{ position: 'fixed', width: '100%', height: '93%', top: '7%', left: 0 }}>
-        {
-          location.pathname === '/' ?
-            <Homepage />:
-          location.pathname === '/login' ?
-            <Login />:
-          location.pathname === '/register' ?
-            <Register />:
-          location.pathname === '/knowledgebase' ?
-            <Knowledgebase />:
-          location.pathname === '/mfa/:email' ?
-            <MFA />:
-          location.pathname === '/admin' ?
-            <Admin />:
-          null
-        }
-      </div>
+      <Navbar />
       <div
+        style={{
+          position: "fixed",
+          width: "100%",
+          height: "93%",
+          top: "7%",
+          left: 0,
+          overflow: "scroll",
+        }}
+      >
+        {location.pathname === "/" ? (
+          <HomePage />
+        ) : location.pathname === "/login" ? (
+          <Login />
+        ) : location.pathname === "/register" ? (
+          <Register />
+        ) : location.pathname === "/knowledgebase" ? (
+          <Knowledgebase />
+        ) : location.pathname === "/mfa/:email" ? (
+          <MFA />
+        ) : location.pathname === "/admin" ? (
+          <Admin />
+        )  : location.pathname === "/client" ? (
+          <ClientHome />
+        )  : location.pathname === "/agent" ? (
+          <AgentDashboard />
+        ): null}
+      </div>
+      {/* <div
         style={{
           position: "fixed",
           width: "100%",
@@ -62,10 +78,10 @@ function App() {
           <Route path="/knowledgebase" element={<Knowledgebase />} />
           <Route path="/mfa/:email" element={<MFA />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="agent" element={<AgentDashboard />} />
+          <Route path="/agent" element={<AgentDashboard />} />
           <Route path="/client" element={<ClientHome />} />
         </Routes>
-      </div>
+      </div> */}
     </>
   );
 }
