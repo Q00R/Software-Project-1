@@ -63,7 +63,7 @@ function App() {
           <Route path="/knowledgebase" element={<Knowledgebase />} />
           <Route path="/mfa/:email" element={<MFA />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="agent" element={<AgentDashboard />} />
+          <Route path="/agent" element={<AgentDashboard />} />
         </Routes>
       </div>
     </>
