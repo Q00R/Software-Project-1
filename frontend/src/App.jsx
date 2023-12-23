@@ -7,8 +7,8 @@ import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
 import Knowledgebase from "./pages/Knowledgebase";
 import AgentDashboard from "./pages/AgentDashboard";
-import ClientHome from "./pages/ClientHome";
-import viewProfile from "./pages/viewProfile";
+import HomePage from "./pages/HomePage";
+import ViewProfile from "./pages/ViewProfile";
 import './index.css'; // Import your CSS file
 import { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
@@ -26,13 +26,10 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/mfa/:email" element={<MFA />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/viewProfile" element={<viewProfile />} />
+        <Route path="/viewProfile" element={<ViewProfile />} />
         <Route path="/agent" element={<AgentDashboard />} />
-        <Route path="/client" element={<ClientHome />} />
       </Routes>
       <Footer />
-      <Navbar/>
-    
     </>
   );
 }

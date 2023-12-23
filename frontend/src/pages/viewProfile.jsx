@@ -22,8 +22,6 @@ const ViewProfile = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
-
-
     const getUser = async () => {
         try {
             const response = await axios.get('http://localhost:3000/client/getUser', { withCredentials: true });
