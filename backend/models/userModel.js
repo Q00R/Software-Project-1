@@ -28,10 +28,8 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   address: {
-    street: String,
-    city: String,
-    state: String,
-    zip: String,
+    type: String,
+    required: true,
   },
   role: {
     type: String,
@@ -39,9 +37,8 @@ const userSchema = new mongoose.Schema({
     default: "client", // Default role if not provided
   },
   name: {
-    first_name: String,
-    middle_name: String,
-    last_name: String,
+    type: String,
+    required: true,
   },
   status:{
     type:String,
