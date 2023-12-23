@@ -118,7 +118,10 @@ const userController =
     }
   },
   enableMFA: async (req, res) => {
-    const { userId } = req.body;
+    // Check if the user has cookies
+    if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+    const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+    const userId = decoded.user.userId;
     try {
       const user = await userModel.findById(userId);
       if (!user) {
@@ -161,25 +164,38 @@ const userController =
   },
   
   disableMFA: async (req, res) =>
-  {
-    const {userId} = req.body;
-    try {
-      const user = await userModel.findById(userId);
-      if (!user) {
-        return res.json({
-          status:"FAILED",
-          message: "User not found",
-        });
-      }
-      user.MFAEnabled = false;
-      user.canPass = true;
-    } catch (error) {
-      res.json({
-        status:"FAILED",
-        message: "MFA could not be disabled",
-        error: error.message,
-      });
-    }
+  { 
+     // Check if the user has cookies
+     if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+     const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+     const userId = decoded.user.userId;
+     try {
+       const user = await userModel.findById(userId);
+       if (!user) {
+         return res.json({
+           status: "FAILED",
+           message: "User not found",
+         });
+       }
+   
+       // Update MFAEnabled property
+       user.MFAEnabled = false;
+       user.canPass = true;
+   
+       // Save the changes to the database
+       await user.save();
+   
+       res.json({
+         status: "SUCCESS",
+         message: "MFA disabled successfully",
+       });
+     } catch (error) {
+       res.json({
+         status: "FAILED",
+         message: "MFA could not be disabled",
+         error: error.message,
+       });
+     }
   },
 
 
@@ -187,15 +203,12 @@ const userController =
   verifyOTPLogin: async (req, res) => {
     try
     {
-      console.log("reached");
       const { email, otp } = req.body;
-      console.log("reached 1");
       const user = await userModel.findOne({ email });
       if (!user) {
         return res.status(405).json({ status: "FAILED", message: "User not found" });
       }
       const userId = user._id;
-      console.log("reached 2");
       const otpVerification = await UserOTPVerification.findOne({ userId });
       if (!otpVerification) 
       {
@@ -206,14 +219,39 @@ const userController =
       {
         return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
       }
-      console.log("reached 3");
       if (Date.now() > otpVerification.expiresAt) 
       {
         return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
       }
       // Update canPass property
-      user.canPass = true;
-      res.status(200).json({ status: "SUCCESS", message: "OTP verified successfully" });
+      const currentDateTime = new Date();
+        const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
+        // Generate a JWT token
+        const token = jwt.sign(
+          { user: { userId: user._id, role: user.role } },
+          secretKey,
+          {
+            expiresIn: 3 * 60 * 60,
+          }
+          );
+          user.canPass = true;
+
+          let newSession = new Session({
+            userId: user._id,
+            token,
+            expiresAt: expiresAt,
+          });
+          await newSession.save();
+          return res
+          .cookie("token", token, {
+            expires: expiresAt,
+            withCredentials: true,
+            httpOnly: false,
+            SameSite:'none',
+            MFAEnabled: user.MFAEnabled,
+          })
+          .status(200)
+          .json({ status: "SUCCESS", message: "OTP verified successfully" });
     } 
     catch (error) 
     {
@@ -222,17 +260,7 @@ const userController =
     }
   },
 
-  getUser: async (req, res) => {
-    try {
-        if (!req.cookies.token) return res.status(401).json("unauthorized access");
-        const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-        const userId = decoded.user.userId;
-        const user = await userModel.findById(userId);
-        return res.status(200).json(user);
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
-    }
-},
+  
 
   logout: async (req, res) => {
     try {
@@ -242,7 +270,6 @@ const userController =
       res.status(500).json({ message: "Server error" });
     }
   },
-
 
   login: async (req, res) =>
   {
@@ -264,10 +291,13 @@ const userController =
       // Check if the user has enabled MFA
       if (user.MFAEnabled)
       {
+        console.log("MFA enabled");
         // delete all the previous MFA tokens
         await UserOTPVerification.deleteMany({ userId: user._id });
         // generate a new MFA token
-        sendOTPVerificationEmail(user, res);
+        // sendOTPVerificationEmail(user, res);
+        // return with successful status code
+        return res.status(200).json({ message: "Verify MFA" });
       }
       else
       {

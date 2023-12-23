@@ -11,6 +11,7 @@ const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const adminRouter = require("./routes/adminRouter");
+const clientRouter = require("./routes/clientRouter")
 const managerRouter = require("./routes/manager");
 
 app.use(express.json());
@@ -52,8 +53,11 @@ app.use("/client", clientRouter)
 app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
+// app.use("/client", clientRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
+app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);
 app.use("/manager", managerRouter);
+
 app.use(function (req, res, next) {
   return res.status(404).send("404");
 });
@@ -70,5 +74,5 @@ const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
   console.log("Database Backed Up Successfully!")
 });
 
-app.listen(process.env.PORT, () => console.log("server started"));
+app.listen(process.env.PORT, () => console.log("server started on", process.env.PORT));
 

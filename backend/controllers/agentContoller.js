@@ -1,4 +1,4 @@
-const supportAgentModel = require("../models/supportAgentModel");
+const supportAgentModel = require("../models/supportagentModel");
 const userModel = require("../models/userModel");
 const ticketModel = require("../models/ticketModel");
 const jwt = require("jsonwebtoken");
