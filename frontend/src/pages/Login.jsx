@@ -47,6 +47,7 @@ export default function SignInSide() {
       );
       checkLoginStatus();
       const { status, data } = response;
+      console.log(data)
       if (status === 200) {
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('userRole', data.userRole);
@@ -64,6 +65,7 @@ export default function SignInSide() {
           } else {
             navigate('/agent');
           }
+          console.log(data.role)
           window.dispatchEvent(new CustomEvent('role', { detail: { role: data.role } }));
           return;
         }
