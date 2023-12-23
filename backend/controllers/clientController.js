@@ -112,17 +112,23 @@ setInterval(async () => {
 }, 1000 * 60 * 5);
 
 const clientController = {
-  generateWorkflow: async (req, res) => {
-    try {
-      const { main, sub } = req.params;
-      const workflow = await workflowModel.find({
-        $and: [{ mainIssue: { $eq: main } }, { subIssue: { $eq: sub } }],
-      });
-      return res.status(200).json(workflow);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
-    }
-  },
+    ticketForm: async (req, res) => {
+        try {
+
+        } catch (error) {
+
+        }
+    },
+
+    generateWorkflow: async (req, res) => {
+        try {
+            const { main, sub } = req.params;
+            const workflow = await workflowModel.find({ $and: [{ mainIssue: { $eq: main } }, { subIssue: { $eq: sub } }] });
+            return res.status(200).json(workflow);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    },
   createTicket: async (req, res) => {
     const ticket = new ticketModel({
       userId: req.userId, //DONIA
@@ -182,5 +188,51 @@ const clientController = {
       return res.status(400).json({ message: error.message });
     }
   },
+  rateTicket: async (req, res) => {
+    try {
+        const ticketId = req.params.ticketId;
+        const clientId = req.body.clientId;
+        const rating = req.body.rating;
+
+        console.log("ticketId: " + ticketId)
+
+        if(!ticketId || !clientId) return res.status(400).json({ message: "Ticket ID and Client ID are required" });
+        const ticket = await ticketModel.findOne({ $and: [{ _id: ticketId }, { userId: clientId }] });
+        if(!ticket) return res.status(400).json({ message: "Ticket not found" });
+        if(ticket.rating != -1) return res.status(400).json({ message: "Ticket already rated" });
+
+        ticket.rating = rating;
+        const updatedTicket = await ticket.save();
+        const agent = await supportAgentModel.findById(ticket.assignedAgent);
+
+        // get all resolved tickets that have a rating which is not -1
+        const resolvedTickets = await ticketModel.find({ $and: [{ assignedAgent: agent._id }, { rating: { $ne: -1 } }] });
+        let totalRating = 0;
+        resolvedTickets.forEach(ticket => {
+            totalRating += ticket.rating;
+        });
+        agent.rating = totalRating / resolvedTickets.length;
+        await agent.save();
+
+        return res.status(200).json(updatedTicket);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+    updateName: async (req, res) => {
+        try {
+            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+            const userId = decoded.user.id;
+            const name = req.body.name;
+            if(!userId || !name) return res.status(400).json({ message: "User ID and Name are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+            user.name = name;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    }
 };
 module.exports = clientController;

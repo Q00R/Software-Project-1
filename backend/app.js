@@ -15,6 +15,7 @@ const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const server = http.createServer(app);
 const adminRouter = require("./routes/adminRouter");
 const chatRouter = require("./routes/chatRouter");
+const managerRouter = require("./routes/manager");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -51,11 +52,13 @@ mongoose
 app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
+// app.use("/client", clientRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
 app.use("/chat", chatRouter);
 
 
 
+app.use("/manager", managerRouter);
 app.use(function (req, res, next) {
   return res.status(404).send("404");
 });

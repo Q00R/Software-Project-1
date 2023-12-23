@@ -83,11 +83,10 @@ const agentController = {
     }
   },
   //respond to user ticket
-  //respond to user ticket
   respondToTicket: async (req, res) => {
     try {
       const id = req.params.ticketId;
-      const agentId = req.body.agentId; //for now we will use the agentId from the body
+      const agentId = req.userID;
       const response = req.body.response;
       const ticketStatus = req.body.ticketStatus;
 
