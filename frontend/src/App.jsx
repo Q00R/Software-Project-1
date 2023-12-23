@@ -15,7 +15,6 @@ import profileImage from "./assets/userIcon.png";
 import axios from "axios";
 import ClientHome from "./pages/ClientHome";
 import AgentDashboard from "./pages/AgentDashboard";
-
 function App() {
 
   

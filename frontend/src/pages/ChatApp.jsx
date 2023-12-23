@@ -1,3 +1,4 @@
+import "./Chat.css";
 import axios from "axios";
 import io from "socket.io-client";
 import { useState } from "react";
@@ -8,14 +9,13 @@ const socket = io.connect("http://localhost:3000");
 
 function ChatApp({ ticketId, agentId }) {
   const [showChat, setShowChat] = useState(false);
-  const [room, setRoom] = useState(0);
-  const username = localStorage.getItem("username");
+  const [room, setRoom] = useState("");
 
   const joinRoom = async () => {
     const request = {
-      ticketId: 1,
-      userId: 2,//localStorage.getItem("userId"),
-      agentId: 3
+      ticketId: ticketId,
+      userId: localStorage.getItem("userId"),
+      agentId: agentId
     }
     const response = await axios.post(
       `${backend_url}/chat`,
@@ -23,13 +23,13 @@ function ChatApp({ ticketId, agentId }) {
         ...request,
       }
     );
-    const { status, newChat } = response;
-    if (status == 200) {
-      setRoom(newChat.id);
-      socket.emit("join_room", room);
+    const { status, data } = response;
+    if (status === 200) {
+      setRoom(data._id);
+      socket.emit("join_room", data._id);
       setShowChat(true);
     } else {
-      console.log("ChatApp, join_room");
+      console.log("There was an error creating a chat");
     }
 
   };
@@ -41,7 +41,7 @@ function ChatApp({ ticketId, agentId }) {
           <button onClick={joinRoom}>Join A Room</button>
         </div>
       ) : (
-        <Chat socket={socket} username={username} room={room} />
+        <Chat socket={socket} chatId={room} />
       )}
     </div>
   );

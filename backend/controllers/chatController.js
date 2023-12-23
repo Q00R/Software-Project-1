@@ -10,23 +10,25 @@ const chatController = {
                 ticketId: new ObjectId(ticketId),
                 clientId: new ObjectId(clientId),
                 agentId: new ObjectId(agentId),
+                roomNum: Math.floor(Math.random() * Number.MAX_VALUE) + 1,
                 messages: []
             })
             await newChat.save();
             return res.status(200).json(newChat);
-        } catch(error) {
-            return res.status(500).json({ message: error.message });
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
         }
     },
     addMessage: async (req, res) => {
-        const { newMessage } = req.body;
         try {
-            await chatModel.update(
+            const updatedChat = await chatModel.findOneAndUpdate(
                 { _id: req.params.id },
-                { $push: { messages: newMessage } }
+                { $push: { messages: req.body } },
+                { new: true }
             );
+            return res.status(200).json(updatedChat);
         }
-        catch(error) {
+        catch (error) {
             return res.status(500).json({ message: error.message });
         }
     },
@@ -35,7 +37,7 @@ const chatController = {
             const chat = await chatModel.findById(req.params.id);
             return res.status(200).json(chat);
         }
-        catch(error) {
+        catch (error) {
             return res.status(500).json({ message: error.message });
         }
     }

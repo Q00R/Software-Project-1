@@ -8,10 +8,12 @@ function Chat({ socket, chatId }) {
   const [messageList, setMessageList] = useState([]);
 
   window.onload = async () => {
+    console.log(chatId)
     const response = await axios.post(`${backend_url}/chat/${chatId}`);
-    const { status, oldChatList } = response;
-    if (status == 200) {
-      setMessageList(oldChatList);
+    const { status, data } = response;
+    console.log(chatId)
+    if (status === 200) {
+      setMessageList(data.messages);
     }
     else {
       console.log("There has been error in loading the old chat");
@@ -31,11 +33,16 @@ function Chat({ socket, chatId }) {
       const response = await axios.put(`${backend_url}/chat/${chatId}`, {
         ...messageData,
       });
-      
-      
-      await socket.emit("send_message", messageData);
-      setMessageList((list) => [...list, messageData]);
-      setCurrentMessage("");
+
+      const { status, data } = response;
+      if (status === 200) {
+        await socket.emit("send_message", messageData);
+        setMessageList(data.messages);
+        setCurrentMessage("");
+      }
+      else {
+        console.log("An error has occurred while sending the message")
+      }
     }
   };
 

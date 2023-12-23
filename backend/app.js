@@ -12,26 +12,18 @@ const backupDatabaseController = require("./controllers/dbBackupController")
 const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
-const server = http.createServer(app);
 const adminRouter = require("./routes/adminRouter");
 const chatRouter = require("./routes/chatRouter");
 const managerRouter = require("./routes/manager");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  next();
-});
 
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.ORIGIN,
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true
   })
@@ -75,11 +67,13 @@ const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
   console.log("Database Backed Up Successfully!")
 });
 
+const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: ({
-    origin: "http://localhost:5173",
-    allowedHeaders: "Access-Control-Allow-Origin: *",
+    origin: process.env.ORIGIN,
     methods: ["GET", "POST", "DELETE", "PUT"],
+    credentials: true
   }),
 });
 
