@@ -26,7 +26,7 @@ router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.ge
 // rate ticket
 router.post("/tickets/rate/:ticketId", authMiddleware(['client']), clientController.rateTicket);
 
-router.get("/getUser", authMiddleware(['client', 'admin']), clientController.getUser);
+//router.get("/getUser", authMiddleware(['client', 'admin']), clientController.getUser);
 
 
 module.exports = router;

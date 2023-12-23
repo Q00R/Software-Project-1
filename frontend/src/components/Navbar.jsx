@@ -7,9 +7,6 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import axios from "axios";
 import profileImage from "../assets/userIcon.png";
 
-
-
-
 export default function AppNavBar() {
   const navigate = useNavigate();
   
@@ -43,8 +40,6 @@ export default function AppNavBar() {
 
     checkLoginStatus();
   }, []);
-
-
 
   return (
     <div className="navbar bg-transparent">
