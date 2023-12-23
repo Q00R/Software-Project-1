@@ -1,7 +1,6 @@
 // import '../public/styles/bootstrap.min.css'
 import { useEffect, useState  } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
-import "./index.css";
 import {
   HomePage,
   Login,
@@ -15,14 +14,13 @@ import {
   viewProfile,
 } from "./pages";
 import "./index.css"; // Import your CSS file
-import { useState, useEffect } from "react";
-import axios from "axios";
 import Navbar from "./components/Navbar";
 import profileImage from "./assets/userIcon.png";
 import axios from "axios";
 
 function App() {
 
+  const [update, setUpdate] = useState(false);
   
 
   console.log(location.pathname); // result: '/secondpage'

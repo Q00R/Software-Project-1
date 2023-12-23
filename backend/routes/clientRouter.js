@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware=require('../middleware/authorizationMiddleware');
 const clientController = require("../controllers/clientController");
-const userController = require("../controllers/userController");
 
 //get workflow for the issue
 router.get("/ticketrequest/?mainIssue=mi&subIssue=si", authMiddleware(['client']), clientController.generateWorkflow);
@@ -22,7 +21,7 @@ router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.ge
 // rate ticket
 router.post("/tickets/rate/:ticketId", authMiddleware(['client']), clientController.rateTicket);
 
-router.get("/getUser", authMiddleware(['client', 'admin']), clientController.getUser);
+//router.get("/getUser", authMiddleware(['client', 'admin']), clientController.getUser);
 
 // router.put('/updateName', authMiddleware(['client', 'admin']), clientController.updateName);
 

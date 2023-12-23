@@ -1,5 +1,4 @@
 import { Search, ClientTickets, CreateTicket, FAQ } from "../sections";
-import pic from "../assets/download2.jpeg";
 
 const ClientHome = () => {
   return (
@@ -20,7 +19,6 @@ const ClientHome = () => {
           <div className="w-1/4 padding m-2 grow">
             <section className=" border-red-300 border-[2px]">
               <FAQ />
-              <img src={pic} className="sticky" />
             </section>
           </div>
         </main>
