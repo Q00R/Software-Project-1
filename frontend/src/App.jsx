@@ -10,18 +10,15 @@ import Admin from "./pages/adminDashboard";
 import Knowledgebase from "./pages/Knowledgebase";
 import Navbar from "./components/Navbar";
 import ViewProfile from "./pages/viewProfile";
-import profileImage from "./assets/userIcon.png";
-import axios from "axios";
 import ClientHome from "./pages/ClientHome";
 import AgentDashboard from "./pages/AgentDashboard";
-
+import Footer from "./components/Footer";
 function App() {
 
   
 
   return  (
     <>
-      
       <Navbar />
       <Routes>
         <Route path="/" element={<Homepage />} />
@@ -31,6 +28,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/viewProfile" element={<ViewProfile />} />
       </Routes>
+      <Footer />
     </>
   );
 }
