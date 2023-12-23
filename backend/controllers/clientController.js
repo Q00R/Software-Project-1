@@ -1,6 +1,6 @@
 const ticketModel = require("../models/ticketModel");
 const workflowModel = require("../models/workflowsModel");
-const supportAgentModel = require("../models/supportAgentModel");
+const supportAgentModel = require("../models/supportagentModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");

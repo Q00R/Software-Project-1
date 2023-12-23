@@ -30,8 +30,7 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <div
+    <div
         style={{
           position: "fixed",
           width: "100%",
@@ -40,16 +39,20 @@ function App() {
           left: 0,
           overflow: "scroll",
         }}>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/mfa/:email" element={<MFA />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/viewProfile" element={<ViewProfile />} />
+        <Route path="/viewProfile" element={<viewProfile />} />
+        <Route path="/agent" element={<AgentDashboard />} />
+        <Route path="/client" element={<ClientHome />} />
       </Routes>
       <Footer />
       </div>
+    
     </>
   );
 }
