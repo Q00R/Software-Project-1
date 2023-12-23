@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secretKey = process.env.SECRET_KEY;
 const bcrypt = require("bcrypt");
-const { report } = require("../Routes/admin");
+const { report } = require("../routes/adminRouter");
 
 const managerController = {
 
