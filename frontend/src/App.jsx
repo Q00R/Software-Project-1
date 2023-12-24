@@ -28,6 +28,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/viewProfile" element={<ViewProfile />} />
         <Route path="/agent" element={<AgentDashboard />} />
+        <Route path="/knowledgebase" element={<Knowledgebase />} />
       </Routes>
       <Footer />
     </>

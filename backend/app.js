@@ -73,4 +73,3 @@ const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
 });
 
 app.listen(process.env.PORT, () => console.log("server started on", process.env.PORT));
-
