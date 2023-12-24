@@ -44,13 +44,11 @@ mongoose
 // Routes
 app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
+app.use(authenticationMiddleware);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
 // app.use("/client", clientRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
 app.use("/chat", chatRouter);
-
-
-
 app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);
 app.use("/manager", managerRouter);
 

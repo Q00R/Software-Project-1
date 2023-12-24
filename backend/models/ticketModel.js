@@ -79,9 +79,9 @@ const TicketsSchema = new mongoose.Schema({
   rating: {
     //The rating of the agent by the user
     type: Number,
-    min: 0,
+    min: -1,
     max: 5,
-    default: 0,
+    default: -1,
   },
   priority: {
     type: String,
