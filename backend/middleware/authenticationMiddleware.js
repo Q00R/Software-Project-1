@@ -5,6 +5,8 @@ const secretKey = process.env.SECRET_KEY;
 module.exports = function authenticationMiddleware(req, res, next) {
   const cookie = req.headers.cookie;
   
+  console.log(cookie);
+
   // console.log(req.headers);
 
   if (!cookie) {
@@ -24,6 +26,6 @@ module.exports = function authenticationMiddleware(req, res, next) {
     // console.log(decoded.user)
     
     req.user = decoded.user;
+    next();
   });
-  next();
 };

@@ -8,10 +8,6 @@ export default function Knowledgebase() {
   return (
     <>
       <KnowledgebaseSidebar/>
-      <KnowledgebaseFAQs
-        faqsInput = {[
-        ]}
-      />
     </>
   );
 }

@@ -48,16 +48,15 @@ mongoose
   console.log(e);
 });
 
-app.use("/api/v1", authRouter);
-
-app.use(authenticationMiddleware);
-
 app.use("/knowledgebase", knowledgebaseRouter);
+app.use("/api/v1", authRouter);
+app.use(authenticationMiddleware);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
 // app.use("/client", clientRouter);
 app.use("/admin", adminRouter);
 app.use("/client", clientRouter);
 app.use("/manager", managerRouter);
+
 
 app.use(function (req, res, next) {
   return res.status(404).send("404");

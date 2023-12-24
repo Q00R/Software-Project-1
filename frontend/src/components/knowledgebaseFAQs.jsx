@@ -25,7 +25,6 @@ export default function KnowledgebaseFAQs(faqsInput) {
     const filteredFaqs = await axios.get(`${knowledgebaseURL}/search/${keyword}`, { withCredentials: true });
     setFaqs(filteredFaqs.data);
   }
-  (faqs.length == 0 ? console.log("FAQs Found:", faqs) : console.log("No FAQs found", faqs))
   return (
     <>
     <dialog id="my_modal_2" className="modal">
