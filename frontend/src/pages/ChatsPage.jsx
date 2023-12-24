@@ -1,15 +1,47 @@
 import "./Chat.css";
 import axios from "axios";
 import io from "socket.io-client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Chat from "./Chat";
 let backend_url = "http://localhost:3000";
 
 const socket = io.connect("http://localhost:3000");
 
-function ChatApp({ ticketId, agentId }) {
+function ChatsPage({ ticketId, agentId }) {
   const [showChat, setShowChat] = useState(false);
   const [room, setRoom] = useState("");
+  const [user, setUser] = useState({});
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/client/getUser', { withCredentials: true });
+        if (response.status === 200) {
+          setUser(response.data);
+        }
+      } catch (error) {
+        navigate('/login');
+      }
+    };
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    console.log("user: ", user);
+    const getChats = async () => {
+      try {
+        const response = await axios.get(`${backend_url}/chat/getAllChats${user.role}/${user._id}`);
+        const { status, data } = response;
+        if (status === 200) {
+          setChats(data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+    getChats();
+  }, [user]);
 
   const joinRoom = async () => {
     const request = {
@@ -34,6 +66,8 @@ function ChatApp({ ticketId, agentId }) {
 
   };
 
+
+
   return (
     <div className="App">
       {!showChat ? (
@@ -47,4 +81,4 @@ function ChatApp({ ticketId, agentId }) {
   );
 }
 
-export default ChatApp;
+export default ChatsPage;

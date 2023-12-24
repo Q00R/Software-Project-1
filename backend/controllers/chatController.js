@@ -40,6 +40,28 @@ const chatController = {
         catch (error) {
             return res.status(500).json({ message: error.message });
         }
+    },
+    getAllChatsForClient: async (req, res) => {
+        try {
+            const chat = await chatModel.find({
+                clientId: req.params.id
+            }).sort({ _id: -1 });
+            res.status(200).json(chat);
+        }
+        catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    },
+    getAllChatsForAgent: async (req, res) => {
+        try {
+            const chat = await chatModel.find({
+                agentId: req.params.id
+            }).sort({ _id: -1 });
+            res.status(200).json(chat);
+        }
+        catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
     }
 }
 

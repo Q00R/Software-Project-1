@@ -36,7 +36,7 @@ function Chat({ socket, chatId }) {
 
       const { status, data } = response;
       if (status === 200) {
-        await socket.emit("send_message", messageData);
+        await socket.emit("send_message", { ...messageData, room: chatId });
         setMessageList(data.messages);
         setCurrentMessage("");
       }

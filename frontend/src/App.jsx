@@ -1,5 +1,4 @@
 // import '../public/styles/bootstrap.min.css'
-import { useEffect, useState  } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import "./index.css";
 import HomePage from "./pages/HomePage";
@@ -7,7 +6,7 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
-import ChatApp from "./pages/ChatApp"
+import ChatsPage from "./pages/ChatsPage";
 import Knowledgebase from "./pages/Knowledgebase";
 import Navbar from "./components/Navbar";
 import ViewProfile from "./pages/viewProfile";
@@ -28,7 +27,7 @@ function App() {
         <Route path="/viewProfile" element={<viewProfile />} />
         <Route path="/agent" element={<AgentDashboard />} />
         <Route path="/client" element={<ClientHome />} />
-        <Route path="/chat" element={<ChatApp />} />
+        <Route path="/chat" element={<ChatsPage />} />
       </Routes>
       <Footer />
     </>
