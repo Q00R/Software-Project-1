@@ -26,7 +26,7 @@ const AdminDashboard = () => {
   const changeRole = async (userId, newRole) => {
     try {
       const response = await axios({
-        method: "put",
+        method: "PUT",
         url: "http://localhost:3000/admin/changeRole",
         headers: { withCredentials: true },
         data: {
@@ -52,16 +52,16 @@ const AdminDashboard = () => {
           key={user._id}
           className="m-4 w-1/2 transform transition duration-500 ease-in-out hover:scale-105"
         >
-          <div className="card w-full bg-gradient-to-r from-blue-400 via-green-500 to-red-500 text-white shadow-lg rounded-lg p-6">
+          <div className="card w-auto bg-gradient-to-r from-blue-500 via-green-500 to-red-500 text-white shadow-lg rounded-lg p-6">
             <div className="card-body">
               <h2 className="card-title text-lg">User</h2>
               <p className="text-base">User ID: {user._id}</p>
-              <p className="text-base">User Name: {user.username} </p>
+              <p className="text-base text-justify">User Name: {user.username} </p>
               <p className="text-base">Email: {user.email} </p>
               <p className="text-base">DOB: {user.DOB} </p>
               <p className="text-base">Role: {user.role}</p>
               <p className="text-base">Status: {user.status} </p>
-              <div className="card-actions justify-end">
+              <div className="card-actions ">
                 <div className="dropdown">
                   <button
                     tabIndex={0}

@@ -114,12 +114,15 @@ const agentController = {
   //respond to user ticket
   respondToTicket: async (req, res) => {
     try {
+      console.log("Controller: " + req.user);
       const id = req.params.ticketId;
-      const agentId = req.userID;
+      const agentUserId = req.user.userId;
       const response = req.body.response;
       const ticketStatus = req.body.ticketStatus;
+      const agent = await supportAgentModel.findOne({ user: agentUserId});
+      console.log("agent "+agent);
 
-
+      console.log("Ticket" + id);
       if (!id || !response) {
         return res.status(400).json({ error: "Missing required fields!" });
       }
@@ -136,32 +139,44 @@ const agentController = {
       }
 
       console.log(ticket.assignedAgent);
-      console.log(agentId);
 
-      if (ticket.assignedAgent != agentId) {
+      if (!agent) {
+        return res.status(400).json({ error: "Agent not found!" });
+      }
+
+      const agentTickets = agent.active_tickets["Software"] + agent.active_tickets["Hardware"] + agent.active_tickets["Network"];
+      console.log(agentTickets.includes(id));
+
+      if (agentTickets.includes(id)) {
+        response
+      } else {
         return res.status(400).json({ error: "Wrong Agent!" });
       }
 
       // Add the agent message to the ticket
-      ticket.Messages.AgentMessages.push({
-        message: response,
-      });
+      ticket.response = response;
       await ticket.save();
 
       if (ticketStatus === "Closed") {
 
-
-        const agent = await supportAgentModel.findById(agentId);
         if (agent) {
 
-          // Find the index of the ticket in the active_tickets array
-          const index = agent.active_tickets[agent.main_role].indexOf(id);
+          // // Find the index of the ticket in the active_tickets array
+          // const index = Object.values(agent.active_tickets).flat().indexOf(id);
 
-          // If the ticket is found, remove it from the array
-          if (index !== -1) {
-            agent.active_tickets[agent.main_role].splice(index, 1);
-          }
+          // // If the ticket is found, remove it from the array
+          // if (index !== -1) {
+          //   const activeTickets = Object.keys(agent.active_tickets);
+          //   const role = activeTickets.find(role => agent.active_tickets[role].includes(id));
+          //   agent.active_tickets[role].splice(index, 1);
+          // }
 
+          //print the active tickets
+
+          // remove the ticket from the active tickets array
+          const activeTickets = Object.keys(agent.active_tickets);
+          const role = activeTickets.find(role => agent.active_tickets[role].includes(id));
+          agent.active_tickets[role].pull(id);
           agent.resolved_tickets.push(id);
           await agent.save();
         }
@@ -171,11 +186,11 @@ const agentController = {
         await ticket.save();
       }
 
+        else{
       ticket.ticketStatus = "In Progress";
       await ticket.save();
-
+        }
       // Send email to the user from the agent's email
-      const agent = await supportAgentModel.findById(agentId);
       if (agent) {
         const transporter = nodemailer.createTransport({ // as if we are logging in by gmail
           service: "gmail",

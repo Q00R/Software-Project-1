@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
-import Admin from "./pages/adminDashboard";
+import Admin from "./pages/AdminDashboard";
 import Knowledgebase from "./pages/Knowledgebase";
 import Navbar from "./components/Navbar";
 import ViewProfile from "./pages/viewProfile";

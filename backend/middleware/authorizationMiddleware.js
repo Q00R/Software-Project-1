@@ -5,6 +5,7 @@ module.exports = function authorizationMiddleware(roles) {
     if (!req.cookies.token) return res.status(401).json("unauthorized access");
     const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
     const userRole = decoded.user.role;
+    console.log("authorization: userRole: ", userRole);
     if (!roles.includes(userRole))
       return res.status(403).json("unauthorized access");
     // console.log('authormid')

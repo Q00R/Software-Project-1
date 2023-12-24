@@ -304,6 +304,7 @@ const userController =
             token,
             expiresAt: expiresAt,
           });
+          await userModel.findByIdAndUpdate(user._id, { canPass: true });
           await newSession.save();
           return res
           .cookie("token", token, {
@@ -316,7 +317,9 @@ const userController =
           .status(200)
           .json({ message: "login successfully", MFAEnabled: user.MFAEnabled, role: user.role });
         }
-          
+          /* secure: false,
+            path: '/',
+            domain: 'http://localhost:5173' */
     } 
     catch (error)
     {
