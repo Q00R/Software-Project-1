@@ -25,16 +25,7 @@ export default function SignInSide() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   const checkLoginStatus = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/api/v1/isLoggedIn`,
-        { withCredentials: true }
-      );
-      const { status, data } = response;
-      setIsLoggedIn(data);
-    } catch (error) {
-      console.error(error);
-    }
+    window.dispatchEvent(new CustomEvent('role', { detail: { role: '' } }));
   };
 
   useEffect(() => {
@@ -57,19 +48,24 @@ export default function SignInSide() {
       checkLoginStatus();
       const { status, data } = response;
       if (status === 200) {
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('userRole', data.userRole);
+        localStorage.setItem('userName', data.userName);
         if (data.MFAEnabled === true) {
           navigate(`/mfa/${email}`);
         } else {
           // get user from database by email
           if (data.role === 'client') {
-            return navigate('/');
+            navigate('/');
           } else if (data.role === 'admin') {
-            return navigate('/admin');
+            navigate('/admin');
           } else if (data.role === 'manager') {
-            return navigate('/manager');
+            navigate('/manager');
           } else {
-            return navigate('/agent');
+            navigate('/agent');
           }
+          window.dispatchEvent(new CustomEvent('role', { detail: { role: data.role } }));
+          return;
         }
       } else {
         setErrorMessage(data.message || 'Login failed');

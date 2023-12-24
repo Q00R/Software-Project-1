@@ -1,6 +1,6 @@
 const ticketModel = require("../models/ticketModel");
 const workflowModel = require("../models/workflowsModel");
-const supportAgentModel = require("../models/supportAgentModel");
+const supportAgentModel = require("../models/supportagentModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
@@ -21,7 +21,7 @@ function isFree(agent) {
 }
 
 async function assignAgent(ticket, agents, queue, noAgent, issue) {
-  let agent = agents.find({ issue });
+  let agent = agents.find(agent => agent.main_role == issue);
   if (isFree(agent)) {
     agent.active_tickets[ticket.mainIssue].push(ticket._id);
     await agent.save();
@@ -35,20 +35,24 @@ async function assignAgent(ticket, agents, queue, noAgent, issue) {
 }
 
 setInterval(async () => {
-  const agents = await supportAgentModel.find({ status: "Activated" });
+  console.log("Running");
+  console.log(HighPriority.front());
+  const agents = await supportAgentModel.find({ 'user.status': "Activated" });
   const noAgentHigh = [];
   const noAgentMid = [];
   const noAgentLow = [];
 
   while (!HighPriority.isEmpty()) {
+    console.log("assigning high");
     const ticket = HighPriority.dequeue();
-    let agent = agents.find({ main_role: ticket.mainIssue });
+    let agent = agents.find(agent => agent.main_role == ticket.mainIssue);
     if (isFree(agent)) {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
       ticket.ticketStatus = "In Progress";
       ticket.assignAgent = agent._id;
       await ticket.save();
+      console.log("assigning high: done");
     } else {
       noAgentHigh.push(ticket);
       HighPriority.enqueue(ticket);
@@ -57,22 +61,27 @@ setInterval(async () => {
   }
 
   while (!MediumPriority.isEmpty()) {
+    console.log("assigning medium");
     const ticket = MediumPriority.dequeue();
-    let agent = agents.find({ main_role: ticket.mainIssue });
+    let agent = agents.find(agent => agent.main_role == ticket.mainIssue);
     if (isFree(agent)) {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
       ticket.ticketStatus = "In Progress";
       ticket.assignAgent = agent._id;
       await ticket.save();
+      console.log("assigning mid to main: done");
     } else {
+      console.log("assigning mid to other");
       switch (ticket.mainIssue) {
         case "Software": {
           assignAgent(ticket, agents, MediumPriority, noAgentMid, "Hardware");
+          console.log("assigning mid to other: software done");
           break;
         }
         case "Hardware": {
           assignAgent(ticket, agents, MediumPriority, noAgentMid, "Network");
+          console.log("assigning mid to other: software done");
           break;
         }
         case "Network": {
@@ -86,7 +95,7 @@ setInterval(async () => {
 
   while (!LowPriority.isEmpty()) {
     const ticket = LowPriority.dequeue();
-    let agent = agents.find({ main_role: ticket.mainIssue });
+    let agent = agents.find(agent => agent.main_role == ticket.mainIssue);
     if (isFree(agent)) {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
@@ -112,7 +121,7 @@ setInterval(async () => {
     }
     if (LowPriority.front() == noAgentLow[0]) break;
   }
-}, 1000 * 60 * 5);
+}, 1000*60); //* 60 * 5
 
 const clientController = {
     ticketForm: async (req, res) => {
@@ -133,12 +142,15 @@ const clientController = {
         }
     },
   createTicket: async (req, res) => {
+    const decode = jwt.verify(
+      req.headers.cookie.split("token=")[1],
+      process.env.SECRET_KEY
+    );
+    const { userId } = decode.user;
     const ticket = new ticketModel({
-      userId: req.userId, //DONIA
-      creationDate,
+      userId: userId,
       title: req.body.title,
       description: req.body.description,
-      ticketStatus,
       mainIssue: req.body.mainIssue,
       subIssue: req.body.subIssue,
       priority: req.body.priority,
@@ -147,12 +159,15 @@ const clientController = {
     switch (req.body.priority) {
       case "High":
         HighPriority.enqueue(ticket);
+        console.log("ticket added to high")
         break;
       case "Medium":
         MediumPriority.enqueue(ticket);
+        console.log("ticket added to mid")
         break;
       case "Low":
         LowPriority.enqueue(ticket);
+        console.log("ticket added to low")
         break;
     }
 
@@ -164,17 +179,27 @@ const clientController = {
     }
   },
   getAllTickets: async (req, res) => {
+    const decode = jwt.verify(
+      req.headers.cookie.split("token=")[1],
+      process.env.SECRET_KEY
+    );
+    const { userId } = decode.user;
     try {
-      const tickets = await ticketModel.find({ userId: req.userId }); //DONIA
+      const tickets = await ticketModel.find({ userId: userId });
       return res.status(200).json(tickets);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
   },
   getTicketByStatus: async (req, res) => {
+    const decode = jwt.verify(
+      req.headers.cookie.split("token=")[1],
+      process.env.SECRET_KEY
+    );
+    const { userId } = decode.user;
     try {
       const tickets = await ticketModel.find({
-        $and: [{ userId: req.userId }, { ticketStatus: req.params.status }],
+        $and: [{ userId: userId }, { ticketStatus: req.params.status }],
       });
       return res.status(200).json(tickets);
     } catch (error) {
@@ -182,10 +207,15 @@ const clientController = {
     }
   },
   getTicket: async (req, res) => {
+    const decode = jwt.verify(
+      req.headers.cookie.split("token=")[1],
+      process.env.SECRET_KEY
+    );
+    const { userId } = decode.user;
     try {
       const ticket = await ticketModel.find({
-        $and: [{ id: req.params.ticketId }, { userId: req.userId }],
-      }); //DONIA
+        $and: [{ id: req.params.ticketId }, { userId: userId }],
+      });
       return res.status(200).json(ticket);
     } catch (error) {
       return res.status(400).json({ message: error.message });

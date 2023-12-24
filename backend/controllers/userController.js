@@ -150,19 +150,6 @@ const userController =
       });
     }
   },
-  isLoggedIn: async (req, res) => {
-    try {
-        const token = req.cookies.token;
-        if (!token) return res.json(false);
-
-        jwt.verify(token, process.env.SECRET_KEY);
-
-        res.send(true);
-    } catch (error) {
-        res.json(false);
-    }
-  },
-  
   disableMFA: async (req, res) =>
   { 
      // Check if the user has cookies
@@ -270,7 +257,6 @@ const userController =
       res.status(500).json({ message: "Server error" });
     }
   },
-
 
   login: async (req, res) =>
   {

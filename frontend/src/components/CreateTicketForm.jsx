@@ -1,7 +1,7 @@
 const CreateTicketForm = () => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-md shadow-md">
+    <div className="inset-0 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-md">
         <h2 className="text-2xl font-bold mb-4">Popup Form</h2>
         <form>
           <div className="mb-4">

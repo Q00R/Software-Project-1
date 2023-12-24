@@ -73,5 +73,5 @@ const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
   console.log("Database Backed Up Successfully!")
 });
 
-app.listen(process.env.PORT, () => console.log("server started"));
+app.listen(process.env.PORT, () => console.log("server started on", process.env.PORT));
 
