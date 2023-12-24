@@ -61,7 +61,7 @@ const ClientTickets = () => {
         })
         .catch((error) => console.error("Could not fetch data", error));
     }
-  }, [ticketCards]);
+  }, []);
 
   return (
     <section>
@@ -97,15 +97,12 @@ const ClientTickets = () => {
       </div>
       <div className="flex flex-wrap justify-center items-center">
         {ticketCards.length > 0 ? (
-          ticketCards.map((element, index) => (
+          ticketCards.map((element) => (
+            console.log(element),
+
             <TicketCardClient
-              key={index}
-              cardKey={element._id}
-              title={element.title}
-              mainIssue={element.mainIssue}
-              subIssue={element.subIssue}
-              priority={element.priority}
-              status={element.ticketStatus}
+              key={element._id}
+              {...element}
             />
           ))
         ) : (

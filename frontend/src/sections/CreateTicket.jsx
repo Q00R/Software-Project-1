@@ -2,9 +2,25 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const CreateTicket = () => {
+  const clientURL = "http://localhost:3000/client";
+
   const [mainIssue, setMainIssue] = useState("");
   const [subIssue, setSubIssue] = useState("");
   const [workFlow, setWorkFlow] = useState();
+
+  useEffect(() => {
+    if ((mainIssue !== "") && (subIssue !== "")) {
+      console.log("getting workflow front");
+      axios
+        .get(`${clientURL}/ticketrequest/?mainIssue=${mainIssue}&subIssue=${subIssue}`, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          setWorkFlow(()=>response.data);
+        })
+        .catch((error) => console.error("Could not fetch data", error));
+    }
+  }, [mainIssue, subIssue, workFlow]);
 
   const subSoftware = [
     "Operating System",
@@ -64,12 +80,13 @@ const CreateTicket = () => {
               <select
                 className="select select-primary w-full max-w-xs"
                 id="selectMainIssue"
+                key="selectMainIssue"
                 onChange={(event) => {
-                  setMainIssue(event.target.value);
+                  setMainIssue(()=>event.target.value);
                 }}
-                value="Main Issue"
+                //value="Main Issue"
               >
-                <option disabled>Main Issue</option>
+                <option disabled selected>Main Issue</option>
                 <option id="Software">Software</option>
                 <option id="Hardware">Hardware</option>
                 <option id="Network">Network</option>
@@ -78,24 +95,25 @@ const CreateTicket = () => {
             <div className="mb-3">
               <select
                 className="select select-primary w-full max-w-xs"
+                key="selectSubIssue"
                 id="selectSubIssue"
                 onChange={(event) => {
-                  setSubIssue(event.target.value);
+                  setSubIssue(()=>event.target.value);
                 }}
-                value="Sub Issue"
+                //value="Sub Issue"
               >
-                <option disabled>Sub Issue</option>
+                <option disabled selected>Sub Issue</option>
                 {mainIssue === "Software"
                   ? subSoftware.map((subSoftware) => (
                       <option id={subSoftware}>{subSoftware}</option>
                     ))
                   : null}
-                {mainIssue.value === "Hardware"
+                {mainIssue === "Hardware"
                   ? subHardware.map((subHardware) => (
                       <option id={subHardware}>{subHardware}</option>
                     ))
                   : null}
-                {mainIssue.value === "Network"
+                {mainIssue === "Network"
                   ? subNetwork.map((subNetwork) => (
                       <option id={subNetwork}>{subNetwork}</option>
                     ))
@@ -129,9 +147,7 @@ const CreateTicket = () => {
                 value="Priority"
                 onChange={(event) => {}}
               >
-                <option disabled>
-                  Priority
-                </option>
+                <option disabled>Priority</option>
                 <option id="High">High</option>
                 <option id="Medium">Medium</option>
                 <option id="Low">Low</option>
@@ -140,7 +156,8 @@ const CreateTicket = () => {
 
             <button
               type="submit"
-              className="bg-blue-400 text-white px-4 py-2 rounded-md" onClick={handleFormSubmission}
+              className="bg-blue-400 text-white px-4 py-2 rounded-md"
+              onClick={handleFormSubmission}
             >
               Submit
             </button>

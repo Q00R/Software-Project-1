@@ -38,8 +38,10 @@ const adminController = {
             error: err.message,
           });
         });
+      const savedUser = await userModel.find({newUser});
+      console.log(savedUser.email);
       const newAgent = new agentModel({
-        user: newUser,
+        user: savedUser._id,
         main_role: mainRole
       });
       await newAgent.save().then(result => {
