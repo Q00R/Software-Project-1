@@ -14,33 +14,20 @@ function ChatsPage({ ticketId, agentId }) {
   const [chats, setChats] = useState([]);
 
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/client/getUser', { withCredentials: true });
-        if (response.status === 200) {
-          setUser(response.data);
-        }
-      } catch (error) {
-        navigate('/login');
-      }
-    };
-    getUser();
+    axios.get('http://localhost:3000/client/getUser', { withCredentials: true })
+      .then(response => {
+        setUser(response.data);
+      })
+      .catch(error => console.log(error.message));
   }, []);
 
   useEffect(() => {
     console.log("user: ", user);
-    const getChats = async () => {
-      try {
-        const response = await axios.get(`${backend_url}/chat/getAllChats${user.role}/${user._id}`);
-        const { status, data } = response;
-        if (status === 200) {
-          setChats(data);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-    getChats();
+    axios.get(`${backend_url}/chat/getAllChats${user.role}/${user._id}`)
+      .then(response => {
+        setChats(response.data);
+      })
+      .catch(error => console.log(error.message));
   }, [user]);
 
   const joinRoom = async () => {
