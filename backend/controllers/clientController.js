@@ -127,9 +127,12 @@ setInterval(async () => {
 const clientController = {
   generateWorkflow: async (req, res) => {
     try {
-      const { main, sub } = req.params;
+      const { mainIssue, subIssue } = req.query;
       const workflow = await workflowModel.find({
-        $and: [{ mainIssue: { $eq: main } }, { subIssue: { $eq: sub } }],
+        $and: [
+          { mainIssue: { $eq: mainIssue } },
+          { subIssue: { $eq: subIssue } },
+        ],
       });
       return res.status(200).json(workflow);
     } catch (error) {
@@ -196,7 +199,7 @@ const clientController = {
     const query = {
       userId: userId,
       ticketStatus: status,
-    }
+    };
     try {
       const tickets = await ticketModel.find(query);
       return res.status(200).json(tickets);

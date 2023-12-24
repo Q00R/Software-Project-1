@@ -1,12 +1,20 @@
-import React from "react";
-
+import { useEffect,useState } from "react";
+import VerticalModal from "../components/verticalModal";
+import Button from "react-bootstrap/Button";
 
 const FAQ = () => {
+  const [modalShow, setModalShow] = useState(false);
+  useEffect(() => {
+    console.log("Show Model: ", modalShow); 
+  },[])
   return (
-    <div>
-      <h1>FAQ</h1>
-      {/* <Knowledgebase /> */}
-    </div>
+    <>
+      <Button variant="primary" onClick={() => setModalShow(true)}>
+        Launch vertically centered modal
+      </Button>
+
+      <VerticalModal show={modalShow} onHide={() => setModalShow(false)} />
+    </>
   );
 };
 

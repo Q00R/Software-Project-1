@@ -3,12 +3,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const TicketCardClient = ({
-  cardKey,
   title,
-  mainIssue,
-  subIssue,
+  description,
   status,
   priority,
+  mainIssue,
+  subIssue,
+  rating,
+  response,
+  creationDate,
+  resolutionDate,
 }) => {
   const clientURL = "http://localhost:3000/client";
 
@@ -18,38 +22,36 @@ const TicketCardClient = ({
 
   const [showModel, setShowModel] = useState(false);
 
-  const ticketId = cardKey;
+  //const ticketId = cardKey;
 
-  const handleViewTicket = async () => {
-    // setfetchData(true);
-    // console.log("ticket id: ", cardKey);
+  const handleViewTicket = () => {
+    console.log(title);
+    // // setfetchData(true);
+    // //console.log("ticket id: ", cardKey);
+    // await axios.get(`${clientURL}/tickets/${ticketId}`, {withCredentials: true}).then((response) => {
+    //   setTicket((ticket)=>{response.data});
+    setShowModel((old) => {
+      true;
+    });
+    //   console.log("ticket: ", ticket);
     document.getElementById("my_modal_3").showModal();
+
+    //}).catch((error) => console.error("Could not fetch data", error));
   };
 
   // useEffect(() => {
-  //   if (fetchData) {
-  //     axios
-  //       .get(`${clientURL}/tickets/${ticketId}`, {
-  //         withCredentials: true,
-  //       })
-  //       .then((response) => {
-  //         setTicket(response.data);
-  //         setShowModel(true);
-  //         //console.log(ticket);
-  //         //console.log(showModel);
-  //       });
-  //   }
-  // }, [ticket]);
 
-  // useEffect(() => {
-  //   console.log("Show Model: ", showModel);
-  //   if (showModel) {
-  //     document.getElementById("my_modal_3").showModal();
-  //   }
   // }, [showModel]);
 
-  const inputDateCreation = new Date(ticket.creationDate);
-  const inputDateResolution = new Date(ticket.resolutionDate);
+  useEffect(() => {
+    console.log("Show Model: ", showModel);
+    // if (showModel) {
+    //   document.getElementById("my_modal_3").showModal();
+    // }
+  }, []);
+
+  const inputDateCreation = new Date(creationDate);
+  const inputDateResolution = new Date(resolutionDate);
 
   const options = {
     weekday: "long",
@@ -90,6 +92,18 @@ const TicketCardClient = ({
             {mainIssue} : {subIssue}
           </p>
         </div>
+        <div>
+          Description:
+          <p>{description}</p>
+        </div>
+        <div>
+          Rating:
+          <p>{rating}</p>
+        </div>
+        <div>
+          Response:
+          <p>{response}</p>
+        </div>
         <button className="btn btn-primary" onClick={handleViewTicket}>
           View Ticket
         </button>
@@ -101,18 +115,19 @@ const TicketCardClient = ({
                 ✕
               </button>
             </form>
-            <ViewTicketForm
+
+            {/* <ViewTicketForm
               title={title}
-              description={ticket.description}
+              description={description}
               status={status}
               priority={priority}
               mainIssue={mainIssue}
               subIssue={subIssue}
-              rating={ticket.rating}
-              response={ticket.response}
+              rating={rating}
+              response={response}
               creationDate={formattedDateCreation}
               resolutionDate={formattedDateResolution}
-            />
+            /> */}
           </div>
         </dialog>
       </div>

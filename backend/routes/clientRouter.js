@@ -4,7 +4,7 @@ const authMiddleware=require('../middleware/authorizationMiddleware');
 const clientController = require("../controllers/clientController");
 
 //get workflow for the issue
-router.get("/ticketrequest/?mainIssue=mi&subIssue=si", authMiddleware(['client']), clientController.generateWorkflow);
+router.get("/ticketrequest/", authMiddleware(['client']), clientController.generateWorkflow);
 
 
 //post (insert) ticket into db
@@ -21,6 +21,7 @@ router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.ge
 
 // rate ticket
 router.post("/tickets/rate/:ticketId", authMiddleware(['client']), clientController.rateTicket);
+
 
 router.get("/getUser", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.getUser);
 

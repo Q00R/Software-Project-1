@@ -14,7 +14,6 @@ const ViewTicketForm = ({
   resolutionDate
 }) => {
   
-
   
   return (
     <div className="inset-0 flex items-center justify-center">
