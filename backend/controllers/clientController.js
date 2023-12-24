@@ -10,6 +10,7 @@ const {
   MediumPriority,
   LowPriority,
 } = require("../Queue");
+const { ObjectId } = require("mongodb");
 
 function isFree(agent) {
   return (
@@ -21,12 +22,12 @@ function isFree(agent) {
 }
 
 async function assignAgent(ticket, agents, queue, noAgent, issue) {
-  let agent = agents.find(agent => agent.main_role == issue);
+  let agent = agents.find((agent) => agent.main_role == issue);
   if (isFree(agent)) {
     agent.active_tickets[ticket.mainIssue].push(ticket._id);
     await agent.save();
     ticket.ticketStatus = "In Progress";
-    ticket.assignAgent = agent._id;
+    ticket.assignedAgent = agent._id;
     await ticket.save();
   } else {
     noAgent.push(ticket);
@@ -37,7 +38,7 @@ async function assignAgent(ticket, agents, queue, noAgent, issue) {
 setInterval(async () => {
   console.log("Running");
   console.log(HighPriority.front());
-  const agents = await supportAgentModel.find({ 'user.status': "Activated" });
+  const agents = await supportAgentModel.find({ "user.status": "Activated" });
   const noAgentHigh = [];
   const noAgentMid = [];
   const noAgentLow = [];
@@ -45,7 +46,7 @@ setInterval(async () => {
   while (!HighPriority.isEmpty()) {
     console.log("assigning high");
     const ticket = HighPriority.dequeue();
-    let agent = agents.find(agent => agent.main_role == ticket.mainIssue);
+    let agent = agents.find((agent) => agent.main_role == ticket.mainIssue);
     if (isFree(agent)) {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
@@ -63,7 +64,7 @@ setInterval(async () => {
   while (!MediumPriority.isEmpty()) {
     console.log("assigning medium");
     const ticket = MediumPriority.dequeue();
-    let agent = agents.find(agent => agent.main_role == ticket.mainIssue);
+    let agent = agents.find((agent) => agent.main_role == ticket.mainIssue);
     if (isFree(agent)) {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
@@ -95,7 +96,7 @@ setInterval(async () => {
 
   while (!LowPriority.isEmpty()) {
     const ticket = LowPriority.dequeue();
-    let agent = agents.find(agent => agent.main_role == ticket.mainIssue);
+    let agent = agents.find((agent) => agent.main_role == ticket.mainIssue);
     if (isFree(agent)) {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
@@ -121,26 +122,20 @@ setInterval(async () => {
     }
     if (LowPriority.front() == noAgentLow[0]) break;
   }
-}, 1000*60); //* 60 * 5
+}, 1000 * 60); //* 60 * 5
 
 const clientController = {
-    ticketForm: async (req, res) => {
-        try {
-
-        } catch (error) {
-
-        }
-    },
-
-    generateWorkflow: async (req, res) => {
-        try {
-            const { main, sub } = req.params;
-            const workflow = await workflowModel.find({ $and: [{ mainIssue: { $eq: main } }, { subIssue: { $eq: sub } }] });
-            return res.status(200).json(workflow);
-        } catch (error) {
-            return res.status(500).json({ message: error.message });
-        }
-    },
+  generateWorkflow: async (req, res) => {
+    try {
+      const { main, sub } = req.params;
+      const workflow = await workflowModel.find({
+        $and: [{ mainIssue: { $eq: main } }, { subIssue: { $eq: sub } }],
+      });
+      return res.status(200).json(workflow);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
   createTicket: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],
@@ -159,15 +154,15 @@ const clientController = {
     switch (req.body.priority) {
       case "High":
         HighPriority.enqueue(ticket);
-        console.log("ticket added to high")
+        console.log("ticket added to high");
         break;
       case "Medium":
         MediumPriority.enqueue(ticket);
-        console.log("ticket added to mid")
+        console.log("ticket added to mid");
         break;
       case "Low":
         LowPriority.enqueue(ticket);
-        console.log("ticket added to low")
+        console.log("ticket added to low");
         break;
     }
 
@@ -197,25 +192,29 @@ const clientController = {
       process.env.SECRET_KEY
     );
     const { userId } = decode.user;
+    const { status } = req.params;
+    const query = {
+      userId: userId,
+      ticketStatus: status,
+    }
     try {
-      const tickets = await ticketModel.find({
-        $and: [{ userId: userId }, { ticketStatus: req.params.status }],
-      });
+      const tickets = await ticketModel.find(query);
       return res.status(200).json(tickets);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
   },
   getTicket: async (req, res) => {
-    const decode = jwt.verify(
-      req.headers.cookie.split("token=")[1],
-      process.env.SECRET_KEY
-    );
-    const { userId } = decode.user;
+    const { ticketId } = req.params;
+    console.log("get certain ticket with id: ", ticketId);
+    const ticketIdObject = new ObjectId(ticketId);
+    console.log(ticketIdObject);
     try {
-      const ticket = await ticketModel.find({
-        $and: [{ id: req.params.ticketId }, { userId: userId }],
+      const ticket = await ticketModel.findOne({
+        _id: ticketIdObject,
       });
+      console.log("ticket sending");
+      console.log(ticket);
       return res.status(200).json(ticket);
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -223,162 +222,195 @@ const clientController = {
   },
   rateTicket: async (req, res) => {
     try {
-        const ticketId = req.params.ticketId;
-        const clientId = req.body.clientId;
-        const rating = req.body.rating;
+      const ticketId = req.params.ticketId;
+      const clientId = req.body.clientId;
+      const rating = req.body.rating;
 
-        console.log("ticketId: " + ticketId)
+      console.log("ticketId: " + ticketId);
 
-        if(!ticketId || !clientId) return res.status(400).json({ message: "Ticket ID and Client ID are required" });
-        const ticket = await ticketModel.findOne({ $and: [{ _id: ticketId }, { userId: clientId }] });
-        if(!ticket) return res.status(400).json({ message: "Ticket not found" });
-        if(ticket.rating != -1) return res.status(400).json({ message: "Ticket already rated" });
+      if (!ticketId || !clientId)
+        return res
+          .status(400)
+          .json({ message: "Ticket ID and Client ID are required" });
+      const ticket = await ticketModel.findOne({
+        $and: [{ _id: ticketId }, { userId: clientId }],
+      });
+      if (!ticket) return res.status(400).json({ message: "Ticket not found" });
+      if (ticket.rating != -1)
+        return res.status(400).json({ message: "Ticket already rated" });
 
-        ticket.rating = rating;
-        const updatedTicket = await ticket.save();
-        const agent = await supportAgentModel.findById(ticket.assignedAgent);
+      ticket.rating = rating;
+      const updatedTicket = await ticket.save();
+      const agent = await supportAgentModel.findById(ticket.assignedAgent);
 
-        // get all resolved tickets that have a rating which is not -1
-        const resolvedTickets = await ticketModel.find({ $and: [{ assignedAgent: agent._id }, { rating: { $ne: -1 } }] });
-        let totalRating = 0;
-        resolvedTickets.forEach(ticket => {
-            totalRating += ticket.rating;
-        });
-        agent.rating = totalRating / resolvedTickets.length;
-        await agent.save();
+      // get all resolved tickets that have a rating which is not -1
+      const resolvedTickets = await ticketModel.find({
+        $and: [{ assignedAgent: agent._id }, { rating: { $ne: -1 } }],
+      });
+      let totalRating = 0;
+      resolvedTickets.forEach((ticket) => {
+        totalRating += ticket.rating;
+      });
+      agent.rating = totalRating / resolvedTickets.length;
+      await agent.save();
 
-        return res.status(200).json(updatedTicket);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
-    updateName: async (req, res) => {
-        try {
-            if (!req.cookies.token) return res.status(401).json("unauthorized access");
-            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.userId;
+      return res.status(200).json(updatedTicket);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  updateName: async (req, res) => {
+    try {
+      if (!req.cookies.token)
+        return res.status(401).json("unauthorized access");
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
 
-            const newName = req.body.newName;
-            if(!userId || !newName) return res.status(400).json({ message: "User ID and Name are required" });
-            const user = await userModel.findById(userId);
-            if(!user) return res.status(400).json({ message: "User not found" });
-            user.name = newName;
-            const updatedUser = await user.save();
-            return res.status(200).json(updatedUser);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
+      const newName = req.body.newName;
+      if (!userId || !newName)
+        return res
+          .status(400)
+          .json({ message: "User ID and Name are required" });
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(400).json({ message: "User not found" });
+      user.name = newName;
+      const updatedUser = await user.save();
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 
-    updateUsername: async (req, res) => {
-        try {
-            if (!req.cookies.token) return res.status(401).json("unauthorized access");
-            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.userId;
+  updateUsername: async (req, res) => {
+    try {
+      if (!req.cookies.token)
+        return res.status(401).json("unauthorized access");
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
 
-            const newUsername = req.body.newUsername;
-            if(!userId || !newUsername) return res.status(400).json({ message: "User ID and Name are required" });
-            const user = await userModel.findById(userId);
-            if(!user) return res.status(400).json({ message: "User not found" });
-            user.username = newUsername
-            ;
-            const updatedUser = await user.save();
-            return res.status(200).json(updatedUser);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
+      const newUsername = req.body.newUsername;
+      if (!userId || !newUsername)
+        return res
+          .status(400)
+          .json({ message: "User ID and Name are required" });
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(400).json({ message: "User not found" });
+      user.username = newUsername;
+      const updatedUser = await user.save();
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 
-    updateEmail: async (req, res) => {
-        try {
-            if (!req.cookies.token) return res.status(401).json("unauthorized access");
-            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.userId;
+  updateEmail: async (req, res) => {
+    try {
+      if (!req.cookies.token)
+        return res.status(401).json("unauthorized access");
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
 
-            const newEmail = req.body.newEmail;
-            if(!userId || !newEmail) return res.status(400).json({ message: "User ID and Email are required" });
-            const user = await userModel.findById(userId);
-            if(!user) return res.status(400).json({ message: "User not found" });
-            user.email = newEmail;
-            const updatedUser = await user.save();
-            return res.status(200).json(updatedUser);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
+      const newEmail = req.body.newEmail;
+      if (!userId || !newEmail)
+        return res
+          .status(400)
+          .json({ message: "User ID and Email are required" });
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(400).json({ message: "User not found" });
+      user.email = newEmail;
+      const updatedUser = await user.save();
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 
-    updateDOB: async (req, res) => {
-        try {
-            if (!req.cookies.token) return res.status(401).json("unauthorized access");
-            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.userId;
-            const newDOB = req.body.newDOB;
-            if(!userId || !newDOB) return res.status(400).json({ message: "User ID and DOB are required" });
-            const user = await userModel.findById(userId);
-            if(!user) return res.status(400).json({ message: "User not found" });
-            user.DOB = newDOB;
-            const updatedUser = await user.save();
-            return res.status(200).json(updatedUser);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
+  updateDOB: async (req, res) => {
+    try {
+      if (!req.cookies.token)
+        return res.status(401).json("unauthorized access");
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
+      const newDOB = req.body.newDOB;
+      if (!userId || !newDOB)
+        return res
+          .status(400)
+          .json({ message: "User ID and DOB are required" });
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(400).json({ message: "User not found" });
+      user.DOB = newDOB;
+      const updatedUser = await user.save();
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 
-    updateAddress: async (req, res) => {
-        try {
-            if (!req.cookies.token) return res.status(401).json("unauthorized access");
-            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.userId;
-            const newAddress = req.body.newAddress;
-            if(!userId || !newAddress) return res.status(400).json({ message: "User ID and Address are required" });
-            const user = await userModel.findById(userId);
-            if(!user) return res.status(400).json({ message: "User not found" });
-            user.address = newAddress;
-            const updatedUser = await user.save();
-            return res.status(200).json(updatedUser);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
-    
-    changePassword: async (req, res) => {
-        try {
-            if (!req.cookies.token) return res.status(401).json("unauthorized access");
-            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.userId;
-            const oldPassword = req.body.oldPassword;
-            const newPassword = req.body.newPassword;
-            if(!userId || !newPassword || !oldPassword) return res.status(400).json({ message: "User ID and Password are required" });
-            const user = await userModel.findById(userId);
-            if(!user) return res.status(400).json({ message: "User not found" });
+  updateAddress: async (req, res) => {
+    try {
+      if (!req.cookies.token)
+        return res.status(401).json("unauthorized access");
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
+      const newAddress = req.body.newAddress;
+      if (!userId || !newAddress)
+        return res
+          .status(400)
+          .json({ message: "User ID and Address are required" });
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(400).json({ message: "User not found" });
+      user.address = newAddress;
+      const updatedUser = await user.save();
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 
-            const passwordMatch = await bcrypt.compare(oldPassword, user.hashedPassword);
-            if (!passwordMatch) 
-            {
-              return res.status(405).json({ message: "incorect password" });
-            }
-            const saltRounds = 10;
-            const salt = await bcrypt.genSalt(saltRounds);
-            const newHashedPassword = await bcrypt.hash(newPassword, salt);
-            user.hashedPassword = newHashedPassword;
-            const updatedUser = await user.save();
-            return res.status(200).json(updatedUser);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
+  changePassword: async (req, res) => {
+    try {
+      if (!req.cookies.token)
+        return res.status(401).json("unauthorized access");
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
+      const oldPassword = req.body.oldPassword;
+      const newPassword = req.body.newPassword;
+      if (!userId || !newPassword || !oldPassword)
+        return res
+          .status(400)
+          .json({ message: "User ID and Password are required" });
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(400).json({ message: "User not found" });
 
+      const passwordMatch = await bcrypt.compare(
+        oldPassword,
+        user.hashedPassword
+      );
+      if (!passwordMatch) {
+        return res.status(405).json({ message: "incorect password" });
+      }
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+      const newHashedPassword = await bcrypt.hash(newPassword, salt);
+      user.hashedPassword = newHashedPassword;
+      const updatedUser = await user.save();
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 
-    getUser: async (req, res) => {
-        try {
-            if (!req.cookies.token) return res.status(401).json("unauthorized access");
-            const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-            const userId = decoded.user.userId;
-            const user = await userModel.findById(userId);
-            return res.status(200).json(user);
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
-        }
-    },
+  getUser: async (req, res) => {
+    try {
+      if (!req.cookies.token)
+        return res.status(401).json("unauthorized access");
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
+      const user = await userModel.findById(userId);
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 };
 module.exports = clientController;
