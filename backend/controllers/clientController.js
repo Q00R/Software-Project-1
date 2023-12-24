@@ -15,8 +15,8 @@ const { ObjectId } = require("mongodb");
 function isFree(agent) {
   return (
     agent.active_tickets.Software.length +
-      agent.active_tickets.Hardware.length +
-      agent.active_tickets.Network.length <
+    agent.active_tickets.Hardware.length +
+    agent.active_tickets.Network.length <
     5
   );
 }
@@ -38,7 +38,8 @@ async function assignAgent(ticket, agents, queue, noAgent, issue) {
 setInterval(async () => {
   console.log("Running");
   console.log(HighPriority.front());
-  const agents = await supportAgentModel.find({ "user.status": "Activated" });
+  const agents = await supportAgentModel.find({});
+  // console.log("agents", agents.length);
   const noAgentHigh = [];
   const noAgentMid = [];
   const noAgentLow = [];
@@ -48,10 +49,11 @@ setInterval(async () => {
     const ticket = HighPriority.dequeue();
     let agent = agents.find((agent) => agent.main_role == ticket.mainIssue);
     if (isFree(agent)) {
+      console.log("agent", agent);
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
       ticket.ticketStatus = "In Progress";
-      ticket.assignAgent = agent._id;
+      ticket.assignedAgent = agent._id;
       await ticket.save();
       console.log("assigning high: done");
     } else {
@@ -69,7 +71,7 @@ setInterval(async () => {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
       ticket.ticketStatus = "In Progress";
-      ticket.assignAgent = agent._id;
+      ticket.assignedAgent = agent._id;
       await ticket.save();
       console.log("assigning mid to main: done");
     } else {
@@ -101,7 +103,7 @@ setInterval(async () => {
       agent.active_tickets[ticket.mainIssue].push(ticket._id);
       await agent.save();
       ticket.ticketStatus = "In Progress";
-      ticket.assignAgent = agent._id;
+      ticket.assignedAgent = agent._id;
       await ticket.save();
     } else {
       switch (ticket.mainIssue) {

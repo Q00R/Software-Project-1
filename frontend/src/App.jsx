@@ -16,10 +16,10 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 function App() {
-  const [update, setUpdate] = useState(false);
 
   return (
     <>
+
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
