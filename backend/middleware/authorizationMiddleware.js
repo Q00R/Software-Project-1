@@ -1,4 +1,4 @@
-module.exports= function authorizationMiddleware(roles) {
+module.exports = function authorizationMiddleware(roles) {
   const jwt = require('jsonwebtoken');
   return (req, res, next) => {
     // check if there is a jwt token in the cookies

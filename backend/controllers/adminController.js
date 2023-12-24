@@ -4,14 +4,13 @@ const bcrypt = require("bcrypt");
 
 const adminController = {
   createNewUser: async (req, res) => {
-    const {username, email, password, DOB, name, address, mainRole} = req.body;
+    const { username, email, password, DOB, name, address, mainRole } = req.body;
     try {
       // Check if the user already exists
       const existingUser = await userModel.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
       }
-      
       // Hash and salt the password
       const saltRounds = 10;
       const salt = await bcrypt.genSalt(saltRounds);
@@ -22,21 +21,19 @@ const adminController = {
         email,
         hashedPassword,
         salt,
-        role : "agent",
+        role: "agent",
         DOB,
         name,
         address,
         verifiedEmail: false,
       });
-      await newUser.save().then(result => 
-        {
-          res.status(200);
-        })
-        .catch(err => 
-        {
+      await newUser.save().then(result => {
+        res.status(200);
+      })
+        .catch(err => {
           console.log(err);
           res.json({
-            status:"FAILED",
+            status: "FAILED",
             message: "User could not be created",
             error: err.message,
           });
@@ -45,19 +42,17 @@ const adminController = {
         user: newUser,
         main_role: mainRole
       });
-      await newAgent.save().then(result => 
-        {
-          res.status(200);
-        })
-        .catch(err => 
-        {
+      await newAgent.save().then(result => {
+        res.status(200);
+      })
+        .catch(err => {
           console.log(err);
           res.json({
-            status:"FAILED",
+            status: "FAILED",
             message: "User could not be created",
             error: err.message,
           });
-        });    
+        });
     } catch (error) {
       res.status(400).json({
         status: "FAILED",
