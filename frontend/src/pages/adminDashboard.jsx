@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   };
   return (
     <div className="flex flex-col items-center">
-      {users.map((user) => (
+      {users.map((user,i) => (
         <div
           key={user._id}
           className="m-4 w-1/2 transform transition duration-500 ease-in-out hover:scale-105"
@@ -62,31 +62,36 @@ const AdminDashboard = () => {
               <p className="text-base">Role: {user.role}</p>
               <p className="text-base">Status: {user.status} </p>
               <div className="card-actions ">
-                <div className="dropdown">
-                  <button
+                <div className="dropdown relative">
+                  <button 
+                    id={"my-dropdown"+i}
                     tabIndex={0}
                     role="button"
                     className="btn bg-white rounded-full"
                   >
-                    Change Role
+                    {user.role}
                   </button>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-black"
+                    className="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-52 text-black absolute"
                   >
                     <li>
-                      <a onClick={() => changeRole(user._id, "admin")}>admin</a>
+                      <a onClick={() => {changeRole(user._id, "admin")
+                    document.getElementById("my-dropdown"+i).innerText="admin"}}>admin</a>
                     </li>
                     <li>
-                      <a onClick={() => changeRole(user._id, "agent")}>agent</a>
+                      <a onClick={() => {changeRole(user._id, "agent")
+                    document.getElementById("my-dropdown"+i).innerText="agent"}}>agent</a>
                     </li>
                     <li>
-                      <a onClick={() => changeRole(user._id, "manager")}>
+                      <a onClick={() => {changeRole(user._id, "manager")
+                    document.getElementById("my-dropdown"+i).innerText="manager"}}>
                         manager
                       </a>
                     </li>
                     <li>
-                      <a onClick={() => changeRole(user._id, "client")}>
+                      <a onClick={() => {changeRole(user._id, "client")
+                    document.getElementById("my-dropdown"+i).innerText="client"}}>
                         client
                       </a>
                     </li>
