@@ -49,9 +49,10 @@ mongoose
   console.log(e);
 });
 
-app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
-app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
+app.use(authenticationMiddleware);
+app.use("/knowledgebase", knowledgebaseRouter);
+app.use("/agent", authorizationMiddleware (['agent']), agentRouter);
 // app.use("/client", clientRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
 app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);

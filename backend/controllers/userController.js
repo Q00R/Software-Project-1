@@ -317,6 +317,7 @@ const userController =
             token,
             expiresAt: expiresAt,
           });
+          await userModel.findByIdAndUpdate(user._id, { canPass: true });
           await newSession.save();
           return res
           .cookie("token", token, {
