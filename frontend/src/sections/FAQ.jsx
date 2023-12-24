@@ -1,5 +1,5 @@
 import React from "react";
-import Knowledgebase from "../pages/Knowledgebase";
+
 
 const FAQ = () => {
   return (

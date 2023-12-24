@@ -14,10 +14,11 @@ router.post("/ticketrequest", authMiddleware(['client']), clientController.creat
 router.get("/tickets", authMiddleware(['client']), clientController.getAllTickets);
 
 //get this user's tickets by status
-router.get("/tickets/:status", authMiddleware(['client']), clientController.getTicketByStatus);
+router.get("/tickets/filter/:status", authMiddleware(['client']), clientController.getTicketByStatus);
 
 //get this ticket
 router.get('/tickets/:ticketId', authMiddleware(['client']), clientController.getTicket);
+
 // rate ticket
 router.post("/tickets/rate/:ticketId", authMiddleware(['client']), clientController.rateTicket);
 
