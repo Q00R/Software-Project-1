@@ -6,24 +6,28 @@ require("dotenv").config();
 const secretKey = process.env.SECRET_KEY;
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const supportagentModel = require("../models/supportagentModel");
 
 const agentController = {
   viewMyActiveTickets: async (req, res) => {
     try {
       const userID = req.params.id;
-      const myTicket = await ticketModel.findById(id);
-
-      if (myTicket.assignedAgent !== userID) {
-        return res.status(400).json({ error: "Error 400: Ticket was not assigned for you!" });
+      // const ticketId = req.params._id;
+      // const myTicket = req.body.ticketId;
+      // const myTicket = await ticketModel.findById(ticketId);
+      const supportAgent = await supportagentModel.findOne({ _id: userID }).populate('active_tickets.Software active_tickets.Hardware active_tickets.Network');
+      if (!supportAgent) {
+        return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
-      if (!myTicket) {
-        return res.status(400).json({ error: "Error 400: Unavailable ticket" });
-      }
-      if (myTicket.status === "Closed") {
-        return res.status(400).json({ error: "Error 400: Ticket is not active!" });
+      if (supportAgent.active_tickets.length === 0) {
+        return res.status(400).json({ error: "Error 400: No active tickets" });
       }
       else {
-        return res.status(200).json({ message: "Active tickets", myTicket });
+        let allActiveTickets = [];
+        // Concatenating all active tickets of the support agent
+        allActiveTickets = allActiveTickets.concat(supportAgent.active_tickets.Software, supportAgent.active_tickets.Hardware, supportAgent.active_tickets.Network);
+        const activeTicketsDetails = await Ticket.find({ _id: { $in: allActiveTickets }, status: 'Open' });
+        return res.status(200).json({ message: "Active tickets", activeTickets: activeTicketsDetails });
       }
     } catch (err) {
       console.error(err);
