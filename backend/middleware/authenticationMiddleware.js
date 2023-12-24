@@ -3,14 +3,14 @@ const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRET_KEY;
 
 module.exports = function authenticationMiddleware(req, res, next) {
-  const cookie = req.cookies;
+  const cookie = req.headers.cookie;
   
   // console.log(req.headers);
 
   if (!cookie) {
     return res.status(401).json({ message: "No Cookie provided" });
   }
-  const token = cookie.token;
+  const token = cookie.split("token=")[1];
   if (!token) {
     return res.status(405).json({ message: "No token provided" });
   }

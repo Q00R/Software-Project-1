@@ -1,6 +1,6 @@
 // import '../public/styles/bootstrap.min.css'
 import "./index.css";
-import Homepage from "./pages/HomePage";
+import HomePage from "./pages/HomePage";
 import Login from "./pages/login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";

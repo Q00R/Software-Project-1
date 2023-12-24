@@ -55,8 +55,8 @@ app.use(authenticationMiddleware);
 app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
 // app.use("/client", clientRouter);
-app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
-app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);
+app.use("/admin", adminRouter);
+app.use("/client", clientRouter);
 app.use("/manager", managerRouter);
 
 app.use(function (req, res, next) {
