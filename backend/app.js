@@ -14,7 +14,7 @@ const agentRouter = require("./routes/agent");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const adminRouter = require("./routes/adminRouter");
 const chatRouter = require("./routes/chatRouter");
-const clientRouter = require("./routes/clientRouter")
+const clientRouter = require("./routes/clientRouter");
 const managerRouter = require("./routes/manager");
 
 app.use(express.json());
@@ -41,11 +41,11 @@ mongoose
   console.log(e);
 });
 
-// Routes
-app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
 app.use(authenticationMiddleware);
-app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
+app.use("/knowledgebase", knowledgebaseRouter);
+app.use(authenticationMiddleware);
+app.use("/agent", authorizationMiddleware (['agent']), agentRouter);
 // app.use("/client", clientRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
 app.use("/chat", chatRouter);
