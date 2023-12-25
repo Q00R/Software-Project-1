@@ -46,23 +46,22 @@ const AdminDashboard = () => {
     }
   };
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-row items-center overflow-auto h-screen">
       {users.map((user,i) => (
         <div
           key={user._id}
-          className="m-4 w-1/2 transform transition duration-500 ease-in-out hover:scale-105"
+          className="m-1 w-full transform transition duration-500 ease-in-out hover:scale-105"
         >
-          <div className="card w-auto bg-gradient-to-r from-blue-500 via-green-500 to-red-500 text-white shadow-lg rounded-lg p-6">
+          <div className="card w-full h-full bg-gradient-to-r  from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 text-white shadow-lg rounded-lg p-1">
             <div className="card-body">
               <h2 className="card-title text-lg">User</h2>
-              <p className="text-base">User ID: {user._id}</p>
-              <p className="text-base text-justify">User Name: {user.username} </p>
+              <p className="text-base text-justify">Username: {user.username} </p>
               <p className="text-base">Email: {user.email} </p>
               <p className="text-base">DOB: {user.DOB} </p>
               <p className="text-base">Role: {user.role}</p>
               <p className="text-base">Status: {user.status} </p>
               <div className="card-actions ">
-                <div className="dropdown relative">
+                <div className="dropdown relative justify-end py-1 z-10">
                   <button 
                     id={"my-dropdown"+i}
                     tabIndex={0}
@@ -73,7 +72,7 @@ const AdminDashboard = () => {
                   </button>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-52 text-black absolute"
+                    className="dropdown-content menu p-0 shadow bg-base-100 rounded-box w-25 text-black"
                   >
                     <li>
                       <a onClick={() => {changeRole(user._id, "admin")
