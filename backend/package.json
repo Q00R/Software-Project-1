@@ -22,7 +22,8 @@
     "nodemailer-dkim": "^1.0.5",
     "openssl": "^2.0.0",
     "qrcode": "^1.5.3",
-    "speakeasy": "^2.0.0"
+    "speakeasy": "^2.0.0",
+    "theme-change": "^2.5.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",

@@ -6,21 +6,18 @@ const CreateTicket = () => {
 
   const [mainIssue, setMainIssue] = useState("");
   const [subIssue, setSubIssue] = useState("");
-  const [workFlow, setWorkFlow] = useState();
-
-  useEffect(() => {
-    if ((mainIssue !== "") && (subIssue !== "")) {
-      console.log("getting workflow front");
-      axios
-        .get(`${clientURL}/ticketrequest/?mainIssue=${mainIssue}&subIssue=${subIssue}`, {
-          withCredentials: true,
-        })
-        .then((response) => {
-          setWorkFlow(()=>response.data);
-        })
-        .catch((error) => console.error("Could not fetch data", error));
-    }
-  }, [mainIssue, subIssue, workFlow]);
+  const [workFlowGen, setWorkFlowGen] = useState(false);
+  const [suggest, setSuggest] = useState([]);
+  const [issues, setIssues] = useState([]);
+  const [sumbitted, setSubmitted] = useState(false);
+  const [prioritySelected, setPrioritySelected] = useState("");
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    priority: "",
+    mainIssue: "",
+    subIssue: "",
+  });
 
   const subSoftware = [
     "Operating System",
@@ -40,7 +37,53 @@ const CreateTicket = () => {
     "Internet Connection Problems",
     "Website Errors",
   ];
+
+  useEffect(() => {
+    const fetchWorkflow = async () => {
+      if (mainIssue && subIssue && subIssue !== "Other") {
+        setWorkFlowGen(true);
+        try {
+          const response = await axios.get(
+            `${clientURL}/ticketrequest/?mainIssue=${mainIssue}&subIssue=${subIssue}`,
+            { withCredentials: true }
+          );
+          setIssues(response.data[0].commonIssues);
+          setSuggest(response.data[0].suggestions);
+        } catch (error) {
+          console.error("Error fetching workflow", error);
+        }
+      }
+    };
+    fetchWorkflow();
+  }, [mainIssue, subIssue]);
+
+  useEffect(() => {
+    const submitForm = async () => {
+      if (sumbitted) {
+        try {
+          const response = await axios.post(
+            `${clientURL}/ticketrequest`,
+            formData,
+            { withCredentials: true }
+          );
+          console.log(response);
+        } catch (error) {
+          console.error("Error submitting form", error);
+        }
+      }
+    };
+    submitForm();
+  }, [sumbitted])
+  
   const handleFormSubmission = () => {
+    setSubmitted(true);
+    setFormData({
+      title: document.getElementById("title").value,
+      description: document.getElementById("description").value,
+      priority: prioritySelected,
+      mainIssue: mainIssue,
+      subIssue: subIssue,
+    })
     console.log("Form Submitted");
   };
 
@@ -55,12 +98,11 @@ const CreateTicket = () => {
         </h3>
         <h2 className="text-2xl mx-2">Open up a ticket!</h2>
       </div>
-      <div className="w-[60%] flex items-center   p-2.5 border border-slate-gray rounded-full">
+      <div className="w-[60%] flex items-center  p-2.5 border border-slate-gray rounded-full">
         <button
           className="w-full btn btn-outline rounded-full text-2xl"
           onClick={() => document.getElementById("createForm").showModal()}
         >
-          {/* onClick={(event) => handleFormSubmission(event)} onClick={setFormVisibility(!isFormVisible)} */}
           Open Ticket!
         </button>
       </div>
@@ -82,11 +124,13 @@ const CreateTicket = () => {
                 id="selectMainIssue"
                 key="selectMainIssue"
                 onChange={(event) => {
-                  setMainIssue(()=>event.target.value);
+                  setMainIssue(() => event.target.value);
                 }}
-                //value="Main Issue"
+                value={mainIssue}
               >
-                <option disabled selected>Main Issue</option>
+                <option disabled selected>
+                  Main Issue
+                </option>
                 <option id="Software">Software</option>
                 <option id="Hardware">Hardware</option>
                 <option id="Network">Network</option>
@@ -94,15 +138,16 @@ const CreateTicket = () => {
             </div>
             <div className="mb-3">
               <select
-                className="select select-primary w-full max-w-xs"
                 key="selectSubIssue"
-                id="selectSubIssue"
+                className="select select-primary w-full max-w-xs"
+                value={subIssue}
                 onChange={(event) => {
-                  setSubIssue(()=>event.target.value);
+                  setSubIssue(() => event.target.value);
                 }}
-                //value="Sub Issue"
               >
-                <option disabled selected>Sub Issue</option>
+                <option disabled selected>
+                  Sub Issue
+                </option>
                 {mainIssue === "Software"
                   ? subSoftware.map((subSoftware) => (
                       <option id={subSoftware}>{subSoftware}</option>
@@ -118,14 +163,38 @@ const CreateTicket = () => {
                       <option id={subNetwork}>{subNetwork}</option>
                     ))
                   : null}
+                  <option id="Other">Other</option>
               </select>
             </div>
-            <div className="mb-3">WorkFlow</div>
+
+            {workFlowGen ? (
+              <div className="mb-3">
+                Common Issues
+                {issues.map((issue) => (
+                  <div>
+                    <p className="text-xl">{issue}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
+            {workFlowGen ? (
+              <div className="mb-3">
+                Possible Solutions:
+                {suggest.map((suggestion) => (
+                  <div>
+                    <p className="text-xl">{suggestion}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
             <div className="mb-3">
               {/* <label htmlFor="title" className="block">
                 Title:
               </label> */}
               <input
+                id="title"
                 type="text"
                 placeholder="Title"
                 className="input input-bordered w-full max-w-xs"
@@ -135,6 +204,7 @@ const CreateTicket = () => {
             <div>
               <div className="mb-3">
                 <textarea
+                  id="description"
                   className="textarea textarea-bordered w-full max-w-xs"
                   placeholder="Description"
                 ></textarea>
@@ -144,8 +214,8 @@ const CreateTicket = () => {
               <select
                 className="select select-primary w-full max-w-xs"
                 id="selectPriority"
-                value="Priority"
-                onChange={(event) => {}}
+                value={prioritySelected}
+                onChange={(event) => {setPrioritySelected(() => event.target.value)}}
               >
                 <option disabled>Priority</option>
                 <option id="High">High</option>

@@ -5,87 +5,73 @@ import axios from "axios";
 const ClientTickets = () => {
   const clientURL = "http://localhost:3000/client";
 
-  const [ticketCards, setTicketCards] = useState([]); //just give type of object
-  const [statusChosen, setStatusChosen] = useState("All");
+  const [openedTickets, setOpenedTickets] = useState([]);
+  const [closedTickets, setClosedTickets] = useState([]);
+  const [inProgressTickets, setInProgressTickets] = useState([]);
+  const [mainIssue, setmainIssue] = useState("All");
 
-  const handleStatusOpen = async () => {
-    setStatusChosen("Opened");
-    await axios
-      .get(`${clientURL}/tickets/filter/:${"Opened"}`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        setTicketCards(response.data);
-      })
-      .catch((error) => console.error("Could not fetch data", error));
+  const handleIssueSoftware = async () => {
+    setmainIssue("Software");
   };
 
-  const handleStatusClosed = async () => {
-    setStatusChosen("Closed");
-    await axios
-      .get(`${clientURL}/tickets/filter/${"Closed"}`, { withCredentials: true })
-      .then((response) => {
-        setTicketCards(response.data);
-      })
-      .catch((error) => console.error("Could not fetch data", error));
+  const handleIssueNetwork = async () => {
+    setmainIssue("Network");
   };
 
-  const handleStatusInProgress = async () => {
-    setStatusChosen("In Progress");
-    await axios
-      .get(`${clientURL}/tickets/filter/${"In Progress"}`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        setTicketCards(response.data);
-      })
-      .catch((error) => console.error("Could not fetch data", error));
+  const handleIssueHardware = async () => {
+    setmainIssue("Hardware");
   };
   const handleStatusAll = async () => {
-    setStatusChosen("All");
-    await axios
-      .get(`${clientURL}/tickets`, { withCredentials: true })
-      .then((response) => {
-        setTicketCards(response.data);
-      })
-      .catch((error) => console.error("Could not fetch data", error));
-    setStatusAll(true);
+    setmainIssue("All");
   };
 
   useEffect(() => {
-    if (statusChosen === "All") {
+    if (mainIssue === "All") {
       axios
         .get(`${clientURL}/tickets`, { withCredentials: true })
         .then((response) => {
-          setTicketCards(response.data);
+          setOpenedTickets(response.data.opened);
+          setClosedTickets(response.data.closed);
+          setInProgressTickets(response.data.inProgress);
+        })
+        .catch((error) => console.error("Could not fetch data", error));
+    } else {
+      axios
+        .get(`${clientURL}/tickets/filter/${mainIssue}`, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          setOpenedTickets(response.data.opened);
+          setClosedTickets(response.data.closed);
+          setInProgressTickets(response.data.inProgress);
         })
         .catch((error) => console.error("Could not fetch data", error));
     }
-  }, []);
+  }, [mainIssue]);
 
   return (
     <section>
       <div className="flex justify-center items-center m-2">
         <button
-          id="Opened"
+          id="Software"
           className="btn btn-primary mx-2"
-          onClick={handleStatusOpen}
+          onClick={handleIssueSoftware}
         >
-          Opened
+          Software
         </button>
         <button
-          id="In Progress"
+          id="Hardware"
           className="btn btn-primary mx-2"
-          onClick={handleStatusInProgress}
+          onClick={handleIssueHardware}
         >
-          In Progress
+          Hardware
         </button>
         <button
-          id="Closed"
+          id="Network"
           className="btn btn-primary mx-2"
-          onClick={handleStatusClosed}
+          onClick={handleIssueNetwork}
         >
-          Closed
+          Network
         </button>
         <button
           id="All"
@@ -95,21 +81,57 @@ const ClientTickets = () => {
           All
         </button>
       </div>
-      <div className="flex flex-wrap justify-center items-center">
-        {ticketCards.length > 0 ? (
-          ticketCards.map((element) => (
-            console.log(element),
 
-            <TicketCardClient
-              key={element._id}
-              {...element}
-            />
-          ))
-        ) : (
-          <div className="text-2xl font-montserrat">
-            Looks like you haven't opened any tickets yet!
-          </div>
-        )}
+      <div className="my-3">
+        <div className="text-2xl font-montserrat font-semibold">
+          Opened Tickets
+        </div>
+        <div className="grid grid-cols-2 justify-center items-center">
+          {openedTickets.length > 0 ? (
+            openedTickets.map(
+              (element) => (
+                console.log(element),
+                (<TicketCardClient key={element._id} {...element} />)
+              )
+            )
+          ) : (
+            <div className="text-xl font-montserrat">No Tickets Here!</div>
+          )}
+        </div>
+      </div>
+      <div>
+        <div className="text-2xl font-montserrat font-semibold">
+          In Progress Tickets
+        </div>
+        <div className="grid grid-cols-2 justify-center items-center">
+          {inProgressTickets.length > 0 ? (
+            inProgressTickets.map(
+              (element) => (
+                console.log(element),
+                (<TicketCardClient key={element._id} {...element} />)
+              )
+            )
+          ) : (
+            <div className="text-xl font-montserrat">No Tickets Here!</div>
+          )}
+        </div>
+      </div>
+      <div>
+        <div className="text-2xl font-montserrat font-semibold">
+          Closed Tickets
+        </div>
+        <div className="grid grid-cols-2 justify-center items-center">
+          {closedTickets.length > 0 ? (
+            closedTickets.map(
+              (element) => (
+                console.log(element),
+                (<TicketCardClient key={element._id} {...element} />)
+              )
+            )
+          ) : (
+            <div className="text-xl font-montserrat">No Tickets Here!</div>
+          )}
+        </div>
       </div>
     </section>
   );
