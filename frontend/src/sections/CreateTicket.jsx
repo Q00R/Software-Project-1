@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { redirect } from "react-router";
 
 const CreateTicket = () => {
   const clientURL = "http://localhost:3000/client";
-
 
   const [mainIssue, setMainIssue] = useState("");
   const [subIssue, setSubIssue] = useState("");
@@ -57,6 +57,26 @@ const CreateTicket = () => {
     };
     fetchWorkflow();
   }, [mainIssue, subIssue]);
+
+  useEffect(() => {
+    if (subIssue === "Other") {
+      const createConvo = async () => {
+        try {
+          const agentId = await axios.get(
+            `http://local:3000/messenger/${mainIssue}`,
+            { withCredentials: true }
+          ).data;
+          axios.post("http://localhost:3000/conversations",{
+            "receiverId": agentId
+        },{withCredentials: true})
+        } catch (error) {
+          console.error("Error getting agent", error);
+        }
+      };
+      createConvo();
+      redirect("/messenger");
+    }
+  }, [subIssue]);
 
   useEffect(() => {
     const submitForm = async () => {
@@ -208,7 +228,7 @@ const CreateTicket = () => {
               />
             </div>
 
-            <div >
+            <div>
               <div className="mb-3">
                 <textarea
                   id="description"
