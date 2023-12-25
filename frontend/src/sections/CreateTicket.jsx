@@ -73,8 +73,8 @@ const CreateTicket = () => {
       }
     };
     submitForm();
-  }, [sumbitted])
-  
+  }, [sumbitted]);
+
   const handleFormSubmission = () => {
     setSubmitted(true);
     setFormData({
@@ -83,7 +83,7 @@ const CreateTicket = () => {
       priority: prioritySelected,
       mainIssue: mainIssue,
       subIssue: subIssue,
-    })
+    });
     console.log("Form Submitted");
   };
 
@@ -128,7 +128,7 @@ const CreateTicket = () => {
                 }}
                 value={mainIssue}
               >
-                <option disabled selected>
+                <option selected>
                   Main Issue
                 </option>
                 <option id="Software">Software</option>
@@ -145,7 +145,7 @@ const CreateTicket = () => {
                   setSubIssue(() => event.target.value);
                 }}
               >
-                <option disabled selected>
+                <option selected>
                   Sub Issue
                 </option>
                 {mainIssue === "Software"
@@ -163,31 +163,33 @@ const CreateTicket = () => {
                       <option id={subNetwork}>{subNetwork}</option>
                     ))
                   : null}
-                  <option id="Other">Other</option>
+                <option id="Other">Other</option>
               </select>
             </div>
 
-            {workFlowGen ? (
-              <div className="mb-3">
-                Common Issues
-                {issues.map((issue) => (
-                  <div>
-                    <p className="text-xl">{issue}</p>
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            <div>
+              {workFlowGen ? (
+                <div className="mb-3">
+                  <h1 className="font-medium text-xl text-gray-700">Common Issues</h1>
+                  {issues.map((issue) => (
+                    <div>
+                      <p className="text-l font-normal text-gray-600">{issue}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
 
-            {workFlowGen ? (
-              <div className="mb-3">
-                Possible Solutions:
-                {suggest.map((suggestion) => (
-                  <div>
-                    <p className="text-xl">{suggestion}</p>
-                  </div>
-                ))}
-              </div>
-            ) : null}
+              {workFlowGen ? (
+                <div className="mb-3">
+                  <h1 className="font-medium text-xl text-gray-700">Possible Solutions</h1>
+                  {suggest.map((suggestion) => (
+                    <div>
+                      <p className="text-l font-normal text-gray-600">{suggestion}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
 
             <div className="mb-3">
               {/* <label htmlFor="title" className="block">
@@ -215,9 +217,11 @@ const CreateTicket = () => {
                 className="select select-primary w-full max-w-xs"
                 id="selectPriority"
                 value={prioritySelected}
-                onChange={(event) => {setPrioritySelected(() => event.target.value)}}
+                onChange={(event) => {
+                  setPrioritySelected(() => event.target.value);
+                }}
               >
-                <option disabled>Priority</option>
+                <option >Priority</option>
                 <option id="High">High</option>
                 <option id="Medium">Medium</option>
                 <option id="Low">Low</option>
