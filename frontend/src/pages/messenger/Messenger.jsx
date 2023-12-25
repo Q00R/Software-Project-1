@@ -2,7 +2,6 @@ import "./messenger.css";
 import Conversation from "../../components/conversations/Conversation";
 import Message from "../../components/message/Message";
 import { useEffect, useRef, useState } from "react";
-import ScrollToBottom from "react-scroll-to-bottom";
 import axios from "axios";
 import { io } from "socket.io-client";
 const backend_url = "http://localhost:3000";
@@ -130,7 +129,6 @@ export default function Messenger() {
                 <div className="chatBoxTop">
                   {messages.map((m) => (
                     <div ref={scrollRef}>
-                      <ScrollToBottom className="message-container"></ScrollToBottom>
                       <Message message={m} own={m.sender === user._id} />
                     </div>
                   ))}
