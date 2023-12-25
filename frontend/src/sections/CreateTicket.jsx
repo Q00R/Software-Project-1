@@ -4,6 +4,7 @@ import axios from "axios";
 const CreateTicket = () => {
   const clientURL = "http://localhost:3000/client";
 
+
   const [mainIssue, setMainIssue] = useState("");
   const [subIssue, setSubIssue] = useState("");
   const [workFlowGen, setWorkFlowGen] = useState(false);
@@ -108,7 +109,7 @@ const CreateTicket = () => {
       </div>
 
       <dialog id="createForm" className="modal">
-        <div className="modal-box">
+        <div className="modal-box overflow-auto scrollbar-thin">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
@@ -117,7 +118,7 @@ const CreateTicket = () => {
           <h2 className="text-2xl font-montserrat font-semibold mb-2 ">
             Create Ticket
           </h2>
-          <form className="w-full mx-2">
+          <form className="w-full">
             <div className="mb-3">
               <select
                 className="select select-primary w-full max-w-xs"
@@ -128,9 +129,7 @@ const CreateTicket = () => {
                 }}
                 value={mainIssue}
               >
-                <option selected>
-                  Main Issue
-                </option>
+                <option selected>Main Issue</option>
                 <option id="Software">Software</option>
                 <option id="Hardware">Hardware</option>
                 <option id="Network">Network</option>
@@ -145,9 +144,7 @@ const CreateTicket = () => {
                   setSubIssue(() => event.target.value);
                 }}
               >
-                <option selected>
-                  Sub Issue
-                </option>
+                <option selected>Sub Issue</option>
                 {mainIssue === "Software"
                   ? subSoftware.map((subSoftware) => (
                       <option id={subSoftware}>{subSoftware}</option>
@@ -170,10 +167,14 @@ const CreateTicket = () => {
             <div>
               {workFlowGen ? (
                 <div className="mb-3">
-                  <h1 className="font-medium text-xl text-gray-700">Common Issues</h1>
+                  <h1 className="font-medium text-xl text-gray-700">
+                    Common Issues
+                  </h1>
                   {issues.map((issue) => (
                     <div>
-                      <p className="text-l font-normal text-gray-600">{issue}</p>
+                      <p className="text-l font-normal text-gray-600">
+                        {issue}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -181,10 +182,14 @@ const CreateTicket = () => {
 
               {workFlowGen ? (
                 <div className="mb-3">
-                  <h1 className="font-medium text-xl text-gray-700">Possible Solutions</h1>
+                  <h1 className="font-medium text-xl text-gray-700">
+                    Possible Solutions
+                  </h1>
                   {suggest.map((suggestion) => (
                     <div>
-                      <p className="text-l font-normal text-gray-600">{suggestion}</p>
+                      <p className="text-l font-normal text-gray-600">
+                        {suggestion}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -203,11 +208,11 @@ const CreateTicket = () => {
               />
             </div>
 
-            <div>
+            <div >
               <div className="mb-3">
                 <textarea
                   id="description"
-                  className="textarea textarea-bordered w-full max-w-xs"
+                  className="textarea textarea-bordered w-full max-w-xs h-40 scrollbar-thin"
                   placeholder="Description"
                 ></textarea>
               </div>
@@ -221,7 +226,7 @@ const CreateTicket = () => {
                   setPrioritySelected(() => event.target.value);
                 }}
               >
-                <option >Priority</option>
+                <option>Priority</option>
                 <option id="High">High</option>
                 <option id="Medium">Medium</option>
                 <option id="Low">Low</option>
