@@ -286,7 +286,7 @@ const clientController = {
             return res.status(400).json({ message: error.message });
         }
     },
-    enableMFA2: async (req, res) => {
+    enableMFA: async (req, res) => {
       // Check if the user has cookies
       if (!req.cookies.token) return res.json({ message: "unauthorized access" });
       try {
@@ -335,39 +335,6 @@ const clientController = {
       }
     },
   
-    enableMFA: async (req, res) => {
-      // Check if the user has cookies
-      if (!req.cookies.token) return res.json({ message: "unauthorized access" });
-      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-      const userId = decoded.user.userId;
-      try {
-        const user = await userModel.findById(userId);
-        if (!user) {
-          return res.json({
-            status: "FAILED",
-            message: "User not found",
-          });
-        }
-  
-        // Update MFAEnabled property
-        user.MFAEnabled = true;
-  
-        
-        // Save the changes to the database
-        await user.save();
-  
-        res.json({
-          status: "SUCCESS",
-          message: "MFA enabled successfully",
-        });
-      } catch (error) {
-        res.json({
-          status: "FAILED",
-          message: "MFA could not be enabled",
-          error: error.message,
-        });
-      }
-    },
     disableMFA: async (req, res) => {
       // Check if the user has cookies
       if (!req.cookies.token) return res.json({ message: "unauthorized access" });

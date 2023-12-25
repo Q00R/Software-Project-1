@@ -27,7 +27,7 @@ const MFA = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${backend_url}/verifyOTP2`,
+        `${backend_url}/verifyOTP`,
         {
           email,
           enteredOTP: otp,

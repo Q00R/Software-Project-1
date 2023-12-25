@@ -209,70 +209,7 @@ const userController =
   },
 
 
-
   verifyOTPLogin: async (req, res) => {
-    try
-    {
-      const { email, otp } = req.body;
-      const user = await userModel.findOne({ email });
-      if (!user) {
-        return res.status(405).json({ status: "FAILED", message: "User not found" });
-      }
-      const userId = user._id;
-      const otpVerification = await UserOTPVerification.findOne({ userId });
-      if (!otpVerification) 
-      {
-        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
-      }
-      const isMatch = await bcrypt.compare(otp, otpVerification.otp);
-      if (!isMatch) 
-      {
-        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
-      }
-      if (Date.now() > otpVerification.expiresAt) 
-      {
-        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
-      }
-      // Update canPass property
-      const currentDateTime = new Date();
-        const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
-        // Generate a JWT token
-        const token = jwt.sign(
-          { user: { userId: user._id, role: user.role } },
-          secretKey,
-          {
-            expiresIn: 3 * 60 * 60,
-          }
-          );
-          user.canPass = true;
-
-          let newSession = new Session({
-            userId: user._id,
-            token,
-            expiresAt: expiresAt,
-          });
-          await newSession.save();
-          return res
-          .cookie("token", token, {
-            expires: expiresAt,
-            withCredentials: true,
-            httpOnly: false,
-            SameSite:'none',
-            MFAEnabled: user.MFAEnabled,
-          })
-          .status(200)
-          .json({ status: "SUCCESS", message: "OTP verified successfully" });
-    } 
-    catch (error) 
-    {
-      console.log(error);
-      res.status(400).json({ status: "FAILED", message: "OTP verification failed" });
-    }
-  },
-
-  
-
-  verifyOTPLogin2: async (req, res) => {
     try {
       const { email, enteredOTP } = req.body;
       const user = await userModel.findOne({ email });
@@ -425,68 +362,6 @@ const userController =
 
 
   login: async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      // Find the user by email
-      const user = await userModel.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "email not found" });
-      }
-      // Check if the password is correct
-      const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
-      if (!passwordMatch) {
-        return res.status(405).json({ message: "incorect password" });
-      }
-
-
-      // Check if the user has enabled MFA
-      if (user.MFAEnabled) {
-        console.log("MFA enabled");
-        // delete all the previous MFA tokens
-        await UserOTPVerification.deleteMany({ userId: user._id });
-        // generate a new MFA token
-        // sendOTPVerificationEmail(user, res);
-        // return with successful status code
-        return res.status(200).json({ message: "Verify MFA" });
-      }
-      else {
-        // establish a session and log user in
-        const currentDateTime = new Date();
-        const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
-        // Generate a JWT token
-        const token = jwt.sign(
-          { user: { userId: user._id, role: user.role } },
-          secretKey,
-          {
-            expiresIn: 3 * 60 * 60,
-          }
-        );
-        let newSession = new Session({
-          userId: user._id,
-          token,
-          expiresAt: expiresAt,
-        });
-        await newSession.save();
-        return res
-          .cookie("token", token, {
-            expires: expiresAt,
-            withCredentials: true,
-            httpOnly: false,
-            SameSite: 'none',
-            MFAEnabled: user.MFAEnabled,
-          })
-          .status(200)
-          .json({ message: "login successfully", MFAEnabled: user.MFAEnabled, role: user.role });
-      }
-
-    }
-    catch (error) {
-      res.status(500).json({ message: "Server error" });
-    }
-  },
-
-
-  login2: async (req, res) => {
     try {
       const { email, password } = req.body;
       // Find the user by email

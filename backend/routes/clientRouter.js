@@ -38,7 +38,6 @@ router.put("/updateAddress", authMiddleware(['client', 'admin', 'agent', 'manage
 router.put("/changePassword", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.changePassword);
 router.get("/getSecret", authMiddleware(['client', 'admin', 'agent', 'manager']), clientController.getSecret);
 router.post("/enableMFA", authMiddleware(['client', 'admin', 'agent', 'manager']),clientController.enableMFA);
-router.post("/enableMFA2", authMiddleware(['client', 'admin', 'agent', 'manager']),clientController.enableMFA2);
 router.post("/disableMFA", authMiddleware(['client', 'admin', 'agent', 'manager']),clientController.disableMFA);
 
 

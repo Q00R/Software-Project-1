@@ -30,7 +30,7 @@ export default function SignInSide() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${backend_url}/login2`,
+        `${backend_url}/login`,
         {
           email,
           password,

@@ -184,7 +184,7 @@ const ViewProfile = () => {
 
     const handleSubmitOTP = async () => {
         try {
-            const response = await axios.post('http://localhost:3000/client/enableMFA2', { enteredOTP: OTP }, { withCredentials: true });
+            const response = await axios.post('http://localhost:3000/client/enableMFA', { enteredOTP: OTP }, { withCredentials: true });
             const { data } = response;
             console.log(data);
             setUser(data || []);
