@@ -10,39 +10,81 @@ const nodemailer = require("nodemailer");
 const { ObjectId } = require("mongodb");
 
 const agentController = {
+  viewAllTickets: async (req, res) => {
+    try {
+      const decode = jwt.verify(
+        req.headers.cookie.split("token=")[1],
+        process.env.SECRET_KEY
+      );
+      const { userId } = decode.user;
+
+      const userIdObject = new ObjectId(userId);
+      const supportAgent = await supportAgentModel.findOne({ user: userIdObject });
+
+      if (!supportAgent) {
+        return res.status(400).json({ error: "Error 400: Support agent not found" });
+      }
+
+      let allTickets = [];
+
+      Object.keys(supportAgent.active_tickets).forEach(ticketType => {
+        allTickets = allTickets.concat(supportAgent.active_tickets[ticketType]);
+      });
+
+      Object.keys(supportAgent.resolved_tickets).forEach(ticketType => {
+        allTickets = allTickets.concat(supportAgent.resolved_tickets[ticketType]);
+      });
+
+      if (allTickets.length === 0) {
+        return res.status(400).json({ error: "Error 400: No tickets available" });
+      }
+      else {
+        const allTicketsDetails = await ticketModel.find({ _id: { $in: allTickets } });
+        return res.status(200).json({ message: "All tickets", allTickets: allTicketsDetails });
+      }
+
+      // return res.status(200).json({ message: "All tickets", allTickets });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Error 500: Something went wrong, please try again!" });
+    }
+  }
+
+  ,
+
   viewMyActiveTickets: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],
       process.env.SECRET_KEY
     );
     const { userId } = decode.user;
+
     try {
-      console.log("User Is: ", userId);
-      // const ticketId = req.params._id;
-      // const myTicket = req.body.ticketId;
-      // const myTicket = await ticketModel.findById(ticketId);
       const userIdObject = new ObjectId(userId);
-      console.log("formated user id ", userIdObject);
       const supportAgent = await supportAgentModel.findOne({ user: userIdObject });
-      console.log("support agent info ", supportAgent);
+
       if (!supportAgent) {
         return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
-      if (supportAgent.active_tickets.length === 0) {
+
+      let allActiveTickets = [];
+
+      Object.keys(supportAgent.active_tickets).forEach(ticketType => {
+        allActiveTickets = allActiveTickets.concat(supportAgent.active_tickets[ticketType]);
+      });
+
+      if (allActiveTickets.length === 0) {
         return res.status(400).json({ error: "Error 400: No active tickets" });
-      }
-      else {
-        let allActiveTickets = [];
-        // Concatenating all active tickets of the support agent
-        allActiveTickets = allActiveTickets.concat(supportAgent.active_tickets.Software, supportAgent.active_tickets.Hardware, supportAgent.active_tickets.Network);
-        const activeTicketsDetails = await ticketModel.find({ _id: { $in: allActiveTickets }, status: 'Open' });
+      } else {
+        const activeTicketsDetails = await ticketModel.find({ _id: { $in: allActiveTickets }, ticketStatus: 'In Progress' });
         return res.status(200).json({ message: "Active tickets", activeTickets: activeTicketsDetails });
       }
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Error 500: Something is wrong, please try again!" });
     }
-  },
+  }
+  ,
 
   viewMyResolvedTickets: async (req, res) => {
     const decode = jwt.verify(
@@ -50,30 +92,33 @@ const agentController = {
       process.env.SECRET_KEY
     );
     const { userId } = decode.user;
+
     try {
-      console.log("User Is: ", userId);
       const userIdObject = new ObjectId(userId);
-      console.log("formated user id ", userIdObject);
       const supportAgent = await supportAgentModel.findOne({ user: userIdObject });
-      console.log("support agent info ", supportAgent);
+
       if (!supportAgent) {
         return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
-      if (supportAgent.resolved_tickets.length === 0) {
+
+      let allResolvedTickets = [];
+
+      Object.keys(supportAgent.resolved_tickets).forEach(ticketType => {
+        allResolvedTickets = allResolvedTickets.concat(supportAgent.resolved_tickets[ticketType]);
+      });
+
+      if (allResolvedTickets.length === 0) {
         return res.status(400).json({ error: "Error 400: No resolved tickets" });
-      }
-      else {
-        let allResolvedTickets = [];
-        // Concatenating all active tickets of the support agent
-        allResolvedTickets = allResolvedTickets.concat(supportAgent.resolved_tickets.Software, supportAgent.resolved_tickets.Hardware, supportAgent.resolved_tickets.Network);
-        const resolvedTicketsDetails = await ticketModel.find({ _id: { $in: allResolvedTickets }, status: 'Open' });
-        return res.status(200).json({ message: "Active tickets", activeTickets: resolvedTicketsDetails });
+      } else {
+        const resolvedTicketsDetails = await ticketModel.find({ _id: { $in: allResolvedTickets }, ticketStatus: 'Closed' });
+        return res.status(200).json({ message: "Resolved tickets", resolvedTickets: resolvedTicketsDetails });
       }
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Error 500: Something is wrong, please try again!" });
     }
   },
+
   resolveTicket: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],
@@ -81,36 +126,56 @@ const agentController = {
     );
 
     const { userId } = decode.user;
-    console.log("User Is: ", userId);
-
     const { ticketId } = req.params;
-    console.log("ticket is", ticketId)
-    const ticketIdObject = new ObjectId(ticketId); // converting the ticket id to object id
-    console.log("formated ticket id ", ticketIdObject);
+
     try {
-      const myTicket = await ticketModel.findOne({ _id: ticketIdObject });
-      console.log("my ticket is", myTicket)
-      console.log("assigned agent id", myTicket.assignedAgent)
+      const myTicket = await ticketModel.findOne({ _id: ticketId });
 
       if (!myTicket) {
         return res.status(400).json({ error: "Error 400: Unavailable ticket" });
       }
-      if (myTicket.status === "Closed") {
+      if (myTicket.ticketStatus === "Closed") {
         return res.status(400).json({ error: "Error 400: Ticket has been already resolved!" });
       }
-      else {
-        myTicket.status = "Closed";
-        myTicket.resolutionDate = Date.now();
-        myTicket.response = req.body.response;
-        await myTicket.save();
-        return res.status(200).json({ message: "Ticket is updated into resolved!" });
+
+      myTicket.ticketStatus = "Closed";
+      myTicket.resolutionDate = Date.now();
+      myTicket.response = req.body.response;
+      await myTicket.save();
+
+      const supportAgent = await supportAgentModel.findOne({ user: userId });
+
+      if (!supportAgent) {
+        return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
-    }
-    catch (err) {
+
+      // Remove the ticket from active_tickets array
+      let ticketRemoved = false;
+      const ticketTypes = ['Software', 'Hardware', 'Network'];
+      for (const ticketType of ticketTypes) {
+        const index = supportAgent.active_tickets[ticketType].indexOf(ticketId);
+        if (index !== -1) {
+          supportAgent.active_tickets[ticketType].splice(index, 1);
+          ticketRemoved = true;
+          break;
+        }
+      }
+      if (!ticketRemoved) {
+        return res.status(400).json({ error: "Error 400: Ticket not found in active tickets" });
+      }
+
+      // Add the ticket ID to resolved_tickets array
+      supportAgent.resolved_tickets.push(ticketId);
+      await supportAgent.save();
+
+      return res.status(200).json({ message: "Ticket is updated into resolved!" });
+
+    } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Error 500: Something is wrong, please try again!" });
     }
   },
+
   //respond to user ticket
   respondToTicket: async (req, res) => {
     try {
@@ -119,8 +184,8 @@ const agentController = {
       const agentUserId = req.user.userId;
       const response = req.body.response;
       const ticketStatus = req.body.ticketStatus;
-      const agent = await supportAgentModel.findOne({ user: agentUserId});
-      console.log("agent "+agent);
+      const agent = await supportAgentModel.findOne({ user: agentUserId });
+      console.log("agent " + agent);
 
       console.log("Ticket" + id);
       if (!id || !response) {
@@ -186,10 +251,10 @@ const agentController = {
         await ticket.save();
       }
 
-        else{
-      ticket.ticketStatus = "In Progress";
-      await ticket.save();
-        }
+      else {
+        ticket.ticketStatus = "In Progress";
+        await ticket.save();
+      }
       // Send email to the user from the agent's email
       if (agent) {
         const transporter = nodemailer.createTransport({ // as if we are logging in by gmail
