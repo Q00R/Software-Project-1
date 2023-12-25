@@ -21,26 +21,7 @@ export default function AppNavBar() {
     // Redirect to /
     navigate("/");
   };
-
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/v1/isLoggedIn`,
-          { withCredentials: true }
-        );
-        const { status, data } = response;
-        console.log(data);
-        setIsLoggedIn(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    checkLoginStatus();
-  }, []);
+  
   const [role, setRole] = useState("");
   window.addEventListener("role", function (e) {
     setRole(e.detail.role);
@@ -143,7 +124,25 @@ export default function AppNavBar() {
               Logout
             </button>
           </div>
-        ) : null}
+        ) : 
+        <div style={{justifyContent: 'space-between'}}>
+          <button
+            className="btn btn-ghost btn-circle"
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            Login
+          </button>
+          <button
+            className="btn btn-ghost btn-circle"
+            onClick={() => {
+              navigate("/register");
+            }}
+          >
+            Register
+          </button>
+        </div>}
       </div>
     </div>
   );

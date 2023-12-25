@@ -16,7 +16,7 @@ const ClientHome = () => {
               <CreateTicket />
             </section>
           </div>
-          <div className="w-1/4 padding m-2 grow">
+          <div className="w-1/4 padding m-2 grow" style={{ position: 'sticky', top: 0, right: 0, width: "fit-content", height: "100%" }}>
             <section className=" border-red-300 border-[2px]">
               <FAQ />
             </section>
