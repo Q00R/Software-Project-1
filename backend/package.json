@@ -1,10 +1,10 @@
 {
-  "name": "Help Desk 101",
+  "name": "help_desk_101",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "run": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -24,6 +24,7 @@
     "openssl": "^2.0.0",
     "punycode": "^2.3.1",
     "qrcode": "^1.5.3",
+    "socket.io": "^4.7.2",
     "speakeasy": "^2.0.0",
     "winston": "^3.11.0",
     "winston-mongodb": "^5.1.1",
