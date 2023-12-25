@@ -12,7 +12,6 @@ router.post("/verifyEmail",userController.verifyEmail);
 // router.post("/login",userController.login);
 router.post("/login" ,userController.login)
 
-
 router.post("/verifyOTP",userController.verifyOTPLogin);
 
 router.post("/logout",userController.logout);

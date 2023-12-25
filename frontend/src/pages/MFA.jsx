@@ -9,9 +9,9 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 
 const defaultTheme = createTheme();
@@ -58,72 +58,54 @@ const MFA = () => {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" style={{ height: '100vh' }}>
-        <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          style={{
-            backgroundImage:
-              'url(https://source.unsplash.com/random?wallpapers)',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            style={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '3%',
-            }}
+    <div className="min-h-screen flex">
+      <div
+        className="hidden md:flex md:flex-shrink-0 md:w-7/12"
+        style={{
+          backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+          backgroundRepeat: 'no-repeat',
+          backgroundColor: '#f8f9fa', // Replace with your background color
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      <div className="flex-1 flex flex-col">
+        <div
+          className="my-8 mx-4 flex flex-col items-center p-8"
+        >
+          <div className="m-1 bg-secondary-main">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-bold mb-2">MFA Verification</h1>
+          <form
+            noValidate
+            onSubmit={handleVerification}
+            className="mt-1 flex flex-col"
           >
-            <Avatar style={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              MFA Verification
-            </Typography>
-            <Box component="form" noValidate onSubmit={handleVerification} style={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="otp"
-                label="Enter OTP"
-                name="OTP"
-                autoComplete="OTP"
-                autoFocus
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                style={{ mt: 3, mb: 2 }}
-              >
-                Verify
-              </Button>
-              {errorMessage && (
-                <Typography color="error" style={{ marginTop: '1rem' }}>
-                  {errorMessage}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
-    </ThemeProvider>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 mb-3"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded-md"
+            >
+              Verify
+            </button>
+            {errorMessage && (
+              <p className="text-red-500 mt-1">
+                {errorMessage}
+              </p>
+            )}
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 
