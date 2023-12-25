@@ -8,6 +8,7 @@ import axios from "axios";
 import profileImage from "../assets/userIcon.png";
 import FancyButton from "./Button";
 import ThemeChangerButton from "./ThemeChanger";
+import websiteLogo from "../assets/Final logo.ico"
 
 export default function AppNavBar() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function AppNavBar() {
     // Redirect to /
     navigate("/");
   };
-  
+
   const [role, setRole] = useState("");
   window.addEventListener("role", function (e) {
     setRole(e.detail.role);
@@ -65,6 +66,11 @@ export default function AppNavBar() {
       </div>
       <div className="navbar-center" onClick={handleTitleClick}>
         <a className="btn btn-ghost text-xl text-opacity-100">Help Desk</a>
+        <img
+          src={websiteLogo}
+          alt="Website Logo"
+          style={{ maxWidth: '100px', maxHeight: '40px' }}
+        />
       </div>
       <div className="navbar-end">
         {<ThemeChangerButton />}
@@ -74,7 +80,7 @@ export default function AppNavBar() {
         {role ? (
           <div>
             <div className="avatar" onClick={handleProfileClick}>
-            <div className="w-9 h-9 rounded-full overflow-hidden">
+              <div className="w-9 h-9 rounded-full overflow-hidden">
                 <img
                   src={profileImage}
                   alt="profile"
@@ -92,25 +98,25 @@ export default function AppNavBar() {
               Logout
             </button>
           </div>
-        ) : 
-        <div>
-          <button
-            className="btn btn-ghost"
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Login
-          </button>
-          <button
-            className="btn btn-ghost"
-            onClick={() => {
-              navigate("/register");
-            }}
-          >
-            Register
-          </button>
-        </div>}
+        ) :
+          <div>
+            <button
+              className="btn btn-ghost"
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Login
+            </button>
+            <button
+              className="btn btn-ghost"
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              Register
+            </button>
+          </div>}
       </div>
     </div>
   );

@@ -153,14 +153,14 @@ const userController =
           message: "User not found",
         });
       }
-  
+
       // Update MFAEnabled property
       user.MFAEnabled = true;
       user.canPass = false;
-  
+
       // Save the changes to the database
       await user.save();
-  
+
       res.json({
         status: "SUCCESS",
         message: "MFA enabled successfully",
@@ -173,39 +173,38 @@ const userController =
       });
     }
   },
-  disableMFA: async (req, res) =>
-  { 
-     // Check if the user has cookies
-     if (!req.cookies.token) return res.json({ message: "unauthorized access" });
-     const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-     const userId = decoded.user.userId;
-     try {
-       const user = await userModel.findById(userId);
-       if (!user) {
-         return res.json({
-           status: "FAILED",
-           message: "User not found",
-         });
-       }
-   
-       // Update MFAEnabled property
-       user.MFAEnabled = false;
-       user.canPass = true;
-   
-       // Save the changes to the database
-       await user.save();
-   
-       res.json({
-         status: "SUCCESS",
-         message: "MFA disabled successfully",
-       });
-     } catch (error) {
-       res.json({
-         status: "FAILED",
-         message: "MFA could not be disabled",
-         error: error.message,
-       });
-     }
+  disableMFA: async (req, res) => {
+    // Check if the user has cookies
+    if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+    const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+    const userId = decoded.user.userId;
+    try {
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.json({
+          status: "FAILED",
+          message: "User not found",
+        });
+      }
+
+      // Update MFAEnabled property
+      user.MFAEnabled = false;
+      user.canPass = true;
+
+      // Save the changes to the database
+      await user.save();
+
+      res.json({
+        status: "SUCCESS",
+        message: "MFA disabled successfully",
+      });
+    } catch (error) {
+      res.json({
+        status: "FAILED",
+        message: "MFA could not be disabled",
+        error: error.message,
+      });
+    }
   },
 
 
@@ -269,10 +268,11 @@ const userController =
             MFAEnabled: user.MFAEnabled,
           })
           .status(200)
-          .json({ 
-          message: "MFA correct,login successful",
-          MFAEnabled: user.MFAEnabled, 
-          role: user.role });
+          .json({
+            message: "MFA correct,login successful",
+            MFAEnabled: user.MFAEnabled,
+            role: user.role
+          });
       } else {
         return res.status(400).json({
           status: "FAILED",
@@ -431,6 +431,14 @@ const userController =
       res.status(500).json({ message: "Server error" });
     }
   },
+  getUser: async (req, res) => {
+    try {
+      const user = await userModel.findById({ _id: req.params.id });
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
 
 }
 
