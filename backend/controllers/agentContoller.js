@@ -10,6 +10,13 @@ const nodemailer = require("nodemailer");
 const { ObjectId } = require("mongodb");
 
 const agentController = {
+  getAgentByIssue: async (req, res) => {
+    try {
+      res.status(200).json(await supportAgentModel.find({ main_role: req.params.mainIssue }));
+    } catch (error) {
+      res.status(400).json({ error: "Error 400: Support agent not found" });
+    }
+  },
   viewMyActiveTickets: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],
@@ -119,8 +126,8 @@ const agentController = {
       const agentUserId = req.user.userId;
       const response = req.body.response;
       const ticketStatus = req.body.ticketStatus;
-      const agent = await supportAgentModel.findOne({ user: agentUserId});
-      console.log("agent "+agent);
+      const agent = await supportAgentModel.findOne({ user: agentUserId });
+      console.log("agent " + agent);
 
       console.log("Ticket" + id);
       if (!id || !response) {
@@ -186,10 +193,10 @@ const agentController = {
         await ticket.save();
       }
 
-        else{
-      ticket.ticketStatus = "In Progress";
-      await ticket.save();
-        }
+      else {
+        ticket.ticketStatus = "In Progress";
+        await ticket.save();
+      }
       // Send email to the user from the agent's email
       if (agent) {
         const transporter = nodemailer.createTransport({ // as if we are logging in by gmail
