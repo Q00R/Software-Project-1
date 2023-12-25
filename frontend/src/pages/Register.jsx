@@ -160,7 +160,7 @@ const Register = () => {
         sm={6}
         md={6}
         sx={{
-          backgroundImage: `url(${photo1})`,
+          backgroundImage:'url(https://source.unsplash.com/random?wallpapers)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

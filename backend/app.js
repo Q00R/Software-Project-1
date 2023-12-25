@@ -37,7 +37,6 @@ app.use(
 const db_name = process.env.DB_NAME;
 const db_url = `${process.env.DB_URL}/${db_name}`;
 
-
 // ! Mongoose Driver Connection
 
 // Routes
@@ -49,14 +48,15 @@ mongoose
   console.log(e);
 });
 
-app.use("/knowledgebase", knowledgebaseRouter);
 app.use("/api/v1", authRouter);
 app.use(authenticationMiddleware);
-app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
+app.use("/knowledgebase", knowledgebaseRouter);
+app.use("/agent", authorizationMiddleware (['agent']), agentRouter);
 // app.use("/client", clientRouter);
 app.use("/admin", adminRouter);
 app.use("/client", clientRouter);
 app.use("/manager", managerRouter);
+
 
 app.use(function (req, res, next) {
   return res.status(404).send("404");
@@ -75,4 +75,3 @@ const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
 });
 
 app.listen(process.env.PORT, () => console.log("server started on", process.env.PORT));
-

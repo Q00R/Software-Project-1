@@ -24,15 +24,7 @@ export default function SignInSide() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-  const checkLoginStatus = async () => {
-    window.dispatchEvent(new CustomEvent('role', { detail: { role: '' } }));
-  };
-
-  useEffect(() => {
-    // Check login status when the component mounts
-    checkLoginStatus();
-
-  }, []);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,14 +37,15 @@ export default function SignInSide() {
         },
         { withCredentials: true }
       );
-      checkLoginStatus();
       const { status, data } = response;
       if (status === 200) {
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('userRole', data.userRole);
         localStorage.setItem('userName', data.userName);
         if (data.MFAEnabled === true) {
-          navigate(`/mfa/${email}`);
+          // store email in local storage
+          localStorage.setItem("email", email)
+          navigate(`/mfa`);
         } else {
           // get user from database by email
           if (data.role === 'client') {
