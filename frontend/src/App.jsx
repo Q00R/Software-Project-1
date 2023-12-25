@@ -5,13 +5,13 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
-import ChatsPage from "./pages/ChatsPage";
+//import ChatsPage from "./pages/ChatsPage";
 import Knowledgebase from "./pages/Knowledgebase";
 import AgentDashboard from "./pages/AgentDashboard";
 import ViewProfile from "./pages/ViewProfile";
 import ClientHome from "./pages/ClientHome";
+import Messenger from "./pages/messenger/Messenger"
 import './index.css'; // Import your CSS file
-import { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -32,7 +32,7 @@ function App() {
         <Route path="/agent" element={<AgentDashboard />} />
         <Route path="/knowledgebase" element={<Knowledgebase />} />
         <Route path="/client" element={<ClientHome />} />
-        <Route path="/chat" element={<ChatsPage />} />
+        <Route path="/messenger" element={<Messenger />} />
       </Routes>
       <Footer />
     </>
