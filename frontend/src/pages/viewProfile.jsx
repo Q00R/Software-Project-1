@@ -27,8 +27,6 @@ const ViewProfile = () => {
     const [OTP, setOTP] = useState('');
     const [image, setImage] = useState('');
 
-
-
     const getUser = async () => {
         try {
             const response = await axios.get('http://localhost:3000/client/getUser', { withCredentials: true });

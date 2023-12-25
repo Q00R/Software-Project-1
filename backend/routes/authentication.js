@@ -17,7 +17,6 @@ router.post("/login2" ,userController.login2)
 router.post("/verifyOTP2",userController.verifyOTPLogin2);
 
 router.post("/logout",userController.logout);
-router.get("/isLoggedIn",userController.isLoggedIn);
 // IG these require the user to be logged in atleast --> revise later
 
 

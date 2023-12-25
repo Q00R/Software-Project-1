@@ -140,17 +140,133 @@ const userController =
       });
     }
   },
-
-  isLoggedIn: async (req, res) => {
+  enableMFA: async (req, res) => {
+    // Check if the user has cookies
+    if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+    const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+    const userId = decoded.user.userId;
     try {
-      const token = req.cookies.token;
-      if (!token) return res.json(false);
-
-      jwt.verify(token, process.env.SECRET_KEY);
-
-      res.send(true);
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.json({
+          status: "FAILED",
+          message: "User not found",
+        });
+      }
+  
+      // Update MFAEnabled property
+      user.MFAEnabled = true;
+      user.canPass = false;
+  
+      // Save the changes to the database
+      await user.save();
+  
+      res.json({
+        status: "SUCCESS",
+        message: "MFA enabled successfully",
+      });
     } catch (error) {
-      res.json(false);
+      res.json({
+        status: "FAILED",
+        message: "MFA could not be enabled",
+        error: error.message,
+      });
+    }
+  },
+  disableMFA: async (req, res) =>
+  { 
+     // Check if the user has cookies
+     if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+     const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+     const userId = decoded.user.userId;
+     try {
+       const user = await userModel.findById(userId);
+       if (!user) {
+         return res.json({
+           status: "FAILED",
+           message: "User not found",
+         });
+       }
+   
+       // Update MFAEnabled property
+       user.MFAEnabled = false;
+       user.canPass = true;
+   
+       // Save the changes to the database
+       await user.save();
+   
+       res.json({
+         status: "SUCCESS",
+         message: "MFA disabled successfully",
+       });
+     } catch (error) {
+       res.json({
+         status: "FAILED",
+         message: "MFA could not be disabled",
+         error: error.message,
+       });
+     }
+  },
+
+
+
+  verifyOTPLogin: async (req, res) => {
+    try
+    {
+      const { email, otp } = req.body;
+      const user = await userModel.findOne({ email });
+      if (!user) {
+        return res.status(405).json({ status: "FAILED", message: "User not found" });
+      }
+      const userId = user._id;
+      const otpVerification = await UserOTPVerification.findOne({ userId });
+      if (!otpVerification) 
+      {
+        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
+      }
+      const isMatch = await bcrypt.compare(otp, otpVerification.otp);
+      if (!isMatch) 
+      {
+        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
+      }
+      if (Date.now() > otpVerification.expiresAt) 
+      {
+        return res.status(405).json({ status: "FAILED", message: "OTP verification failed" });
+      }
+      // Update canPass property
+      const currentDateTime = new Date();
+        const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
+        // Generate a JWT token
+        const token = jwt.sign(
+          { user: { userId: user._id, role: user.role } },
+          secretKey,
+          {
+            expiresIn: 3 * 60 * 60,
+          }
+          );
+          user.canPass = true;
+
+          let newSession = new Session({
+            userId: user._id,
+            token,
+            expiresAt: expiresAt,
+          });
+          await newSession.save();
+          return res
+          .cookie("token", token, {
+            expires: expiresAt,
+            withCredentials: true,
+            httpOnly: false,
+            SameSite:'none',
+            MFAEnabled: user.MFAEnabled,
+          })
+          .status(200)
+          .json({ status: "SUCCESS", message: "OTP verified successfully" });
+    } 
+    catch (error) 
+    {
+      console.log(error);
+      res.status(400).json({ status: "FAILED", message: "OTP verification failed" });
     }
   },
 

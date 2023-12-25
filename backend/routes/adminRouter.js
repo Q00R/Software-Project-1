@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware=require('../middleware/authorizationMiddleware');
+const authMiddleware = require('../middleware/authorizationMiddleware');
 const adminController = require('../controllers/adminController');
-const userController = require('../controllers/userController')
-const clientController = require('../controllers/clientController')
+
 
 //create new user
-router.post('/createUser', authMiddleware(['admin']), userController.register);
-router.put('/changeRole', authMiddleware(['admin']), adminController.adminChangeRole);
-
+router.post('/createUser', authMiddleware(['admin']), adminController.createNewUser);
 // get user
 
-//get all users
-router.get("/viewAllUsers",  authMiddleware(['admin']), adminController.getAllUsers);
+//view all users
+router.get("/viewAllUsers", authMiddleware(['admin']), adminController.getAllUsers);
+//admin changing the role of users
+router.put('/changeRole', authMiddleware(['admin']), adminController.adminChangeRole);
 module.exports = router;
