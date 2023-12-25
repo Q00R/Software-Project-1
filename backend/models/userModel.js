@@ -55,10 +55,6 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   // if MFA is enabled, did the user verify their OTP?
-  canPass:{
-    type: Boolean,
-    default: true
-  },
   
 });
 

@@ -7,13 +7,13 @@ const UserOTPVerificationSchema = new schema({
         ref: "User",
         required: true,
     },
-    otp: {
+    secret: {
+        type: String,
+    },
+    otpauth_url: {
         type: String,
     },
     createdAt: {
-        type: Date,
-    },
-    expiresAt: {
         type: Date,
     },
 });

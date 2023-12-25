@@ -1,6 +1,6 @@
 // MFAPage.jsx
-import  { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
- 
+
 const defaultTheme = createTheme();
 const backend_url = 'http://localhost:3000/api/v1';
 
@@ -21,29 +21,39 @@ const MFA = () => {
   const navigate = useNavigate();
   const [otp, setOtp] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const { email } = useParams();
+  const email = localStorage.getItem('email');
 
   const handleVerification = async (e) => {
     e.preventDefault();
     try {
-      // show email as notification on screen
       const response = await axios.post(
-        backend_url/verifyOTP,
+        `${backend_url}/verifyOTP`,
         {
           email,
-          otp,
+          enteredOTP: otp,
         },
         { withCredentials: true }
       );
+      const { status, data } = response;
+      alert(response.data.message);
+      alert(response.data.MFAEnabled);
 
-      const { status, message } = response;
       if (status === 200) {
-        navigate('/dashboard');
+        if (data.role === 'client') {
+          return navigate('/');
+        } else if (data.role === 'admin') {
+          return navigate('/admin');
+        } else if (data.role === 'manager') {
+          return navigate('/manager');
+        } else {
+          return navigate('/agent');
+        }
       } else {
-        setErrorMessage(error.response.data.message || 'Verification failed');  
+        setErrorMessage(error.response
+          .message || 'Verification failed');
       }
     } catch (error) {
-      setErrorMessage(error.response.data.message || 'An error occurred');
+      setErrorMessage(error.response.message || 'An error occurred');
     }
   };
 

@@ -1,29 +1,42 @@
 const supportAgentModel = require("../models/supportagentModel");
+//const supportagentModel = require("../models/supportagentModel");
 const userModel = require("../models/userModel");
 const ticketModel = require("../models/ticketModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const secretKey = process.env.SECRET_KEY;
+// const secretKey = process.env.SECRET_KEY;
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const { ObjectId } = require("mongodb");
 
 const agentController = {
   viewMyActiveTickets: async (req, res) => {
+    const decode = jwt.verify(
+      req.headers.cookie.split("token=")[1],
+      process.env.SECRET_KEY
+    );
+    const { userId } = decode.user;
     try {
-      const userID = req.params.id;
-      const myTicket = await ticketModel.findById(id);
-
-      if (myTicket.assignedAgent !== userID) {
-        return res.status(400).json({ error: "Error 400: Ticket was not assigned for you!" });
+      console.log("User Is: ", userId);
+      // const ticketId = req.params._id;
+      // const myTicket = req.body.ticketId;
+      // const myTicket = await ticketModel.findById(ticketId);
+      const userIdObject = new ObjectId(userId);
+      console.log("formated user id ", userIdObject);
+      const supportAgent = await supportAgentModel.findOne({ user: userIdObject });
+      console.log("support agent info ", supportAgent);
+      if (!supportAgent) {
+        return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
-      if (!myTicket) {
-        return res.status(400).json({ error: "Error 400: Unavailable ticket" });
-      }
-      if (myTicket.status === "Closed") {
-        return res.status(400).json({ error: "Error 400: Ticket is not active!" });
+      if (supportAgent.active_tickets.length === 0) {
+        return res.status(400).json({ error: "Error 400: No active tickets" });
       }
       else {
-        return res.status(200).json({ message: "Active tickets", myTicket });
+        let allActiveTickets = [];
+        // Concatenating all active tickets of the support agent
+        allActiveTickets = allActiveTickets.concat(supportAgent.active_tickets.Software, supportAgent.active_tickets.Hardware, supportAgent.active_tickets.Network);
+        const activeTicketsDetails = await ticketModel.find({ _id: { $in: allActiveTickets }, status: 'Open' });
+        return res.status(200).json({ message: "Active tickets", activeTickets: activeTicketsDetails });
       }
     } catch (err) {
       console.error(err);
@@ -32,36 +45,53 @@ const agentController = {
   },
 
   viewMyResolvedTickets: async (req, res) => {
+    const decode = jwt.verify(
+      req.headers.cookie.split("token=")[1],
+      process.env.SECRET_KEY
+    );
+    const { userId } = decode.user;
     try {
-      const userID = req.params.id;
-      const myTicket = await ticketModel.findById(id);
-
-      if (myTicket.assignedAgent !== userID) {
-        return res.status(400).json({ error: "Error 400: Ticket was not assigned for you!" });
+      console.log("User Is: ", userId);
+      const userIdObject = new ObjectId(userId);
+      console.log("formated user id ", userIdObject);
+      const supportAgent = await supportAgentModel.findOne({ user: userIdObject });
+      console.log("support agent info ", supportAgent);
+      if (!supportAgent) {
+        return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
-      if (!myTicket) {
-        return res.status(400).json({ error: "Error 400: Unavailable ticket" });
-      }
-      if (myTicket.status === "Open") {
-        return res.status(400).json({ error: "Error 400: Ticket is still active!" });
+      if (supportAgent.resolved_tickets.length === 0) {
+        return res.status(400).json({ error: "Error 400: No resolved tickets" });
       }
       else {
-        return res.status(200).json({ message: "Resolved tickets", myTicket });
+        let allResolvedTickets = [];
+        // Concatenating all active tickets of the support agent
+        allResolvedTickets = allResolvedTickets.concat(supportAgent.resolved_tickets.Software, supportAgent.resolved_tickets.Hardware, supportAgent.resolved_tickets.Network);
+        const resolvedTicketsDetails = await ticketModel.find({ _id: { $in: allResolvedTickets }, status: 'Open' });
+        return res.status(200).json({ message: "Active tickets", activeTickets: resolvedTicketsDetails });
       }
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Error 500: Something is wrong, please try again!" });
     }
   },
-
   resolveTicket: async (req, res) => {
-    try {
-      const userID = req.params.id;
-      const myTicket = await ticketModel.findById(id);
+    const decode = jwt.verify(
+      req.headers.cookie.split("token=")[1],
+      process.env.SECRET_KEY
+    );
 
-      if (myTicket.assignedAgent !== userID) {
-        return res.status(400).json({ error: "Error 400: Ticket was not assigned for you!" });
-      }
+    const { userId } = decode.user;
+    console.log("User Is: ", userId);
+
+    const { ticketId } = req.params;
+    console.log("ticket is", ticketId)
+    const ticketIdObject = new ObjectId(ticketId); // converting the ticket id to object id
+    console.log("formated ticket id ", ticketIdObject);
+    try {
+      const myTicket = await ticketModel.findOne({ _id: ticketIdObject });
+      console.log("my ticket is", myTicket)
+      console.log("assigned agent id", myTicket.assignedAgent)
+
       if (!myTicket) {
         return res.status(400).json({ error: "Error 400: Unavailable ticket" });
       }
@@ -71,8 +101,7 @@ const agentController = {
       else {
         myTicket.status = "Closed";
         myTicket.resolutionDate = Date.now();
-        myTicket.answer.title = req.body.title;
-        myTicket.answer.description = req.body.description;
+        myTicket.response = req.body.response;
         await myTicket.save();
         return res.status(200).json({ message: "Ticket is updated into resolved!" });
       }

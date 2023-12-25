@@ -41,16 +41,18 @@ mongoose
   console.log(e);
 });
 
+// Routes
+
 app.use("/api/v1", authRouter);
 app.use(authenticationMiddleware);
 app.use("/knowledgebase", knowledgebaseRouter);
-app.use(authenticationMiddleware);
 app.use("/agent", authorizationMiddleware (['agent']), agentRouter);
 // app.use("/client", clientRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
 app.use("/chat", chatRouter);
 app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);
 app.use("/manager", managerRouter);
+
 
 app.use(function (req, res, next) {
   return res.status(404).send("404");
@@ -95,5 +97,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(process.env.PORT, () => console.log("server started"));
-
+server.listen(process.env.PORT, () => console.log("server started", process.env.PORT));
