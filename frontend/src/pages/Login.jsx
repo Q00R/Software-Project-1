@@ -24,41 +24,25 @@ export default function SignInSide() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-  const checkLoginStatus = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/api/v1/isLoggedIn`,
-        { withCredentials: true }
-      );
-      const { status, data } = response;
-      setIsLoggedIn(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    // Check login status when the component mounts
-    checkLoginStatus();
-
-  }, []);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${backend_url}/login`,
+        `${backend_url}/login2`,
         {
           email,
           password,
         },
         { withCredentials: true }
       );
-      checkLoginStatus();
       const { status, data } = response;
       if (status === 200) {
         if (data.MFAEnabled === true) {
-          navigate(`/mfa/${email}`);
+          // store email in local storage
+          localStorage.setItem("email", email)
+          navigate(`/mfa`);
         } else {
           // get user from database by email
           if (data.role === 'client') {

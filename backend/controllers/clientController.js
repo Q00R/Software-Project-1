@@ -4,6 +4,10 @@ const supportAgentModel = require("../models/supportAgentModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
+const UserOTPVerification = require("../models/userOTPVerificationModel");
+const QRCode = require("qrcode");
+const speakeasy = require("speakeasy");
+
 const {
   Queue,
   HighPriority,
@@ -238,6 +242,162 @@ const clientController = {
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }
+    },
+    enableMFA2: async (req, res) => {
+      // Check if the user has cookies
+      if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+      try {
+        const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+        const userId = decoded.user.userId;
+        const { enteredOTP } = req.body;
+        // get the actual secret from the database
+        const otpVerification = await UserOTPVerification.findOne({ userId: userId });
+        if (!otpVerification) {
+          return res.json({
+            status: "FAILED",
+            message: "OTP verification failed -- This user doesn't have a registered OTP",
+          });
+        }
+        const storedSecret = otpVerification.secret;
+        const verified = speakeasy.totp.verify({
+          secret: storedSecret,
+          encoding: 'ascii',
+          token: enteredOTP,
+        });
+        if (verified) {
+          // Update MFAEnabled property
+          const user = await userModel.findById(userId);
+          user.MFAEnabled = true;
+          // Save the changes to the database
+          await user.save();
+          res.json({
+            status: "SUCCESS",
+            message: "MFA enabled successfully",
+          });
+        }
+        else {
+          res.json({
+            status: "FAILED",
+            message: "MFA could not be enabled",
+            error: "OTP is incorrect",
+          });
+        }
+  
+      } catch (error) {
+        res.json({
+          status: "FAILED",
+          message: "MFA could not be enabled",
+          error: error.message,
+        });
+      }
+    },
+  
+    enableMFA: async (req, res) => {
+      // Check if the user has cookies
+      if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
+      try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+          return res.json({
+            status: "FAILED",
+            message: "User not found",
+          });
+        }
+  
+        // Update MFAEnabled property
+        user.MFAEnabled = true;
+  
+        
+        // Save the changes to the database
+        await user.save();
+  
+        res.json({
+          status: "SUCCESS",
+          message: "MFA enabled successfully",
+        });
+      } catch (error) {
+        res.json({
+          status: "FAILED",
+          message: "MFA could not be enabled",
+          error: error.message,
+        });
+      }
+    },
+    disableMFA: async (req, res) => {
+      // Check if the user has cookies
+      if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
+      try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+          return res.json({
+            status: "FAILED",
+            message: "User not found",
+          });
+        }
+  
+        // Update MFAEnabled property
+        user.MFAEnabled = false;
+  
+        // Save the changes to the database
+        await user.save();
+  
+        res.json({
+          status: "SUCCESS",
+          message: "MFA disabled successfully",
+        });
+      } catch (error) {
+        res.json({
+          status: "FAILED",
+          message: "MFA could not be disabled",
+          error: error.message,
+        });
+      }
+    },
+  
+
+    getSecret: async (req, res) => {
+      try {
+        if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+        const token = req.cookies.token;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.user.userId;
+        // get the actual secret from the database
+        const otpVerification = await UserOTPVerification.findOne({ userId: userId });
+        if (!otpVerification) {
+          return res.json({
+            status: "FAILED",
+            message: "OTP verification failed -- This user doesn't have a registered OTP",
+          });
+        }
+        const storedSecret = otpVerification.secret;
+        const storedOtpauth_url = otpVerification.otpauth_url;
+        let qrcode;
+        const dataUrl = await new Promise((resolve, reject) => {
+          QRCode.toDataURL(storedOtpauth_url, function (err, data_url) {
+              if (err) {
+                  console.error('Error generating QR code:', err);
+                  reject(err);
+              } else {
+                  resolve(data_url);
+              }
+          });
+      });
+      qrcode = dataUrl;
+        res.json({
+          status: "SUCCESS",
+          message: "Secret retrieved successfully",
+          secret: storedSecret,
+          otpauth_url: storedOtpauth_url,
+          qrcode: qrcode,
+        });
+      }
+      catch (error) {
+        res.status(500).json({ message: error.message });
+      }
     },
 
     updateUsername: async (req, res) => {

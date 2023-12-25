@@ -27,7 +27,5 @@ module.exports = function authenticationMiddleware(req, res, next) {
     next();
   });
   // if user is has canPass = false, then redirect to /verifyOTP
-  if(!req.user.canPass){
-    res.redirect("/verifyOTP");
-  }
+  
 };

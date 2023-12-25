@@ -3,7 +3,7 @@ import { useEffect, useState  } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import "./index.css";
 import Homepage from "./pages/HomePage";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
@@ -27,7 +27,7 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/mfa/:email" element={<MFA />} />
+        <Route path="/mfa" element={<MFA />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/viewProfile" element={<ViewProfile />} />
       </Routes>

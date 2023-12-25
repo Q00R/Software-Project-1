@@ -73,5 +73,6 @@ const scheduledJob = schedule.scheduleJob('0 0 * * *', () => {
   console.log("Database Backed Up Successfully!")
 });
 
+// execute the tempToken Model
 app.listen(process.env.PORT, () => console.log("server started"));
 
