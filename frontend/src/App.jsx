@@ -34,7 +34,7 @@ function App() {
           <Route path="/agent" element={<AgentDashboard />} />
           <Route path="/knowledgebase" element={<Knowledgebase />} />
           <Route path="/client" element={<ClientHome />} />
-        <Route path="/messenger" element={<Messenger />} />
+          <Route path="/messenger" element={<Messenger />} />
         </Routes>
       </section>
       <section>
