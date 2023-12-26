@@ -165,8 +165,9 @@ const CreateTicket = () => {
                   setMainIssue(() => event.target.value);
                 }}
                 value={mainIssue}
+                defaultValue="Main Issue"
               >
-                <option selected>Main Issue</option>
+                <option>Main Issue</option>
                 <option id="Software">Software</option>
                 <option id="Hardware">Hardware</option>
                 <option id="Network">Network</option>
@@ -181,8 +182,9 @@ const CreateTicket = () => {
                 onChange={(event) => {
                   setSubIssue(() => event.target.value);
                 }}
+                defaultValue="Sub Issue"
               >
-                <option selected>Sub Issue</option>
+                <option >Sub Issue</option>
                 {mainIssue === "Software"
                   ? subSoftware.map((subSoftware) => (
                       <option id={subSoftware}>{subSoftware}</option>

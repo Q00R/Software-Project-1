@@ -1,14 +1,11 @@
-import { Link } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
 import { useEffect, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import profileImage from "../assets/userIcon.png";
 
 import ThemeChangerButton from "./ThemeChanger";
-import websiteLogo from "../assets/Final logo.ico"
+import websiteLogo from "../assets/Final logo.ico";
 import NotificationSystem from "./NotificationSystem";
 
 export default function AppNavBar() {
@@ -21,19 +18,31 @@ export default function AppNavBar() {
 
   const handleTitleClick = () => {
     // Redirect to /
-    navigate("/");
+    if (role === "admin") navigate("/admin");
+    if (role === "client") navigate("/client");
+    if (role === "agent") navigate("/agent");
+    if (role === "manager") navigate("/manager");
   };
 
   const [role, setRole] = useState("");
   window.addEventListener("role", function (e) {
-    setRole(localStorage.getItem("role"));
+    setRole(e.detail.role);
   });
-  
+
   useEffect(() => {
-    setRole(localStorage.getItem("role"));
+    const getRole = async () => {
+      await axios
+        .get("http://localhost:3000/api/v1/getRole", {
+          withCredentials: true,
+        })
+        .then((res) => {
+          setRole(res.data);
+        });
+    };
+    getRole();
   }, []);
 
-  console.log(role)
+  console.log("this is the role: ", role);
   return (
     <div className="navbar bg-transparent">
       <div className="navbar-start">
@@ -58,23 +67,34 @@ export default function AppNavBar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            {
-              role === "admin" ? (
-                <li>
-                  <a onClick={() => navigate("/admin")}>Admin Dashboard</a>
-                </li>
-              ) : role === "agent" ? (
-                <li>
-                  <a onClick={() => navigate("/agent")}>Agent Dashboard</a>
-                </li>
-              ) : role === "client" ? (
-                <li>
-                  <a onClick={() => navigate("/client")}>Client Dashboard</a>
-                </li>
-              ) : (
-                <></>
-              )
-            }
+            {role === "agent" ? (
+              <li>
+                <a onClick={() => navigate("/agent")}>Agent Dashboard</a>
+              </li>
+            ) : (
+              <></>
+            )}
+            {role === "admin" ? (
+              <li>
+                <a onClick={() => navigate("/admin")}>Admin Dashboard</a>
+              </li>
+            ) : (
+              <></>
+            )}
+            {role === "client" ? (
+              <li>
+                <a onClick={() => navigate("/client")}>Client Dashboard</a>
+              </li>
+            ) : (
+              <></>
+            )}
+            {role === "manager" ? (
+              <li>
+                <a onClick={() => navigate("/manager")}>Manager Dashboard</a>
+              </li>
+            ) : (
+              <></>
+            )}
           </ul>
         </div>
       </div>
@@ -83,13 +103,13 @@ export default function AppNavBar() {
         <img
           src={websiteLogo}
           alt="Website Logo"
-          style={{ maxWidth: '100px', maxHeight: '40px' }}
+          style={{ maxWidth: "100px", maxHeight: "40px" }}
         />
       </div>
       <div className="navbar-end">
         {<ThemeChangerButton />}
 
-           {<NotificationSystem/>} 
+        {<NotificationSystem />}
         {/* Check if user is logged in */}
         {role ? (
           <div>
@@ -106,13 +126,15 @@ export default function AppNavBar() {
               className="btn btn-ghost"
               onClick={() => {
                 navigate("/login");
-                window.dispatchEvent(new CustomEvent('role', { detail: { role: "" } }));
+                window.dispatchEvent(
+                  new CustomEvent("role", { detail: { role: "" } })
+                );
               }}
             >
               Logout
             </button>
           </div>
-        ) :
+        ) : (
           <div>
             <button
               className="btn btn-ghost"
@@ -130,7 +152,8 @@ export default function AppNavBar() {
             >
               Register
             </button>
-          </div>}
+          </div>
+        )}
       </div>
     </div>
   );

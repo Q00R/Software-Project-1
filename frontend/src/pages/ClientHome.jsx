@@ -15,7 +15,7 @@ const ClientHome = () => {
         </section>
       </div>
       <div
-        className="w-1/4 padding m-2 grow"
+        className=" padding m-2 grow"
         style={{
           position: "sticky",
           top: 0,
@@ -24,7 +24,7 @@ const ClientHome = () => {
           height: "100%",
         }}
       >
-        <section className="stick">
+        <section>
           <FAQ />
         </section>
       </div>
