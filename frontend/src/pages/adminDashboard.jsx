@@ -12,6 +12,10 @@ const AdminDashboard = () => {
         { withCredentials: true }
       );
       const { data } = response;
+      data.forEach((user) => {
+        const dob = new Date(user.DOB);
+        user.DOB = `${dob.getFullYear()}/${dob.getMonth()}/${dob.getDate()}`;
+      });
       setUsers(data || []);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -25,19 +29,10 @@ const AdminDashboard = () => {
 
   const changeRole = async (userId, newRole) => {
     try {
-      const response = await axios({
-        method: "PUT",
-        url: "http://localhost:3000/admin/changeRole",
-        headers: { withCredentials: true },
-        data: {
-          userId,
-          newRole, // This is the body part
-        },
-      });
+      const response = await axios.put("http://localhost:3000/admin/changeRole", {userId: userId, newRole: newRole}, { withCredentials: true });
       const { data } = response;
-      if(data.success){
+      if(response.status == 200){
         fetchUsers();
-        alert("Role changed successfully");
       }else{
         console.error('Failed to change role:', data.message);
       }
@@ -46,7 +41,49 @@ const AdminDashboard = () => {
     }
   };
   return (
-    <div className="flex flex-row items-center overflow-auto h-screen">
+    // ... (other imports and component code)
+
+<>
+  <div key="users" className="grid grid-cols-3 gap-4">
+    {users.map((user, i) => (
+      <div className={`max-w-md shadow-md rounded-md overflow-hidden`} key={i}>
+        <div className="p-4">
+          <h1 className="font-bold text-xl mb-2">{user.username}</h1>
+          <p className="text-gray-600 mb-2">Role: {user.role}</p>
+          <p className="text-gray-600 mb-2">User ID: {user._id}</p>
+          <p className="text-gray-600 mb-2">Email: {user.email}</p>
+          <p className="text-gray-600 mb-2">DOB: {user.DOB}</p>
+          <p className="text-gray-600 mb-2">Status: {user.status}</p>
+        </div>
+        <div className="p-4 bg-gray-400">
+          <div className="dropdown dropdown-top">
+            <div
+              tabIndex={0}
+              role="button"
+              className={`btn btn-${user.role.toLowerCase()} rounded-full w-20 h-8 justify-center items-center`}
+            >
+              {user.role}
+            </div>
+            <ul tabIndex={0} className="text-gray-600 mb-2 dropdown-content z-[1] menu p-2 shadow bg-gray-400 rounded-box w-40">
+              <li>
+                <a onClick={() => changeRole(user._id, "admin")}>Admin</a>
+              </li>
+              <li>
+                <a onClick={() => changeRole(user._id, "agent")}>Agent</a>
+              </li>
+              <li>
+                <a onClick={() => changeRole(user._id, "manager")}>Manager</a>
+              </li>
+              <li>
+                <a onClick={() => changeRole(user._id, "client")}>Client</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+  {/* <div className="flex flex-row items-center overflow-auto h-screen">
       {users.map((user,i) => (
         <div
           key={user._id}
@@ -101,7 +138,8 @@ const AdminDashboard = () => {
           </div>
         </div>
       ))}
-    </div>
+    </div> */}
+</>
   );
 };
 

@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema({
   },
   DOB: {
     type: Date,
-    required: true,
+    required: function() {
+      return this.DOB < Date.now() && this.DOB > new Date('1900-01-01');
+    }
   },
   address: {
     type: String,
@@ -83,9 +85,6 @@ userSchema.methods.verifyTOTP = function (token) {
     })
   );
 };
-
-
-
 
 // Create the User model
 module.exports = mongoose.model("User", userSchema);
