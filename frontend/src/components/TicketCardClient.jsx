@@ -40,28 +40,28 @@ const TicketCardClient = ({
   );
 
   return (
-    <div className="card bg-base-100 shadow-xl m-1">
-      <div className="card-body">
-        <h2 className="card-title">
-          {title}
-          <div>
-            <div className="badge badge-secondary bg-secondary border-none">
+    <div className="card bg-base-100 shadow-xl m-1 w-[300px]">
+      <div className="card-body text-balance h-[350px] overflow-y-auto scrollbar-thin scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+        <div className="text-balance">
+          <h2 className="card-title">{title}</h2>
+          <div className="text-balance">
+            <div className="badge badge-secondary bg-secondary border-none mr-1">
               {priority}
             </div>
             <div className="badge badge-secondary bg-primary border-none">
               {ticketStatus}
             </div>
           </div>
-        </h2>
+        </div>
         <div>
           <p>
             {mainIssue} : {subIssue}
           </p>
         </div>
-        <div>
-          Description:
+        <div className="text-wrap break-words">
+          Description: 
           <p>{description}</p>
-        </div>
+          </div>
         {ticketStatus === "Closed" ? (
           <div>
             Rating:
