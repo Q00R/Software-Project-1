@@ -1,63 +1,52 @@
 // import '../public/styles/bootstrap.min.css'
-import { useEffect, useState  } from "react";
+import "./index.css";
+import HomePage from "./pages/HomePage";
+import Login from "./pages/login";
+import Register from "./pages/Register";
+import MFA from "./pages/MFA";
+import Admin from "./pages/adminDashboard";
+import  ManagerDashboard  from "./pages/managerDashboard"; 
+//frontend\src\pages\ManagerDashboard.jsx
+//import ChatsPage from "./pages/ChatsPage";
+import Knowledgebase from "./pages/Knowledgebase";
+import AgentDashboard from "./pages/AgentDashboard";
+import ViewProfile from "./pages/ViewProfile";
+import ClientHome from "./pages/ClientHome";
+import Messenger from "./pages/messenger/Messenger"
+import './index.css'; // Import your CSS file
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
-import {
-  HomePage,
-  Login,
-  Register,
-  MFA,
-  Admin,
-  Knowledgebase,
-  AgentDashboard,
-  ClientHome,
-  TrySearchParams,
-  ManagerDashboard,
-  viewProfile,
-} from "./pages";
-import "./index.css"; // Import your CSS file
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import AboutUs from "./components/AboutUs";
+
 function App() {
-
-  const [update, setUpdate] = useState(false);
-  
-
-  console.log(location.pathname); // result: '/secondpage'
-
-  useEffect(() => {
-    console.log(location.pathname); // result: '/secondpage'
-    setUpdate(!update);
-  }, [location]);
-
   return (
-    <>
-    <div
-        style={{
-          position: "fixed",
-          width: "100%",
-          height: "93%",
-          top: "7%",
-          left: 0,
-          overflow: "scroll",
-        }}>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/mfa/:email" element={<MFA />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/viewProfile" element={<viewProfile />} />
-        <Route path="/agent" element={<AgentDashboard />} />
-
-       
-        <Route path="/manager" element={<ManagerDashboard />} />
-        <Route path="/client" element={<ClientHome />} />
-      </Routes>
-      <Footer />
-      </div>
-    
-    </>
+    <main>
+      <section>
+        <Navbar />
+      </section>
+      <section>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/mfa" element={<MFA />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/viewProfile" element={<ViewProfile />} />
+          <Route path="/agent" element={<AgentDashboard />} />
+          <Route path="/knowledgebase" element={<Knowledgebase />} />
+          <Route path="/client" element={<ClientHome />} />
+        <Route path="/messenger" element={<Messenger />} />
+          <Route path="/manager" element={<ManagerDashboard />} />
+        </Routes>
+      </section>
+      <section>
+        <AboutUs />
+      </section>
+      <section>
+        <Footer />
+      </section>
+    </main>
   );
 }
 

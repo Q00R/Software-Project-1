@@ -5,6 +5,8 @@ import axios from 'axios';
 import adminPhoto from '../assets/admin.jpg';
 import adminPhoto2 from '../assets/admin2.jpg';
 import mugglePhoto from '../assets/user.jpg';
+import Popup from 'reactjs-popup';
+import QRCode from 'qrcode';
 
 const ViewProfile = () => {
     const navigate = useNavigate();
@@ -12,6 +14,7 @@ const ViewProfile = () => {
     const [isUpdatePanelVisible, setUpdatePanelVisible] = useState(false);
     const [isMainPanelVisible, setMainPanelVisible] = useState(true);
     const [isChangePasswordPanelVisible, setChangePasswordPanelVisible] = useState(false);
+    const [MFAPanelVisible, setMFAPanelVisible] = useState(false);
     const [successPanelVisible, setSuccessPanelVisible] = useState(false);
     const [failPanelVisible, setFailPanelVisible] = useState(false);
     const [newName, setNewName] = useState('');
@@ -21,8 +24,8 @@ const ViewProfile = () => {
     const [newDOB, setNewDOB] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-
-
+    const [OTP, setOTP] = useState('');
+    const [image, setImage] = useState('');
 
     const getUser = async () => {
         try {
@@ -34,22 +37,38 @@ const ViewProfile = () => {
         }
     };
 
+
+    const generateImage = async () => {
+        try {
+
+            const response = await axios.get('http://localhost:3000/client/getSecret', { withCredentials: true });
+            setImage(response.data.qrcode);
+            await getUser();
+        } catch (error) {
+            console.error('Error generating QR code:', error);
+        }
+    };
+
+
+
+
     useEffect(() => {
         // Fetch users when the component mounts
         getUser();
+        generateImage();
     }, []); // Empty dependency array ensures the effect runs only once when the component mounts
 
     const setMFA = async () => {
         try {
             let response = "";
             if (user.MFAEnabled) {
-                response = await axios.post('http://localhost:3000/api/v1/disableMFA', {}, { withCredentials: true });
+                response = await axios.post('http://localhost:3000/client/disableMFA', {}, { withCredentials: true });
             } else {
-                response = await axios.post('http://localhost:3000/api/v1/enableMFA', {}, { withCredentials: true });
+                document.getElementById("my_modal_2").showModal();
             }
             const { data } = response;
-            setUser(data || []);
-            window.location.reload();
+            await getUser();
+
         } catch (error) {
             console.error('Error fetching users:', error);
         }
@@ -59,20 +78,23 @@ const ViewProfile = () => {
         if (isChangePasswordPanelVisible) {
             // If the update panel is already visible, hide it
             setChangePasswordPanelVisible(false);
+            setMFAPanelVisible(false);
             setMainPanelVisible(true);
         }
         else {
             setChangePasswordPanelVisible(true);
             setMainPanelVisible(false);
+            setMFAPanelVisible(false);
         }
 
     };
 
     const handleUpdateClick = () => {
-        if (isChangePasswordPanelVisible) {
+        if (isChangePasswordPanelVisible || MFAPanelVisible) {
             setMainPanelVisible(true);
             setChangePasswordPanelVisible(false);
             setUpdatePanelVisible(true)
+            setMFAPanelVisible(false);
         }
         else if (isUpdatePanelVisible) {
             // If the update panel is already visible, hide it
@@ -101,7 +123,7 @@ const ViewProfile = () => {
 
 
         }
-        catch (error)  {
+        catch (error) {
             setOldPassword('');
             setNewPassword('');
             setFailPanelVisible(true);
@@ -160,6 +182,23 @@ const ViewProfile = () => {
         await getUser();
     };
 
+    const handleSubmitOTP = async () => {
+        try {
+            const response = await axios.post('http://localhost:3000/client/enableMFA', { enteredOTP: OTP }, { withCredentials: true });
+            const { data } = response;
+            console.log(data);
+            setUser(data || []);
+            document.getElementById("my_modal_2").close();
+        }
+        catch (error) {
+            console.error('Error enabling MFA:', error);
+        }
+        setOTP('');
+        setMFAPanelVisible(false);
+        setMainPanelVisible(true);
+        await getUser();
+    };
+
     const formattedDOB = user.DOB ? new Date(user.DOB).toLocaleDateString() : '';
 
     if (user) {
@@ -177,10 +216,84 @@ const ViewProfile = () => {
                                 Change Password
                             </button>
                         </div>
+
+                        <dialog id="my_modal_2" className="modal">
+                            <div className="modal-box w-11/12">
+                                <h3 className="font-bold text-lg">Enable MFA</h3>
+                                <div role="alert" className="alert alert-warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>Scan this code in Google Authenticator and enter OTP to continue.</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div style={{paddingRight:"5%"}}>
+                                    <input
+                                        style={{width:"75%"}}
+                                        type="text"
+                                        placeholder="Enter OTP"
+                                        className="input input-bordered input-warning w-full max-w-xs"
+                                        value={OTP}
+                                        onChange={(e) => setOTP(e.target.value)}
+                                    />
+                                    <button style={{width:"25%"}} onClick={handleSubmitOTP} className="btn btn-warning">Submit</button>
+                                    </div>
+                                    <img src={image} alt="QR Code" />
+                                </div>                                                    
+                            </div>
+                            <form method="dialog" className="modal-backdrop">
+                                <button>close</button>
+                            </form>
+                        </dialog>
+
+                        {/* <br />
+                                <div style={{ textAlign: 'center', marginTop: '50px' }}>
+                                    <h4>Popup - GeeksforGeeks</h4>
+                                    <Popup
+                                        trigger={<button style={buttonStyle}> Click to open popup </button>}
+                                        position="right center"
+                                        modal
+                                        nested
+                                    >
+                                        {(close) => (
+                                            <div style={popupStyle}>
+                                                <div style={headerStyle}>
+                                                    GeeksforGeeks
+                                                    <button style={closeButtonStyle} onClick={close}>
+                                                        &times;
+                                                    </button>
+                                                </div>
+                                                <div style={contentStyle}>
+                                                    <div role="alert" className="alert alert-warning">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        <span>Scan this code in Google Authenticator and enter OTP to continue.</span>
+                                                    </div>
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Enter OTP"
+                                                            className="input input-bordered input-warning w-full max-w-xs"
+                                                            value={OTP}
+                                                            onChange={(e) => setOTP(e.target.value)}
+                                                        />
+                                                        <button onClick={handleSubmitOTP} className="btn btn-warning">Submit</button>
+                                                        <img src={image} alt="QR Code" />
+                                                    </div>                                                    <button style={buttonStyle} onClick={close}>
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </Popup>
+                                </div> */}
+
                         {isChangePasswordPanelVisible && (
-                            <div>
+                            <div style={{height:"40%" ,justifyContent:"space-between"}}>
                                 <input
                                     className='input input-bordered input-info w-full max-w-xs'
+                                    style={{marginBottom:"2%", marginTop:"5%"}}
                                     type="password"
                                     value={oldPassword}
                                     onChange={(e) => setOldPassword(e.target.value)}
@@ -188,6 +301,7 @@ const ViewProfile = () => {
                                 />
                                 <input
                                     className='input input-bordered input-info w-full max-w-xs'
+                                    style={{marginBottom:"2%"}}
                                     type="text"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
@@ -301,6 +415,7 @@ const ViewProfile = () => {
                     <button className={user.MFAEnabled ? "btn btn-block btn-error" : "btn btn-block btn-info"} onClick={setMFA}>
                         {user.MFAEnabled ? 'Disable MFA' : 'Enable MFA'}
                     </button>
+
                 </div>
             </div>
         );
@@ -309,5 +424,47 @@ const ViewProfile = () => {
     // Placeholder content or loading spinner while checking login status
     return <div>Loading...</div>;
 };
+const buttonStyle = {
+    padding: '10px',
+    background: '#4CAF50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+};
+
+const popupStyle = {
+    background: '#fff',
+    padding: '20px',
+    borderRadius: '8px',
+    margin: 'auto',
+};
+
+const headerStyle = {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    marginBottom: '10px',
+    borderBottom: '1px solid #ddd',
+    paddingBottom: '10px',
+    display: 'flex',
+    justifyContent: 'space-between',
+};
+
+const contentStyle = {
+    fontSize: '1rem',
+    marginBottom: '10px',
+};
+
+const closeButtonStyle = {
+    background: '#ddd',
+
+
+    color: '#333',
+    border: 'none',
+    padding: '5px 10px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+};
+
 
 export default ViewProfile;

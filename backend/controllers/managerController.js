@@ -13,79 +13,150 @@ const managerController = {
     console.log("we are in report analytics");
 
     try {
-      // creating the analytics for tickets:
-
-
-      const Analytics = await ticketModel.aggregate([
+  
+const Analytics = await ticketModel.aggregate([
+  {
+    $facet: {
+      mainIssueCounts: [
         {
-          $facet: {
-            mainIssueCounts: [
-              {
-                $group: {
-                  _id: "$mainIssue",
-                  count: { $sum: 1 }
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  mainIssue: "$_id",
-                  count: "$count"
-                }
-              }
-            ],
-            subIssueCounts: [
-              {
-                $group: {
-                  _id: {
-                    mainIssue: "$mainIssue",
-                    subIssue: "$subIssue"
-                  },
-                  count: { $sum: 1 }
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  mainIssue: "$_id.mainIssue",
-                  subIssue: "$_id.subIssue",
-                  count: "$count"
-                }
-              }
-            ],
-            mostFrequentSubIssue: [
-              {
-                $sort: { "subIssueCounts.count": -1 }
-              },
-              {
-                $group: {
-                  _id: "$mainIssue",
-                  mostFrequentSubIssue: { $first: "$subIssue" },
-
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  mainIssue: "$_id",
-                  mostFrequentSubIssue: "$mostFrequentSubIssue",
-
-                }
-              }
-            ]
-          }
+          $group: {
+            _id: "$mainIssue",
+            count: { $sum: 1 },
+          },
         },
         {
           $project: {
-            mainIssueCounts: 1,
-            subIssueCounts: 1,
-            mostFrequentSubIssue: 1
-          }
-        }
-      ]);
+            _id: 0,
+            mainIssue: "$_id",
+            count: "$count",
+          },
+        },
+      ],
+      subIssueCounts: [
+        {
+          $group: {
+            _id: {
+              mainIssue: "$mainIssue",
+              subIssue: "$subIssue",
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            mainIssue: "$_id.mainIssue",
+            subIssue: "$_id.subIssue",
+            count: "$count",
+          },
+        },
+      ],
+      mostFrequentSubIssue: [
+        {
+          $group: {
+            _id: {
+              mainIssue: "$mainIssue",
+              subIssue: "$subIssue",
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { count: -1 },
+        },
+        {
+          $group: {
+            _id: "$_id.mainIssue",
+            mostFrequentSubIssue: { $first: "$_id.subIssue" },
+            count: { $first: "$count" },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            mainIssue: "$_id",
+            mostFrequentSubIssue: "$mostFrequentSubIssue",
+            count: "$count",
+          },
+        },
+      ],
+      subIssueDetails: [
+        {
+          $group: {
+            _id: {
+              mainIssue: "$mainIssue",
+              subIssue: "$subIssue",
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id.mainIssue",
+            subIssues: {
+              $push: {
+                s: "$_id.subIssue",
+                Count: "$count",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            mainIssue: "$_id",
+            subIssues: 1,
+          },
+        },
+      ],
+      subIssueCountsPerMainIssue: [
+        {
+          $unwind: "$subIssues",
+        },
+        {
+          $group: {
+            _id: {
+              mainIssue: "$mainIssue",
+              subIssue: "$subIssues.s",
+            },
+            count: { $sum: "$subIssues.Count" },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            mainIssue: "$_id.mainIssue",
+            subIssue: "$_id.subIssue",
+            count: "$count",
+          },
+        },
+        {
+          $group: {
+            _id: "$mainIssue",
+            subIssuesCount: { $addToSet: { subIssue: "$subIssue", count: "$count" } },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            mainIssue: "$_id",
+            subIssuesCount: 1,
+          },
+        },
+      ],
+    },
+  },
+  {
+    $project: {
+      mainIssueCounts: 1,
+      subIssueCounts: 1,
+      mostFrequentSubIssue: 1,
+      subIssueDetails: 1,
+      subIssueCountsPerMainIssue: 1,
+    },
+  },
+]);
 
-
-      //
       const analyticsOn = req.params.type;
       if (analyticsOn === 'ticket') {
 
@@ -111,78 +182,77 @@ const managerController = {
           console.error("Error fetching agent information:", error);
         }
       console.log("agent_acting_as_user");
-      //console.log("All agents userId chaeckinggg" + allAgentUserId);
-      //con
-      // AllAgen = await userModel.findById(agentUserId); // the user who is an agent
-        const allData_TicketUserAgent = await ticketModel.aggregate([
-          {
-            $lookup: {
-              from: "users", // Assuming your User model is named "User" and the collection is named "users"
-              localField: "userId",
-              foreignField: "_id",
-              as: "userData",
-            },
-          },
-          { $unwind: "$userData" },
-          {
-            $lookup: {
-              from: "support_agents", // Assuming your Support_Agent model is named "Support_Agent" and the collection is named "support_agents"
-              localField: "assignedAgent",
-              foreignField: "_id",
-              as: "assignedAgentData",
-            },
-          },
-          { $unwind: { path: "$assignedAgentData", preserveNullAndEmptyArrays: true } }, // Unwind the assignedAgentData array
-          {
-            $lookup: {
-              from: "users", // Assuming your Support_Agent model is named "Support_Agent" and the collection is named "support_agents"
-              localField: "_id",
-              foreignField: "user",
-              as: "assignedAgentFullData",
-            },
-          },         
-           { $unwind: { path: "$assignedAgentFullData", preserveNullAndEmptyArrays: true } }, // Unwind the assignedAgentData array
 
-          {
-            $project: {
-              ticketId: "$_id",
-              userIdIssuer: "$userId",
-              userEmail: "$userData.email",
-              issuerUsername: "$userData.username",
-              ticketMainIssue: "$mainIssue",
-              ticketSubIssue: "$subIssue",
-              tickettitle: "$title",
-              ticketStatus: "$ticketStatus",
-              ticketCreationDate: "$creationDate",
-              ticketResolutionDate: "$resolutionDate",
-              resolutionTime: {
-                $subtract: ["$resolutionDate", "$creationDate"],
-              },
-              ticketRating: {
-                $cond: {
-                  if: { $eq: ["$rating", -1] },
-                  then: "Not rated",
-                  else: "$rating",
-                },
-              },
-              assignedAgentId: "$assignedAgent",
-              agentRating: {
-                $cond: {
-                  if: { $gte: ["$assignedAgentData.rating", -1] },
-                  then: "$assignedAgentData.rating",
-                  else: "Not rated",
-                },
-              },
-              assignedAgentEmail: "$assignedAgentFullData.email",
-              assignedAgentUserName: "$assignedAgentFullData.username",
-              assignedAgentStatus: "$assignedAgentFullData.status",
-              // assignedAgentEmail: "$assignedAgentFullData.email",
-              // assignedAgentUserName: "$assignedAgentFullData.username",
-              // assignedAgentStatus: "$assignedAgentFullData.status",
-              assigbedAgentMainRole: "$assignedAgentData.main_role",
-            },
-          },
-        ]);
+     const allData_TicketUserAgent = await ticketModel.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "userData",
+    },
+  },
+  { $unwind: "$userData" },
+  {
+    $lookup: {
+      from: "support_agents",
+      localField: "assignedAgent",
+      foreignField: "_id",
+      as: "assignedAgentData",
+    },
+  },
+  { $unwind: { path: "$assignedAgentData", preserveNullAndEmptyArrays: true } },
+  {
+    $lookup: {
+      from: "users",
+      localField: "assignedAgentData.user",
+      foreignField: "_id",
+      as: "assignedAgentUserData",
+    },
+  },
+  { $unwind: { path: "$assignedAgentUserData", preserveNullAndEmptyArrays: true } },
+  {
+    $project: {
+      ticketId: "$_id",
+      userIdIssuer: "$userId",
+      userEmail: "$userData.email",
+      issuerUsername: "$userData.username",
+      ticketMainIssue: "$mainIssue",
+      ticketSubIssue: "$subIssue",
+      tickettitle: "$title",
+      ticketStatus: "$ticketStatus",
+      ticketCreationDate: "$creationDate",
+      ticketResolutionDate: "$resolutionDate",
+      resolutionTime: {
+        $cond: {
+          if: { $ne: ["$resolutionDate", null] },
+          then: { $subtract: ["$resolutionDate", "$creationDate"] },
+          else: "Not resolved yet",
+        }
+      },
+      ticketRating: {
+        $cond: {
+          if: { $eq: ["$rating", -1] },
+          then: "Not rated",
+          else: "$rating",
+        },
+      },
+      assignedAgentId: "$assignedAgent",
+      agentRating: {
+        $cond: {
+          if: { $eq: ["$assignedAgentData.rating", -1] },
+          then: "Not rated",
+          else: "$assignedAgentData.rating",
+        },
+      },
+      assignedAgentEmail: "$assignedAgentUserData.email",
+      assignedAgentUserName: "$assignedAgentUserData.username",
+      assignedAgentStatus: "$assignedAgentUserData.status",
+      assigbedAgentMainRole: "$assignedAgentData.main_role",
+    },
+  },
+]);
+
         // join agents on users 
 
         console.log("allData_TicketUserAgent.assignedAgentFullData");
@@ -274,6 +344,20 @@ console.log(allData_TicketUserAgent.assignedAgentFullData);
 };
 
 
+function calcluateResolutionTime(creationDate,resolutionDate) {
+  
+  //the function returns the resolution time in minutes
+  //the function returns null if the ticket does not have a resolution date
+  //the function returns null if the ticket does not have a creation date
+  if (resolutionDate && creationDate) {
+    const resolutionTimeMs = new Date(resolutionDate) - new Date(creationDate);
+    const resolutionTime = resolutionTimeMs / (1000 * 60); // Convert milliseconds to minutes
+
+    return resolutionTime;
+  } else {
+    return null;
+  }
+} 
 
 // function fastestAgent(allData_TicketUserAgent) {
 //   //is a function the returns the fastes agent based on the averages of the resolution time of theire resolved tickets

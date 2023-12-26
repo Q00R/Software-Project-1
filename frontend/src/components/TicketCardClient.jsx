@@ -1,18 +1,55 @@
-import { CreateTicket } from "../sections";
-import CreateTicketForm from "./CreateTicketForm";
+import ViewTicketForm from "./ViewTicketForm";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const TicketCardClient = ({ title, mainIssue, subIssue, priority, status }) => {
+const TicketCardClient = ({
+  title,
+  description,
+  ticketStatus,
+  priority,
+  mainIssue,
+  subIssue,
+  rating,
+  response,
+  creationDate,
+  resolutionDate,
+}) => {
+  const clientURL = "http://localhost:3000/client";
+
+  const inputDateCreation = new Date(creationDate);
+  const inputDateResolution = new Date(resolutionDate);
+
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    timeZoneName: "short",
+  };
+
+  const formattedDateCreation = inputDateCreation.toLocaleString(
+    "en-US",
+    options
+  );
+  const formattedDateResolution = inputDateResolution.toLocaleString(
+    "en-US",
+    options
+  );
+
   return (
-    <div className="card bg-base-100 shadow-xl m-2">
+    <div className="card bg-base-100 shadow-xl m-1">
       <div className="card-body">
         <h2 className="card-title">
           {title}
           <div>
-            <div className="badge badge-secondary bg-red-400 border-none">
+            <div className="badge badge-secondary bg-secondary border-none">
               {priority}
             </div>
-            <div className="badge badge-secondary bg-violet-500 border-none">
-              {status}
+            <div className="badge badge-secondary bg-primary border-none">
+              {ticketStatus}
             </div>
           </div>
         </h2>
@@ -21,18 +58,33 @@ const TicketCardClient = ({ title, mainIssue, subIssue, priority, status }) => {
             {mainIssue} : {subIssue}
           </p>
         </div>
-        <button className="btn btn-primary" onClick={()=>document.getElementById('my_modal_3').showModal()}>View Ticket</button>
-        <dialog id="my_modal_3" className="modal">
-          <div className="modal-box">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                ✕
-              </button>
-            </form>
-            <CreateTicketForm />
+        <div>
+          Description:
+          <p>{description}</p>
+        </div>
+        {ticketStatus === "Closed" ? (
+          <div>
+            Rating:
+            <p>{rating}</p>
           </div>
-        </dialog>
+        ) : null}
+        {ticketStatus === "Closed" ? (
+          <div>
+            Response:
+            <p>{response}</p>
+          </div>
+        ) : null}
+        <div>
+          Created on:
+          <p>{formattedDateCreation}</p>
+        </div>
+
+        {ticketStatus === "Closed" ? (
+          <div>
+            Resolved on:
+            <p>{formattedDateResolution}</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ const Search = () => {
         type="text"
         placeholder="Type here your question..."
       />
-      <button className="btn px-7 btn-active btn-circle btn-outline btn-primary mx-3 text-lg">Go!</button>
+      <button className="btn px-7 btn-active btn-circle btn-outline btn-primary mx-3 text-lg w-[100px]">Go!</button>
     </div>
   );
 };

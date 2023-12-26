@@ -2,11 +2,11 @@ import React from "react";
 
 
 const Footer = () => {
-  
+
 
   return (
     <>
-      <footer className="footer p-5 bg-base-200 text-base-content">
+      <footer className="footer p-5 bg-base-200 text-base-content ">
         <nav>
           <header className="footer-title">Services</header>
           <a className="link link-hover">Branding</a>
@@ -15,7 +15,7 @@ const Footer = () => {
           <a className="link link-hover">Advertisement</a>
         </nav>
         <nav>
-          <header className="footer-title">Company</header>
+          <header className="footer-title">Our Admins</header>
           <a className="link link-hover">About us</a>
           <a className="link link-hover">Contact</a>
           <a className="link link-hover">Jobs</a>
@@ -70,17 +70,42 @@ const Footer = () => {
                 <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
               </svg>
             </a>
-            <a>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                className="fill-current"
-              >
-                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
+            <a target="_blank" rel="noopener, noreferrer" href="https://www.npmjs.com/package/daisyui" class="link link-hover group">NPM
+          <svg xmlns="http://www.w3.org/2000/svg" 
+          width="24" 
+          height="24" 
+          viewBox="0 0 24 24" 
+          class="inline-block w-4 fill-current opacity-0 group-hover:opacity-50">
+            <path fill-rule="evenodd" d="M19,14 L19,19 C19,20.1045695 18.1045695,21 17,21 L5,21 C3.8954305,21 3,20.1045695 3,19 L3,7 C3,5.8954305 3.8954305,5 5,5 L10,5 L10,7 L5,7 L5,19 L17,19 L17,14 L19,14 Z M18.9971001,6.41421356 L11.7042068,13.7071068 L10.2899933,12.2928932 L17.5828865,5 L12.9971001,5 L12.9971001,3 L20.9971001,3 L20.9971001,11 L18.9971001,11 L18.9971001,6.41421356 Z">
+              </path>
               </svg>
-            </a>
+              </a>
+            <div className="group relative">
+              <a href="https://github.com/Q00R/Software-Project-1" target="_blank" rel="noopener noreferrer">
+                <button>
+                  <svg
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="w-8 hover:scale-125 duration-200 hover:stroke-blue-500"
+                  >
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                  </svg>
+                </button>
+                <span
+                  className="absolute -top-14 left-[50%] -translate-x-[50%] 
+  z-20 origin-left scale-0 px-3 rounded-lg border 
+  border-gray-300 bg-white py-2 text-sm font-bold
+  shadow-md transition-all duration-300 ease-in-out 
+  group-hover:scale-100"
+                >
+                  GitHub
+                </span>
+              </a>
+            </div>
           </div>
         </nav>
       </footer>
@@ -89,14 +114,27 @@ const Footer = () => {
 };
 
 export default Footer;
-
-<div class="group relative">
-  <button>
-  <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8 hover:scale-125 duration-200 hover:stroke-blue-500"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-  </button>
-  <span class="absolute -top-14 left-[50%] -translate-x-[50%] 
+{/*<div class="group relative">
+              <button>
+                <svg
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="w-8 hover:scale-125 duration-200 hover:stroke-red-600"
+                >
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+              </button>
+              <span
+                class="absolute -top-14 left-[50%] -translate-x-[50%] 
   z-20 origin-left scale-0 px-3 rounded-lg border 
   border-gray-300 bg-white py-2 text-sm font-bold
   shadow-md transition-all duration-300 ease-in-out 
-  group-hover:scale-100">GitHub<span>
-</span></span></div>
+  group-hover:scale-100"
+              >
+                GitHub
+              </span>
+</div>*/}

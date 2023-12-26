@@ -1,12 +1,13 @@
-import React from "react";
-import Knowledgebase from "../pages/Knowledgebase";
+import { useEffect,useState } from "react";
+import VerticalModal from "../components/verticalModal";
+import Button from "react-bootstrap/Button";
+import KnowledgebaseSidebar from "../components/knowledgebaseSidebar";
 
 const FAQ = () => {
   return (
-    <div>
-      <h1>FAQ</h1>
-      {/* <Knowledgebase /> */}
-    </div>
+    <>
+      <KnowledgebaseSidebar/>
+    </>
   );
 };
 
