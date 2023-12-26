@@ -37,7 +37,7 @@ router.get(
 );
 
 // rate ticket
-router.post(
+router.put(
   "/tickets/rate/:ticketId",
   authMiddleware(["client"]),
   clientController.rateTicket

@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
 import { FaBell } from 'react-icons/fa'; // Import the bell icon
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const NotificationSystem = () => {
-    const [notificationCount, setNotificationCount] = useState(0);
-  
-    const incrementNotification = () => {
-      setNotificationCount(notificationCount + 1);
-    };
-  
-    return (
-      <div>
-        <FaBell onClick={incrementNotification} />
-        {notificationCount > 0 && <span>{notificationCount}</span>}
-      </div>
-    );
+function NotificationSystem() {
+  const notify = () => {
+    toast("Custom Style Notification with css class!", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
+  return (
+    <div>
+      <button onClick={notify}><FaBell/></button>
+      <ToastContainer />
+    </div>
+  );
+}
   
   export default NotificationSystem;
