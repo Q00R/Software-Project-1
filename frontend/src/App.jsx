@@ -17,6 +17,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { useEffect } from "react";
 import AboutUs from "./components/AboutUs";
+import { useEffect } from "react";
 
 function App() {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ function App() {
           <Route path="/agent" element={<AgentDashboard />} />
           <Route path="/knowledgebase" element={<Knowledgebase />} />
           <Route path="/client" element={<ClientHome />} />
-        <Route path="/messenger" element={<Messenger />} />
+          <Route path="/messenger" element={<Messenger />} />
         </Routes>
       </section>
       <section>
