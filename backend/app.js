@@ -42,18 +42,26 @@ mongoose
   .catch((e) => {
     console.log(e);
   });
+  
+//Printing the response status and response json
+app.use((req, res, next) => {
+  const oldSend = res.send;
+  res.send = function (data) {
+    console.log(res.statusCode, data);
+    oldSend.apply(res, arguments);
+  };
+  console.log(req.method, req.url, req.headers.cookie);
+  next();
+});
 
 // Routes
-
 app.use("/api/v1", authRouter);
+app.use(authenticationMiddleware);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
-app.use(authenticationMiddleware);
-app.use("/knowledgebase", knowledgebaseRouter);
+app.use("/knowledgebase", authorizationMiddleware(['agent','admin','client']), knowledgebaseRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
-// app.use("/client", clientRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
-//app.use("/chat", chatRouter);
 app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);
 app.use("/manager", managerRouter);
 
