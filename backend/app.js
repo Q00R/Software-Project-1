@@ -13,7 +13,6 @@ const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agentRouter");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const adminRouter = require("./routes/adminRouter");
-//const chatRouter = require("./routes/chatRouter");
 const clientRouter = require("./routes/clientRouter");
 const managerRouter = require("./routes/managerRouter");
 const conversationsRouter = require("./routes/conversationsRouter");

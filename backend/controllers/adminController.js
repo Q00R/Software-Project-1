@@ -7,12 +7,65 @@ const adminController = {
   createNewUser: async (req, res) => {
     try {
       const { username, email, password, DOB, name, address, role, mainRole } = req.body;
+      if (password.length < 8) return res.status(400).json({ message: "Password must be at least 8 characters long", error: "Password must be at least 8 characters long" });
       // Check if the user already exists
-      const user = userController.registerFunc(username, email, password, DOB, name, address, role);
-      console.log(user);
+      const existingUser = await userModel.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ message: 'User already exists' });
+      }
+
+      // Hash and salt the password
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // Create a new user with the hashed password
+      const newUser = new userModel({ username, email, hashedPassword, salt, DOB, address, role, name });
+      await newUser.save()
+        .then(result => {
+          // get the user id
+          const userId = result._id;
+          // delete all the previous OTP records
+          UserOTPVerification.deleteMany({ userId });
+          // generate a new OTP
+          var secret = speakeasy.generateSecret({
+            name: "Login MFA secret",
+            length: 20
+          });
+          console.log(secret);
+          QRCode.toDataURL(secret.otpauth_url, function (err, data_url) {
+            console.log("start" + data_url + "end");
+          })
+          // store secret.ascii in the database
+          const newOTPVerification = new UserOTPVerification({ userId, secret: secret.ascii, otpauth_url: secret.otpauth_url, createdAt: Date.now() });
+          newOTPVerification.save()
+            .then(result => {
+              console.log("result" + result);
+            })
+            .catch(err => {
+              console.log(err);
+              return res.status(400).json({
+                status: "FAILED",
+                message: "OTP could not be created",
+                error: err.message,
+              });
+            });
+          // return with successful status code
+          console.log("result" + result);
+        })
+        .catch(err => {
+          console.log(err);
+          return res.status(400).json({
+            status: "FAILED",
+            message: "User could not be created",
+            error: err.message,
+          });
+        });
+      
+      console.log(newUser);
       if (role === "agent") {
         const newAgent = new agentModel({
-          user: user._id,
+          user: newUser._id,
           main_role: mainRole
         });
         await newAgent.save();

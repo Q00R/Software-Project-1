@@ -44,10 +44,10 @@ const AdminDashboard = () => {
     // ... (other imports and component code)
 
 <>
-  <div key="users" className="grid grid-cols-3 gap-4">
+  <div key="users" className="grid grid-cols-3 gap-4 ">
     {users.map((user, i) => (
-      <div className={`max-w-md shadow-md rounded-md overflow-hidden`} key={i}>
-        <div className="p-4">
+      <div className={`max-w-md shadow-md rounded-md overflow-hidden ease-in-out duration-300 hover:scale-105`} key={i}>
+        <div className="p-4 bg-gradient-to-r  from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500">
           <h1 className="font-bold text-xl mb-2">{user.username}</h1>
           <p className="text-gray-600 mb-2">Role: {user.role}</p>
           <p className="text-gray-600 mb-2">User ID: {user._id}</p>
@@ -55,14 +55,14 @@ const AdminDashboard = () => {
           <p className="text-gray-600 mb-2">DOB: {user.DOB}</p>
           <p className="text-gray-600 mb-2">Status: {user.status}</p>
         </div>
-        <div className="p-4 bg-gray-400">
+        <div className="p-4">
           <div className="dropdown dropdown-top">
             <div
               tabIndex={0}
               role="button"
               className={`btn btn-${user.role.toLowerCase()} rounded-full w-20 h-8 justify-center items-center`}
             >
-              {user.role}
+              Change Role
             </div>
             <ul tabIndex={0} className="text-gray-600 mb-2 dropdown-content z-[1] menu p-2 shadow bg-gray-400 rounded-box w-40">
               <li>

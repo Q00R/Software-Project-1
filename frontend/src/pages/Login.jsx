@@ -12,6 +12,7 @@ export default function SignInSide() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
+  window.dispatchEvent(new CustomEvent('role', { detail: { role: '' } }));
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -25,6 +26,7 @@ export default function SignInSide() {
       );
       const { status, data } = response;
       if (status === 200) {
+        console.log(data)
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('userRole', data.userRole);
         localStorage.setItem('userName', data.userName);

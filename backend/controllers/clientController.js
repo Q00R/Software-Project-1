@@ -41,7 +41,6 @@ async function assignAgent(ticket, agents, queue, noAgent, issue) {
 
 setInterval(async () => {
   console.log("Running");
-  console.log(HighPriority.front());
   const agents = await supportAgentModel.find({});
   // console.log("agents", agents.length);
   const noAgentHigh = [];

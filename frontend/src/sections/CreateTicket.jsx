@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { redirect } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const CreateTicket = () => {
+  const navigate = useNavigate();
+
   const clientURL = "http://localhost:3000/client";
 
   const [mainIssue, setMainIssue] = useState("Main Issue");
@@ -54,34 +56,40 @@ const CreateTicket = () => {
         } catch (error) {
           console.error("Error fetching workflow", error);
         }
-      }
-      else if (subIssue === "Other") {
-        
-          try {
-            const agentId = await axios.get(
-              `http://localhost:3000/conversations/${mainIssue}`,
-              { withCredentials: true }
-            ).data;
-            console.log(agentId);
-            await axios.post(
-              "http://localhost:3000/conversations",
-              {
-                receiverId: agentId,
-              },
-              { withCredentials: true }
-            );
-          } catch (error) {
-            console.error("Error getting agent", error);
-          }
+      } else if (subIssue === "Other") {
+        console.log("other");
+        try {
+          console.log("getting agent id");
+          console.log(mainIssue);
+          const agentId = await axios
+            .get(`http://localhost:3000/conversations/agentFind/${mainIssue}`, {
+              withCredentials: true,
+            })
+            .then((response) => response.data);
+          console.log("creating convo");
+          await axios.post(
+            "http://localhost:3000/conversations",
+            {
+              receiverId: agentId,
+            },
+            { withCredentials: true }
+          );
+          navigate("/messenger")
+        } catch (error) {
+          console.error("Error getting agent", error);
         }
-      };
+      }
+    };
     fetchWorkflow();
+    
   }, [mainIssue, subIssue]);
 
   useEffect(() => {
     const submitForm = async () => {
+      console.log("use effect bta3et el form");
       if (sumbitted) {
         try {
+          document.getElementById("createForm").style.display = "none";
           const response = await axios.post(
             `${clientURL}/ticketrequest`,
             formData,
@@ -96,14 +104,14 @@ const CreateTicket = () => {
     submitForm();
   }, [sumbitted]);
 
-  const handleFormSubmission = () => {
+  const handleFormSubmission = (e) => {
+    e.preventDefault();
     if (
       prioritySelected === "Priority" ||
       mainIssue === "Main Issue" ||
       subIssue === "Sub Issue"
     ) {
       setErrorMessage("Please fill out all fields");
-      setSubmitted(false);
     } else {
       setSubmitted(true);
       setFormData({
@@ -113,7 +121,6 @@ const CreateTicket = () => {
         mainIssue: mainIssue,
         subIssue: subIssue,
       });
-      console.log("Form Submitted");
     }
   };
 
@@ -270,13 +277,17 @@ const CreateTicket = () => {
               <button
                 type="submit"
                 className="bg-blue-400 text-white px-4 py-2 rounded-md"
-                onClick={handleFormSubmission}
+                onClick={(e) => handleFormSubmission(e)}
               >
                 Submit
               </button>
 
               {errorMessage && (
-                <div role="alert" className="alert alert-error">
+                <div
+                  role="alert"
+                  className="alert alert-error my-2"
+                  id="errorBanner"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="stroke-current shrink-0 h-6 w-6"
@@ -291,14 +302,6 @@ const CreateTicket = () => {
                     />
                   </svg>
                   <span>{errorMessage}</span>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() =>
-                      document.getElementById("my_modal_3").close()
-                    }
-                  >
-                    Go Back
-                  </button>
                 </div>
               )}
             </div>

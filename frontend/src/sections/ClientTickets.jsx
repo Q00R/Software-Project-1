@@ -86,12 +86,12 @@ const ClientTickets = () => {
         <div className="text-2xl font-montserrat font-semibold">
           Opened Tickets
         </div>
-        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin justify-center items-center">
+        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
           {openedTickets.length > 0 ? (
             openedTickets.map(
               (element) => (
                 console.log(element),
-                (<TicketCardClient key={element._id} {...element} />)
+                (<TicketCardClient key={element._id} {...element}/>)
               )
             )
           ) : (
@@ -103,7 +103,7 @@ const ClientTickets = () => {
         <div className="text-2xl font-montserrat font-semibold">
           In Progress Tickets
         </div>
-        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin justify-center items-center">
+        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
           {inProgressTickets.length > 0 ? (
             inProgressTickets.map(
               (element) => (
@@ -120,7 +120,7 @@ const ClientTickets = () => {
         <div className="text-2xl font-montserrat font-semibold">
           Closed Tickets
         </div>
-        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin justify-center items-center">
+        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
           {closedTickets.length > 0 ? (
             closedTickets.map(
               (element) => (

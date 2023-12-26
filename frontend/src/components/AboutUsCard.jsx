@@ -2,7 +2,7 @@ import linkedIn from "../assets/linkedIn.svg";
 
 const AboutUsCard = ({ imgURL, name, position, profURL }) => {
   return (
-    <div className="card bg-base-100 shadow-md mb-2 rounded-3xl object-cover w-full">
+    <div className="card bg-base-100 shadow-md mb-2 rounded-3xl object-cover w-[20%]">
       <figure className="px-2 pt-5">
         <img
           src={imgURL}
