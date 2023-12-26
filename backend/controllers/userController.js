@@ -40,7 +40,7 @@ const userController =
       // Check if the user already exists
       const existingUser = await userModel.findOne({ email });
       if (existingUser) {
-        return json({ error: 'User already exists',message: 'User already exists' });
+        return json({ error: 'User already exists', message: 'User already exists' });
       }
 
       // Hash and salt the password
@@ -99,7 +99,7 @@ const userController =
       const role = "client";
       const user = await userController.registerFunc(username, email, password, DOB, name, address, role);
       if (user.error) {
-        return res.status(400).json({message: user.message, error: user.error });
+        return res.status(400).json({ message: user.message, error: user.error });
       }
       return res.status(200).json({ message: "User created successfully" });
     }
@@ -434,16 +434,6 @@ const userController =
     }
     catch (error) {
       res.status(500).json({ message: "Server error" });
-    }
-  },
-  getUser: async (req, res) => {
-    try {
-      const user = await userModel.findById({ _id: new ObjectId(req.params.id) });
-      user.hashedPassword = undefined;
-      user.salt = undefined;
-      return res.status(200).json(user);
-    } catch (error) {
-      return res.status(500).json(error.message);
     }
   },
   getRole: async (req, res) => {

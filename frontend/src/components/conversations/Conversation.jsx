@@ -4,20 +4,22 @@ import "./conversation.css";
 const backend_url = "http://localhost:3000";
 
 export default function Conversation({ conversation, currentUser }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     const eltanyId = conversation.members.find((m) => m !== currentUser._id);
 
-    const getUser = async () => {
-      try {
-        const res = await axios(`${backend_url}/api/v1/${eltanyId}`);
-        setUser(res.data);
-      } catch (err) {
-        console.log(err);
+    const getAgentUsername = async () => {
+      if (eltanyId) {
+        try {
+          const res = await axios(`${backend_url}/conversations/agentUsername/${eltanyId}`, { withCredentials: true });
+          setUser(res.data);
+        } catch (err) {
+          console.log(err);
+        }
       }
     };
-    getUser();
+    getAgentUsername();
   }, [currentUser, conversation]);
 
   return (
@@ -27,7 +29,7 @@ export default function Conversation({ conversation, currentUser }) {
         src="https://media.tenor.com/z3HRQ3FONBAAAAAM/what-the-acutal-fu-are-u-in-my-house.gif"
         alt=""
       />
-      <span className="conversationName">{user?.username}</span>
+      <span className="conversationName">{user}</span>
     </div>
   );
 }

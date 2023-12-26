@@ -6,8 +6,6 @@ const authenticationMiddleware = require("../middleware/authenticationMiddleware
 
 router.get("/getRole", authenticationMiddleware, userController.getRole);
 
-router.get("/:id", userController.getUser);
-
 router.post("/register", userController.register);
 
 router.post("/verifyEmail", userController.verifyEmail);
