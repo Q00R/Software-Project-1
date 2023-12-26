@@ -13,6 +13,9 @@ const mongoose = require("mongoose");
 
 
 const nodemailer = require("nodemailer");
+const sessionModel = require("../models/sessionModel");
+const { ObjectId } = require("mongodb");
+const { json } = require("express");
 
 var transporter = nodemailer.createTransport({
   host: "smtp-mail.outlook.com",
@@ -32,14 +35,12 @@ var transporter = nodemailer.createTransport({
 
 const userController =
 {
-  register: async (req, res) => {
-    const { username, email, password, role, DOB, name, address } = req.body;
-
+  registerFunc: async (username, email, password, DOB, name, address, role) => {
     try {
       // Check if the user already exists
       const existingUser = await userModel.findOne({ email });
       if (existingUser) {
-        return res.status(400).json({ message: 'User already exists' });
+        return json({ error: 'User already exists',message: 'User already exists' });
       }
 
       // Hash and salt the password
@@ -60,7 +61,6 @@ const userController =
             name: "Login MFA secret",
             length: 20
           });
-          console.log(secret);
           QRCode.toDataURL(secret.otpauth_url, function (err, data_url) {
             console.log("start" + data_url + "end");
           })
@@ -72,7 +72,7 @@ const userController =
             })
             .catch(err => {
               console.log(err);
-              res.json({
+              return json({
                 status: "FAILED",
                 message: "OTP could not be created",
                 error: err.message,
@@ -80,23 +80,31 @@ const userController =
             });
           // return with successful status code
           console.log("result" + result);
-          res.status(200).json({ result });
+          return json({ status: 200, result });
         })
         .catch(err => {
-          console.log(err);
-          res.json({
+          return json({
             status: "FAILED",
             message: "User could not be created",
             error: err.message,
           });
         });
+    } catch (error) {
+      return { error: error.message };
+    }
+  },
+  register: async (req, res) => {
+    try {
+      const { username, email, password, DOB, name, address } = req.body;
+      const role = "client";
+      const user = await userController.registerFunc(username, email, password, DOB, name, address, role);
+      if (user.error) {
+        return res.status(400).json({message: user.message, error: user.error });
+      }
+      return res.status(200).json({ message: "User created successfully" });
     }
     catch (error) {
-      res.json({
-        status: "FAILED",
-        message: "User could not be created",
-        error: error.message,
-      });
+      return res.status(500).json({ message: "Server error", error: error.message });
     }
   },
   verifyEmail: async (req, res) => {
@@ -288,9 +296,6 @@ const userController =
       });
     }
   },
-
-
-
   // verifyOTPLogin: async (req, res) => {
   //   try {
   //     const { email, otp } = req.body;
@@ -348,6 +353,9 @@ const userController =
 
   logout: async (req, res) => {
     try {
+      console.log("logout");
+      if (!req.cookies) return res.status(201).json({ message: "Already Logged Out!" });
+      if (!req.cookies.token) return res.status(201).json({ message: "Already Logged Out!" });
       const token = req.cookies.token;
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
       const userId = decoded.user.userId;
@@ -358,9 +366,6 @@ const userController =
       res.status(500).json({ message: "Server error" });
     }
   },
-
-
-
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -433,15 +438,23 @@ const userController =
   },
   getUser: async (req, res) => {
     try {
-      const user = await userModel.findById({ _id: req.params.id });
+      const user = await userModel.findById({ _id: new ObjectId(req.params.id) });
+      user.hashedPassword = undefined;
+      user.salt = undefined;
       return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json(error.message);
     }
+  },
+  getRole: async (req, res) => {
+    try {
+      const user = await userModel.findById({ _id: new ObjectId(req.user.userId) });
+      return res.status(200).json(user.role);
+    } catch (error) {
+      return res.status(505).json(error.message);
+    }
   }
-
 }
-
 
 module.exports = userController;
 

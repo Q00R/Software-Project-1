@@ -40,7 +40,6 @@ const ViewProfile = () => {
 
     const generateImage = async () => {
         try {
-
             const response = await axios.get('http://localhost:3000/client/getSecret', { withCredentials: true });
             setImage(response.data.qrcode);
             await getUser();
