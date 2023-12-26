@@ -25,30 +25,48 @@ const agentController = {
         return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
 
-      let allTickets = [];
+      let resolvedTickets = {
+        sw: [],
+        hw: [],
+        nt: []
+      };
 
-      Object.keys(supportAgent.active_tickets).forEach(ticketType => {
-        allTickets = allTickets.concat(supportAgent.active_tickets[ticketType]);
-      });
-
-      Object.keys(supportAgent.resolved_tickets).forEach(ticketType => {
-        allTickets = allTickets.concat(supportAgent.resolved_tickets[ticketType]);
-      });
-
-      if (allTickets.length === 0) {
-        return res.status(400).json({ error: "Error 400: No tickets available" });
+      for (const ticketId of supportAgent.resolved_tickets) {
+        const ticket = await ticketModel.findOne({ _id: ticketId });
+        if (ticket) {
+          const { mainIssue } = ticket;
+          if (mainIssue === 'Software') {
+            resolvedTickets.sw.push(ticket);
+          } else if (mainIssue === 'Hardware') {
+            resolvedTickets.hw.push(ticket);
+          } else if (mainIssue === 'Network') {
+            resolvedTickets.nt.push(ticket);
+          }
+        }
       }
-      else {
-        const allTicketsDetails = await ticketModel.find({ _id: { $in: allTickets } });
-        return res.status(200).json({ message: "All tickets", allTickets: allTicketsDetails });
-      }
 
-      // return res.status(200).json({ message: "All tickets", allTickets });
+      // Merge active and resolved tickets for each category into a single array
+      let allTicketsDetails = {
+        sw: supportAgent.active_tickets.Software.concat(resolvedTickets.sw),
+        hw: supportAgent.active_tickets.Hardware.concat(resolvedTickets.hw),
+        nt: supportAgent.active_tickets.Network.concat(resolvedTickets.nt)
+      };
+
+      // Fetch details of all tickets from the merged arrays
+      allTicketsDetails = {
+        sw: await ticketModel.find({ _id: { $in: allTicketsDetails.sw } }),
+        hw: await ticketModel.find({ _id: { $in: allTicketsDetails.hw } }),
+        nt: await ticketModel.find({ _id: { $in: allTicketsDetails.nt } })
+      };
+
+      return res.status(200).json({ message: "All tickets", allTickets: allTicketsDetails });
+
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Error 500: Something went wrong, please try again!" });
     }
   }
+
 
   ,
 
@@ -67,16 +85,20 @@ const agentController = {
         return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
 
-      let allActiveTickets = [];
-
-      Object.keys(supportAgent.active_tickets).forEach(ticketType => {
-        allActiveTickets = allActiveTickets.concat(supportAgent.active_tickets[ticketType]);
-      });
+      let allActiveTickets = {
+        sw: supportAgent.active_tickets.Software,
+        hw: supportAgent.active_tickets.Hardware,
+        nt: supportAgent.active_tickets.Network
+      };
 
       if (allActiveTickets.length === 0) {
         return res.status(400).json({ error: "Error 400: No active tickets" });
       } else {
-        const activeTicketsDetails = await ticketModel.find({ _id: { $in: allActiveTickets }, ticketStatus: 'In Progress' });
+        const activeTicketsDetails = {
+          sw: await ticketModel.find({ _id: { $in: allActiveTickets.sw } }),
+          hw: await ticketModel.find({ _id: { $in: allActiveTickets.hw } }),
+          nt: await ticketModel.find({ _id: { $in: allActiveTickets.nt } })
+        }
         return res.status(200).json({ message: "Active tickets", activeTickets: activeTicketsDetails });
       }
     } catch (err) {
@@ -101,16 +123,12 @@ const agentController = {
         return res.status(400).json({ error: "Error 400: Support agent not found" });
       }
 
-      let allResolvedTickets = [];
-
-      Object.keys(supportAgent.resolved_tickets).forEach(ticketType => {
-        allResolvedTickets = allResolvedTickets.concat(supportAgent.resolved_tickets[ticketType]);
-      });
+      let allResolvedTickets = supportAgent.resolved_tickets;
 
       if (allResolvedTickets.length === 0) {
         return res.status(400).json({ error: "Error 400: No resolved tickets" });
       } else {
-        const resolvedTicketsDetails = await ticketModel.find({ _id: { $in: allResolvedTickets }, ticketStatus: 'Closed' });
+        const resolvedTicketsDetails = await ticketModel.find({ _id: { $in: allResolvedTickets } })
         return res.status(200).json({ message: "Resolved tickets", resolvedTickets: resolvedTicketsDetails });
       }
     } catch (err) {
