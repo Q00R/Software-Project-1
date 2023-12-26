@@ -1,19 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
-const defaultTheme = createTheme();
 const backend_url = 'http://localhost:3000/api/v1';
 
 export default function SignInSide() {
@@ -24,15 +12,7 @@ export default function SignInSide() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-  const checkLoginStatus = async () => {
-    window.dispatchEvent(new CustomEvent('role', { detail: { role: '' } }));
-  };
 
-  useEffect(() => {
-    // Check login status when the component mounts
-    checkLoginStatus();
-
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,14 +25,15 @@ export default function SignInSide() {
         },
         { withCredentials: true }
       );
-      checkLoginStatus();
       const { status, data } = response;
       if (status === 200) {
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('userRole', data.userRole);
         localStorage.setItem('userName', data.userName);
         if (data.MFAEnabled === true) {
-          navigate(`/mfa/${email}`);
+          // store email in local storage
+          localStorage.setItem("email", email)
+          navigate(`/mfa`);
         } else {
           // get user from database by email
           if (data.role === 'client') {
@@ -96,92 +77,63 @@ export default function SignInSide() {
 
   return (
     <>
-      <ThemeProvider theme={defaultTheme}>
-        <Grid container component="main" style={{ height: '100vh' }}>
-          <CssBaseline />
-          <Grid
-            item
-            xs={false}
-            sm={4}
-            md={7}
-            style={{
-              backgroundImage:
-                'url(https://source.unsplash.com/random?wallpapers)',
-              backgroundRepeat: 'no-repeat',
-              backgroundColor: (t) =>
-                t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          />
-          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-            <Box
-              style={{
-                my: 8,
-                mx: 4,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '3%',
-              }}
-            >
-              <Avatar style={{ m: 1, bgcolor: 'secondary.main' }}>
-                <LockOutlinedIcon />
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                Sign in
-              </Typography>
-              <Box component="form" noValidate onSubmit={handleSubmit} style={{ mt: 1 }}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
+      <div className="h-screen flex">
+        <div
+          className="hidden md:block md:w-7/12 bg-cover bg-center"
+          style={{
+            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+          }}
+        ></div>
+        <div className="h-full md:w-5/12 p-8" style={{ height: "75%" }}>
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="mb-1">
+              <div className="bg-secondary-main rounded-full p-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+
+              </div>
+            </div>
+            <h1 className="text-2xl font-bold mb-4">Sign in</h1>
+            <form className="w-full max-w-sm" onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <input
+                  className="input input-bordered input-primary rounded w-full py-2 px-3"
                   id="email"
-                  label="Email Address"
-                  name="email"
+                  type="email"
+                  placeholder="Email Address"
                   autoComplete="email"
                   autoFocus
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                  style={{ paddingBottom: '1rem' }}
-                  margin="normal"
                   required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
+                />
+              </div>
+              <div className="mb-4">
+                <input 
+                  className="input input-bordered input-primary rounded w-full py-2 px-3"
                   id="password"
+                  type="password"
+                  placeholder="Password"
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  style={{ mt: 3, mb: 2 }}
-                >
-                  Sign In
-                </Button>               
-                <Grid container>
-                  <Grid item style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Link href="/Register" variant="body2">
-                      {"Don't have an account? Sign Up"}
-                    </Link>
-                  </Grid>
-                </Grid>
-                {errorMessage && (
-                  <Typography color="error" style={{ marginTop: '1rem' }}>
-                    {errorMessage}
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </ThemeProvider>
+              </div>
+              <button
+              className="btn btn-primary"
+              type="submit"
+              >
+                Sign In
+              </button>
+              {errorMessage && (
+                <p className="text-red-500 mt-4">{errorMessage}</p>
+              )}
+            </form>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

@@ -1,9 +1,12 @@
 const ticketModel = require("../models/ticketModel");
-const workflowModel = require("../models/workflowsModel");
 const supportAgentModel = require("../models/supportagentModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
+const UserOTPVerification = require("../models/userOTPVerificationModel");
+const QRCode = require("qrcode");
+const speakeasy = require("speakeasy");
+
 const {
   Queue,
   HighPriority,
@@ -11,6 +14,7 @@ const {
   LowPriority,
 } = require("../Queue");
 const { ObjectId } = require("mongodb");
+const workflowsModel = require("../models/workflowsModel");
 
 function isFree(agent) {
   return (
@@ -128,14 +132,18 @@ setInterval(async () => {
 
 const clientController = {
   generateWorkflow: async (req, res) => {
+    console.log("generating workflow");
     try {
       const { mainIssue, subIssue } = req.query;
-      const workflow = await workflowModel.find({
+      console.log("main issue: ", mainIssue);
+      console.log("sub issue: ", subIssue);
+      const workflow = await workflowsModel.find({
         $and: [
-          { mainIssue: { $eq: mainIssue } },
-          { subIssue: { $eq: subIssue } },
+          { mainIssue: mainIssue },
+          { subIssue: subIssue },
         ],
       });
+      console.log("workflow: ", workflow);
       return res.status(200).json(workflow);
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -156,18 +164,23 @@ const clientController = {
       priority: req.body.priority,
     });
 
+    console.log("priority: ", req.body.priority);
     switch (req.body.priority) {
+      
       case "High":
+        console.log("ticket adding to high");
         HighPriority.enqueue(ticket);
-        console.log("ticket added to high");
+        console.log(HighPriority.size());
         break;
       case "Medium":
+        console.log("ticket adding to medium");
         MediumPriority.enqueue(ticket);
-        console.log("ticket added to mid");
+        console.log(MediumPriority.size());
         break;
       case "Low":
+        console.log("ticket adding to low");
         LowPriority.enqueue(ticket);
-        console.log("ticket added to low");
+        console.log(LowPriority.size());
         break;
     }
 
@@ -185,42 +198,30 @@ const clientController = {
     );
     const { userId } = decode.user;
     try {
-      const tickets = await ticketModel.find({ userId: userId });
+      const tickets = {
+        opened: await ticketModel.find({userId: userId, ticketStatus: "Opened"}),
+        inProgress: await ticketModel.find({userId: userId, ticketStatus: "In Progress"}),
+        closed: await ticketModel.find({userId: userId, ticketStatus: "Closed"}),
+      }
       return res.status(200).json(tickets);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
   },
-  getTicketByStatus: async (req, res) => {
+  getTicketByMainIssue: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],
       process.env.SECRET_KEY
     );
     const { userId } = decode.user;
-    const { status } = req.params;
-    const query = {
-      userId: userId,
-      ticketStatus: status,
-    };
+    const { mainIssue } = req.params;
     try {
-      const tickets = await ticketModel.find(query);
+      const tickets = {
+        opened: await ticketModel.find({userId: userId, ticketStatus: "Opened", mainIssue: mainIssue}),
+        inProgress: await ticketModel.find({userId: userId, ticketStatus: "In Progress", mainIssue: mainIssue}),
+        closed: await ticketModel.find({userId: userId, ticketStatus: "Closed", mainIssue: mainIssue}),
+      }
       return res.status(200).json(tickets);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
-  },
-  getTicket: async (req, res) => {
-    const { ticketId } = req.params;
-    console.log("get certain ticket with id: ", ticketId);
-    const ticketIdObject = new ObjectId(ticketId);
-    console.log(ticketIdObject);
-    try {
-      const ticket = await ticketModel.findOne({
-        _id: ticketIdObject,
-      });
-      console.log("ticket sending");
-      console.log(ticket);
-      return res.status(200).json(ticket);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -271,20 +272,140 @@ const clientController = {
       const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
       const userId = decoded.user.userId;
 
-      const newName = req.body.newName;
-      if (!userId || !newName)
-        return res
-          .status(400)
-          .json({ message: "User ID and Name are required" });
-      const user = await userModel.findById(userId);
-      if (!user) return res.status(400).json({ message: "User not found" });
-      user.name = newName;
-      const updatedUser = await user.save();
-      return res.status(200).json(updatedUser);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
-  },
+            const newName = req.body.newName;
+            if(!userId || !newName) return res.status(400).json({ message: "User ID and Name are required" });
+            const user = await userModel.findById(userId);
+            if(!user) return res.status(400).json({ message: "User not found" });
+            user.name = newName;
+            const updatedUser = await user.save();
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+    enableMFA: async (req, res) => {
+      // Check if the user has cookies
+      if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+      try {
+        const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+        const userId = decoded.user.userId;
+        const { enteredOTP } = req.body;
+        // get the actual secret from the database
+        const otpVerification = await UserOTPVerification.findOne({ userId: userId });
+        if (!otpVerification) {
+          return res.json({
+            status: "FAILED",
+            message: "OTP verification failed -- This user doesn't have a registered OTP",
+          });
+        }
+        const storedSecret = otpVerification.secret;
+        const verified = speakeasy.totp.verify({
+          secret: storedSecret,
+          encoding: 'ascii',
+          token: enteredOTP,
+        });
+        if (verified) {
+          // Update MFAEnabled property
+          const user = await userModel.findById(userId);
+          user.MFAEnabled = true;
+          // Save the changes to the database
+          await user.save();
+          res.json({
+            status: "SUCCESS",
+            message: "MFA enabled successfully",
+          });
+        }
+        else {
+          res.json({
+            status: "FAILED",
+            message: "MFA could not be enabled",
+            error: "OTP is incorrect",
+          });
+        }
+  
+      } catch (error) {
+        res.json({
+          status: "FAILED",
+          message: "MFA could not be enabled",
+          error: error.message,
+        });
+      }
+    },
+  
+    disableMFA: async (req, res) => {
+      // Check if the user has cookies
+      if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+      const decoded = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+      const userId = decoded.user.userId;
+      try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+          return res.json({
+            status: "FAILED",
+            message: "User not found",
+          });
+        }
+  
+        // Update MFAEnabled property
+        user.MFAEnabled = false;
+  
+        // Save the changes to the database
+        await user.save();
+  
+        res.json({
+          status: "SUCCESS",
+          message: "MFA disabled successfully",
+        });
+      } catch (error) {
+        res.json({
+          status: "FAILED",
+          message: "MFA could not be disabled",
+          error: error.message,
+        });
+      }
+    },
+  
+
+    getSecret: async (req, res) => {
+      try {
+        if (!req.cookies.token) return res.json({ message: "unauthorized access" });
+        const token = req.cookies.token;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.user.userId;
+        // get the actual secret from the database
+        const otpVerification = await UserOTPVerification.findOne({ userId: userId });
+        if (!otpVerification) {
+          return res.json({
+            status: "FAILED",
+            message: "OTP verification failed -- This user doesn't have a registered OTP",
+          });
+        }
+        const storedSecret = otpVerification.secret;
+        const storedOtpauth_url = otpVerification.otpauth_url;
+        let qrcode;
+        const dataUrl = await new Promise((resolve, reject) => {
+          QRCode.toDataURL(storedOtpauth_url, function (err, data_url) {
+              if (err) {
+                  console.error('Error generating QR code:', err);
+                  reject(err);
+              } else {
+                  resolve(data_url);
+              }
+          });
+      });
+      qrcode = dataUrl;
+        res.json({
+          status: "SUCCESS",
+          message: "Secret retrieved successfully",
+          secret: storedSecret,
+          otpauth_url: storedOtpauth_url,
+          qrcode: qrcode,
+        });
+      }
+      catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    },
 
   updateUsername: async (req, res) => {
     try {

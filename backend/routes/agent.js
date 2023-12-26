@@ -4,6 +4,7 @@ const agentController = require("../controllers/agentContoller");
 const authMiddleware = require("../middleware/authorizationMiddleware");
 const authorizationMiddleware = require("../middleware/authorizationMiddleware");
 
+
 //respond to user ticket
 router.put("/respond/:ticketId", agentController.respondToTicket);
 //Resolve ticket

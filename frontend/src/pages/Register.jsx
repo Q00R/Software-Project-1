@@ -57,115 +57,129 @@ const Register = () => {
   };
 
   return (
-    <Grid container component="main" sx={{ height: '100vh' }}>
-
-       
-
-      {/* Left side: Form */}
-      <Grid item xs={12} sm={6} component={Paper} elevation={6} square sx={{
-        backgroundColor: '#f0f0f0', // Set your desired background color here
-        padding: '20px',
-        borderRadius: '10px',
-        border: '2px solid #ccc',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-      }}>
-        
-        <Grid
-          container
-          justifyContent="center"
-          alignItems="center"
-          sx={{ height: '100%' }}
-        >
-          {/* Logo and Company Name Section */}
-          <Grid item xs={12} sx={{ textAlign: 'left', mb: 4, paddingLeft: 2, paddingRight: 2 }}>
-            
-              <img src={logo} alt="Logo" style={{ height: '100px', maxWidth: '100%', marginRight: '10px' }} />
-              <Typography variant="h2" sx={{ mt: 1, display: 'inline-block', maxHeight: '80px', overflow: 'hidden' }}>Sign up</Typography>
-          </Grid>
-
-          <Grid item xs={10} sm={8} md={6}>
-            <form onSubmit={handleSubmit} autoComplete="off">
-            <TextField
-                fullWidth
-                label="Full Name"
-                name="name"
-                onChange={handleChange}
-                margin="normal"
-                required
-                autoFocus
-              />
-              <TextField
-                fullWidth
-                label="Username"
-                name="username"
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                type="email"
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Password"
-                name="password"
-                type="password"
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Date of Birth"
-                name="DOB"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Address"
-                name="address"
-                multiline
-                rows={4}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-                <span>
-                  {errorMessage} {successMessage}
-                </span>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-                Sign Up
-              </Button>
-            </form>
-          </Grid>
-        </Grid>
-      </Grid>
-
+    <div className="flex">
       {/* Right side: Photo */}
-      <Grid
-        item
-        xs={false}
-        sm={6}
-        md={6}
-        sx={{
-          backgroundImage: `url(${photo1})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+      <div
+        className="hidden sm:block sm:flex-1 md:flex-1 bg-cover bg-center"
+        style={{
+          backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
         }}
       />
-    </Grid>
+      {/* Left side: Form */}
+        <div className="p-8 rounded shadow-md w-full max-w-md">
+          {/* Logo and Company Name Section */}
+          <div className="flex items-center mb-8">
+            <img src={logo} alt="Logo" className="h-16 max-w-full mr-4" />
+            <h2 className="text-3xl">Sign up</h2>
+          </div>
+
+          <form onSubmit={handleSubmit} autoComplete="off">
+            {/* Full Name */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                onChange={handleChange}
+                value={formData.name}
+                className="input input-bordered input-primary w-full max-w-xs"
+                required
+              />
+            </div>
+
+            {/* Username */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                name="username"
+                onChange={handleChange}
+                value={formData.username}
+                className="input input-bordered input-primary w-full max-w-xs"
+                required
+              />
+            </div>
+
+            {/* Email Address */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                onChange={handleChange}
+                value={formData.email}
+                className="input input-bordered input-primary w-full max-w-xs"
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                onChange={handleChange}
+                value={formData.password}
+                className="input input-bordered input-primary w-full max-w-xs"
+                required
+              />
+            </div>
+
+            {/* Date of Birth */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                name="DOB"
+                onChange={handleChange}
+                value={formData.DOB}
+                className="input input-bordered input-primary w-full max-w-xs"
+                required
+              />
+            </div>
+
+            {/* Address */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Address
+              </label>
+              <textarea
+                name="address"
+                onChange={handleChange}
+                value={formData.address}
+                rows={4}
+                className="input input-bordered input-primary w-full max-w-xs"
+                required
+              />
+            </div>
+
+            {/* Error and Success Messages */}
+            <span className="text-red-500">{errorMessage}</span>
+            <span className="text-green-500">{successMessage}</span>
+
+            {/* Sign Up Button */}
+            <button
+              type="submit"
+              className="btn btn-primary"
+            >
+              Sign Up
+            </button>
+          </form>
+      </div>
+
+      
+    </div>
   );
 };
 
