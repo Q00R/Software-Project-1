@@ -24,8 +24,6 @@ export default function SignInSide() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -42,6 +40,7 @@ export default function SignInSide() {
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('userRole', data.userRole);
         localStorage.setItem('userName', data.userName);
+        localStorage.setItem('role', data.userRole);
         if (data.MFAEnabled === true) {
           // store email in local storage
           localStorage.setItem("email", email)
@@ -49,7 +48,7 @@ export default function SignInSide() {
         } else {
           // get user from database by email
           if (data.role === 'client') {
-            navigate('/');
+            navigate('/client');
           } else if (data.role === 'admin') {
             navigate('/admin');
           } else if (data.role === 'manager') {
@@ -76,7 +75,8 @@ export default function SignInSide() {
   const clearSession = async () => {
     try {
       await axios.post(`${backend_url}/logout`, {}, { withCredentials: true });
-      checkLoginStatus();
+      window.dispatchEvent(new CustomEvent('role', { detail: { role: "" } }));
+      localStorage.clear();
     } catch (error) {
       console.error(error.message);
     }
@@ -85,6 +85,7 @@ export default function SignInSide() {
   useEffect(() => {
     // Call the function to clear cookies and end the session when the component mounts
     clearSession();
+    console.log('session cleared');
   }, []); // Empty dependency array ensures it runs only once when the component mounts
 
   return (

@@ -2,11 +2,10 @@
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRET_KEY;
 const userModel = require("../models/userModel");
+const userController = require("../controllers/userController");
 
 module.exports = function authenticationMiddleware(req, res, next) {
   const cookie = req.headers.cookie;
-  
-  console.log(cookie);
 
   // console.log(req.headers);
 

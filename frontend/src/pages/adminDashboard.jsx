@@ -12,6 +12,10 @@ const AdminDashboard = () => {
         { withCredentials: true }
       );
       const { data } = response;
+      data.forEach((user) => {
+        const dob = new Date(user.DOB);
+        user.DOB = `${dob.getFullYear()}/${dob.getMonth()}/${dob.getDate()}`;
+      });
       setUsers(data || []);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -25,19 +29,10 @@ const AdminDashboard = () => {
 
   const changeRole = async (userId, newRole) => {
     try {
-      const response = await axios({
-        method: "PUT",
-        url: "http://localhost:3000/admin/changeRole",
-        headers: { withCredentials: true },
-        data: {
-          userId,
-          newRole, // This is the body part
-        },
-      });
+      const response = await axios.put("http://localhost:3000/admin/changeRole", {userId: userId, newRole: newRole}, { withCredentials: true });
       const { data } = response;
-      if(data.success){
+      if(response.status == 200){
         fetchUsers();
-        alert("Role changed successfully");
       }else{
         console.error('Failed to change role:', data.message);
       }
@@ -46,63 +41,49 @@ const AdminDashboard = () => {
     }
   };
   return (
-    <div className="flex flex-col items-center">
-      {users.map((user,i) => (
-        <div
-          key={user._id}
-          className="m-4 w-1/2 transform transition duration-500 ease-in-out hover:scale-105"
-        >
-          <div className="card w-auto bg-gradient-to-r from-blue-500 via-green-500 to-red-500 text-white shadow-lg rounded-lg p-6">
-            <div className="card-body">
-              <h2 className="card-title text-lg">User</h2>
-              <p className="text-base">User ID: {user._id}</p>
-              <p className="text-base text-justify">User Name: {user.username} </p>
-              <p className="text-base">Email: {user.email} </p>
-              <p className="text-base">DOB: {user.DOB} </p>
-              <p className="text-base">Role: {user.role}</p>
-              <p className="text-base">Status: {user.status} </p>
-              <div className="card-actions ">
-                <div className="dropdown relative">
-                  <button 
-                    id={"my-dropdown"+i}
-                    tabIndex={0}
-                    role="button"
-                    className="btn bg-white rounded-full"
-                  >
-                    {user.role}
-                  </button>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-52 text-black absolute"
-                  >
-                    <li>
-                      <a onClick={() => {changeRole(user._id, "admin")
-                    document.getElementById("my-dropdown"+i).innerText="admin"}}>admin</a>
-                    </li>
-                    <li>
-                      <a onClick={() => {changeRole(user._id, "agent")
-                    document.getElementById("my-dropdown"+i).innerText="agent"}}>agent</a>
-                    </li>
-                    <li>
-                      <a onClick={() => {changeRole(user._id, "manager")
-                    document.getElementById("my-dropdown"+i).innerText="manager"}}>
-                        manager
-                      </a>
-                    </li>
-                    <li>
-                      <a onClick={() => {changeRole(user._id, "client")
-                    document.getElementById("my-dropdown"+i).innerText="client"}}>
-                        client
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+    // ... (other imports and component code)
+
+<>
+  <div key="users" className="grid grid-cols-3 gap-4">
+    {users.map((user, i) => (
+      <div className={`max-w-md shadow-md rounded-md overflow-hidden`} key={i}>
+        <div className="p-4">
+          <h1 className="font-bold text-xl mb-2">{user.username}</h1>
+          <p className="text-gray-600 mb-2">Role: {user.role}</p>
+          <p className="text-gray-600 mb-2">User ID: {user._id}</p>
+          <p className="text-gray-600 mb-2">Email: {user.email}</p>
+          <p className="text-gray-600 mb-2">DOB: {user.DOB}</p>
+          <p className="text-gray-600 mb-2">Status: {user.status}</p>
+        </div>
+        <div className="p-4 bg-gray-400">
+          <div className="dropdown dropdown-top">
+            <div
+              tabIndex={0}
+              role="button"
+              className={`btn btn-${user.role.toLowerCase()} rounded-full w-20 h-8 justify-center items-center`}
+            >
+              {user.role}
             </div>
+            <ul tabIndex={0} className="text-gray-600 mb-2 dropdown-content z-[1] menu p-2 shadow bg-gray-400 rounded-box w-40">
+              <li>
+                <a onClick={() => changeRole(user._id, "admin")}>Admin</a>
+              </li>
+              <li>
+                <a onClick={() => changeRole(user._id, "agent")}>Agent</a>
+              </li>
+              <li>
+                <a onClick={() => changeRole(user._id, "manager")}>Manager</a>
+              </li>
+              <li>
+                <a onClick={() => changeRole(user._id, "client")}>Client</a>
+              </li>
+            </ul>
           </div>
         </div>
-      ))}
-    </div>
+      </div>
+    ))}
+  </div>
+</>
   );
 };
 

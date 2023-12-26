@@ -24,9 +24,14 @@ export default function AppNavBar() {
   
   const [role, setRole] = useState("");
   window.addEventListener("role", function (e) {
-    setRole(e.detail.role);
+    setRole(localStorage.getItem("role"));
   });
+  
+  useEffect(() => {
+    setRole(localStorage.getItem("role"));
+  }, []);
 
+  console.log(role)
   return (
     <div className="navbar bg-transparent">
       <div className="navbar-start">
@@ -51,15 +56,23 @@ export default function AppNavBar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <li>
-              <a>Homepage</a>
-            </li>
-            <li>
-              <a>Portfolio</a>
-            </li>
-            <li>
-              <a>About</a>
-            </li>
+            {
+              role === "admin" ? (
+                <li>
+                  <a onClick={() => navigate("/admin")}>Admin Dashboard</a>
+                </li>
+              ) : role === "agent" ? (
+                <li>
+                  <a onClick={() => navigate("/agent")}>Agent Dashboard</a>
+                </li>
+              ) : role === "client" ? (
+                <li>
+                  <a onClick={() => navigate("/client")}>Client Dashboard</a>
+                </li>
+              ) : (
+                <></>
+              )
+            }
           </ul>
         </div>
       </div>
