@@ -37,9 +37,9 @@ function App() {
         <Route path="/messenger" element={<Messenger />} />
         </Routes>
       </section>
-      {/* <section>
+      <section>
         <AboutUs />
-      </section> */}
+      </section>
       <section>
         <Footer />
       </section>

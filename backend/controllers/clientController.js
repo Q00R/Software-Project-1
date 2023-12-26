@@ -164,18 +164,23 @@ const clientController = {
       priority: req.body.priority,
     });
 
+    console.log("priority: ", req.body.priority);
     switch (req.body.priority) {
+      
       case "High":
+        console.log("ticket adding to high");
         HighPriority.enqueue(ticket);
-        console.log("ticket added to high");
+        console.log(HighPriority.size());
         break;
       case "Medium":
+        console.log("ticket adding to medium");
         MediumPriority.enqueue(ticket);
-        console.log("ticket added to mid");
+        console.log(MediumPriority.size());
         break;
       case "Low":
+        console.log("ticket adding to low");
         LowPriority.enqueue(ticket);
-        console.log("ticket added to low");
+        console.log(LowPriority.size());
         break;
     }
 
@@ -198,7 +203,6 @@ const clientController = {
         inProgress: await ticketModel.find({userId: userId, ticketStatus: "In Progress"}),
         closed: await ticketModel.find({userId: userId, ticketStatus: "Closed"}),
       }
-      // const tickets = await ticketModel.find({ userId: userId });
       return res.status(200).json(tickets);
     } catch (error) {
       return res.status(400).json({ message: error.message });

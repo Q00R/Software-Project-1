@@ -1,11 +1,11 @@
-import ali from './ali.jpg';
-import mariamAmr from './mariam.jpg';
+import ali from './ali.jpeg';
+import mariamAmr from './mariamAmr.jpg';
 import mariam from './mariam.jpeg';
 import mostafa from './mostafa.jpg';
-import omar from './omar.jpg';
-import jana from './jana.jpg';
-import chilli from './chilli.jpg';
-import mina from './mina.jpg';
+import omar from './omar.jpeg';
+import jana from './jana.jpeg';
+import chilli from './chilli.jpeg';
+import mina from './mina.png';
 
 export {
     ali,

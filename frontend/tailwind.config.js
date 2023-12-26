@@ -10,6 +10,12 @@ module.exports = {
       fontFamily: {
         palanquin: ["Palanquin", "sans-serif"],
         montserrat: ["Montserrat", "sans-serif"],
+        alef: ["Alef", "sans-serif"],
+        alumni: ["Alumni Sans Pinstripe", "sans-serif"],
+        antic: ["Antic Slab", "sans-serif"],
+        arima: ["Arima", "sans-serif"],
+        athiti: ["Athiti", "sans-serif"],
+        advent: ["Advent Pro", "sans-serif"],
       },
     },
   },

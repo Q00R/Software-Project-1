@@ -5,13 +5,13 @@ import { redirect } from "react-router";
 const CreateTicket = () => {
   const clientURL = "http://localhost:3000/client";
 
-  const [mainIssue, setMainIssue] = useState("");
-  const [subIssue, setSubIssue] = useState("");
+  const [mainIssue, setMainIssue] = useState("Main Issue");
+  const [subIssue, setSubIssue] = useState("Sub Issue");
   const [workFlowGen, setWorkFlowGen] = useState(false);
   const [suggest, setSuggest] = useState([]);
   const [issues, setIssues] = useState([]);
   const [sumbitted, setSubmitted] = useState(false);
-  const [prioritySelected, setPrioritySelected] = useState("");
+  const [prioritySelected, setPrioritySelected] = useState("Priority");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -19,6 +19,7 @@ const CreateTicket = () => {
     mainIssue: "",
     subIssue: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const subSoftware = [
     "Operating System",
@@ -54,29 +55,28 @@ const CreateTicket = () => {
           console.error("Error fetching workflow", error);
         }
       }
-    };
-    fetchWorkflow();
-  }, [mainIssue, subIssue]);
-
-  useEffect(() => {
-    if (subIssue === "Other") {
-      const createConvo = async () => {
-        try {
-          const agentId = await axios.get(
-            `http://local:3000/messenger/${mainIssue}`,
-            { withCredentials: true }
-          ).data;
-          axios.post("http://localhost:3000/conversations",{
-            "receiverId": agentId
-        },{withCredentials: true})
-        } catch (error) {
-          console.error("Error getting agent", error);
+      else if (subIssue === "Other") {
+        
+          try {
+            const agentId = await axios.get(
+              `http://localhost:3000/conversations/${mainIssue}`,
+              { withCredentials: true }
+            ).data;
+            console.log(agentId);
+            await axios.post(
+              "http://localhost:3000/conversations",
+              {
+                receiverId: agentId,
+              },
+              { withCredentials: true }
+            );
+          } catch (error) {
+            console.error("Error getting agent", error);
+          }
         }
       };
-      createConvo();
-      redirect("/messenger");
-    }
-  }, [subIssue]);
+    fetchWorkflow();
+  }, [mainIssue, subIssue]);
 
   useEffect(() => {
     const submitForm = async () => {
@@ -97,15 +97,24 @@ const CreateTicket = () => {
   }, [sumbitted]);
 
   const handleFormSubmission = () => {
-    setSubmitted(true);
-    setFormData({
-      title: document.getElementById("title").value,
-      description: document.getElementById("description").value,
-      priority: prioritySelected,
-      mainIssue: mainIssue,
-      subIssue: subIssue,
-    });
-    console.log("Form Submitted");
+    if (
+      prioritySelected === "Priority" ||
+      mainIssue === "Main Issue" ||
+      subIssue === "Sub Issue"
+    ) {
+      setErrorMessage("Please fill out all fields");
+      setSubmitted(false);
+    } else {
+      setSubmitted(true);
+      setFormData({
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        priority: prioritySelected,
+        mainIssue: mainIssue,
+        subIssue: subIssue,
+      });
+      console.log("Form Submitted");
+    }
   };
 
   return (
@@ -141,6 +150,7 @@ const CreateTicket = () => {
           <form className="w-full">
             <div className="mb-3">
               <select
+                required
                 className="select select-primary w-full max-w-xs"
                 id="selectMainIssue"
                 key="selectMainIssue"
@@ -157,6 +167,7 @@ const CreateTicket = () => {
             </div>
             <div className="mb-3">
               <select
+                required
                 key="selectSubIssue"
                 className="select select-primary w-full max-w-xs"
                 value={subIssue}
@@ -221,6 +232,7 @@ const CreateTicket = () => {
                 Title:
               </label> */}
               <input
+                required
                 id="title"
                 type="text"
                 placeholder="Title"
@@ -231,6 +243,7 @@ const CreateTicket = () => {
             <div>
               <div className="mb-3">
                 <textarea
+                  required
                   id="description"
                   className="textarea textarea-bordered w-full max-w-xs h-40 scrollbar-thin"
                   placeholder="Description"
@@ -239,6 +252,7 @@ const CreateTicket = () => {
             </div>
             <div className="mb-3">
               <select
+                required
                 className="select select-primary w-full max-w-xs"
                 id="selectPriority"
                 value={prioritySelected}
@@ -252,14 +266,42 @@ const CreateTicket = () => {
                 <option id="Low">Low</option>
               </select>
             </div>
+            <div>
+              <button
+                type="submit"
+                className="bg-blue-400 text-white px-4 py-2 rounded-md"
+                onClick={handleFormSubmission}
+              >
+                Submit
+              </button>
 
-            <button
-              type="submit"
-              className="bg-blue-400 text-white px-4 py-2 rounded-md"
-              onClick={handleFormSubmission}
-            >
-              Submit
-            </button>
+              {errorMessage && (
+                <div role="alert" className="alert alert-error">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{errorMessage}</span>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() =>
+                      document.getElementById("my_modal_3").close()
+                    }
+                  >
+                    Go Back
+                  </button>
+                </div>
+              )}
+            </div>
           </form>
         </div>
       </dialog>

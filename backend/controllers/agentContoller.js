@@ -10,13 +10,7 @@ const nodemailer = require("nodemailer");
 const { ObjectId } = require("mongodb");
 
 const agentController = {
-  getAgentByIssue: async (req, res) => {
-    try {
-      res.status(200).json(await supportAgentModel.find({ main_role: req.params.mainIssue }));
-    } catch (error) {
-      res.status(400).json({ error: "Error 400: Support agent not found" });
-    }
-  },
+
   viewMyActiveTickets: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],

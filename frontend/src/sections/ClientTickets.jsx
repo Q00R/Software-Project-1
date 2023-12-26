@@ -54,28 +54,28 @@ const ClientTickets = () => {
       <div className="flex justify-center items-center m-2">
         <button
           id="Software"
-          className="btn btn-primary mx-2"
+          className="btn btn-primary mx-2 w-[100px]"
           onClick={handleIssueSoftware}
         >
           Software
         </button>
         <button
           id="Hardware"
-          className="btn btn-primary mx-2"
+          className="btn btn-primary mx-2 w-[100px]"
           onClick={handleIssueHardware}
         >
           Hardware
         </button>
         <button
           id="Network"
-          className="btn btn-primary mx-2"
+          className="btn btn-primary mx-2 w-[100px]"
           onClick={handleIssueNetwork}
         >
           Network
         </button>
         <button
           id="All"
-          className="btn btn-primary mx-2"
+          className="btn btn-primary mx-2 w-[100px]"
           onClick={handleStatusAll}
         >
           All
@@ -86,7 +86,7 @@ const ClientTickets = () => {
         <div className="text-2xl font-montserrat font-semibold">
           Opened Tickets
         </div>
-        <div className="grid grid-cols-2 justify-center items-center">
+        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin justify-center items-center">
           {openedTickets.length > 0 ? (
             openedTickets.map(
               (element) => (
@@ -103,7 +103,7 @@ const ClientTickets = () => {
         <div className="text-2xl font-montserrat font-semibold">
           In Progress Tickets
         </div>
-        <div className="grid grid-cols-2 justify-center items-center">
+        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin justify-center items-center">
           {inProgressTickets.length > 0 ? (
             inProgressTickets.map(
               (element) => (
@@ -120,7 +120,7 @@ const ClientTickets = () => {
         <div className="text-2xl font-montserrat font-semibold">
           Closed Tickets
         </div>
-        <div className="grid grid-cols-2 justify-center items-center">
+        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin justify-center items-center">
           {closedTickets.length > 0 ? (
             closedTickets.map(
               (element) => (
