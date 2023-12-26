@@ -72,7 +72,7 @@ const TicketsSchema = new mongoose.Schema({
   resolutionDate: {
     // The timestamp of when the ticket was resolved
     type: Date,
-    default: Date.now,
+    //default: Date.now,
     required: false,
   },
 

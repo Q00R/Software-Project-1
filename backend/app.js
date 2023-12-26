@@ -10,14 +10,15 @@ const authorizationMiddleware = require("./middleware/authorizationMiddleware");
 const authenticationMiddleware = require("./middleware/authenticationMiddleware");
 const backupDatabaseController = require("./controllers/dbBackupController")
 const authRouter = require("./routes/authentication");
-const agentRouter = require("./routes/agent");
+const agentRouter = require("./routes/agentRouter");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const adminRouter = require("./routes/adminRouter");
 //const chatRouter = require("./routes/chatRouter");
 const clientRouter = require("./routes/clientRouter");
-const managerRouter = require("./routes/manager");
+const managerRouter = require("./routes/managerRouter");
 const conversationsRouter = require("./routes/conversationsRouter");
 const messagesRouter = require("./routes/messagesRouter");
+const openai = require("./routes/openai");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -57,13 +58,14 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/v1", authRouter);
 app.use(authenticationMiddleware);
+app.use("/openai", openai);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
 app.use("/knowledgebase", authorizationMiddleware(['agent','admin','client']), knowledgebaseRouter);
 app.use("/agent", authorizationMiddleware(['agent']), agentRouter);
 app.use("/admin", authorizationMiddleware(['admin']), adminRouter);
 app.use("/client", authorizationMiddleware(['client', 'admin', 'agent']), clientRouter);
-app.use("/manager", managerRouter);
+app.use("/manager",authorizationMiddleware(['manager']), managerRouter);
 
 
 app.use(function (req, res, next) {

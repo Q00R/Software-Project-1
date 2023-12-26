@@ -6,6 +6,8 @@ import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
 import AdminRegisterUser from "./pages/adminRegisterUser";
+import  ManagerDashboard  from "./pages/managerDashboard"; 
+//frontend\src\pages\ManagerDashboard.jsx
 //import ChatsPage from "./pages/ChatsPage";
 import Knowledgebase from "./pages/Knowledgebase";
 import AgentDashboard from "./pages/AgentDashboard";
@@ -55,6 +57,7 @@ function App() {
           <Route path="/messenger" element={<Messenger />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/adminRegisterUser" element={<AdminRegisterUser />} />
+          <Route path="/manager" element={<ManagerDashboard />} />
         </Routes>
       </section>
       <section>

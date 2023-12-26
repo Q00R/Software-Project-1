@@ -4,11 +4,12 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import profileImage from "../assets/userIcon.png";
-import FancyButton from "./Button";
+
 import ThemeChangerButton from "./ThemeChanger";
 import websiteLogo from "../assets/Final logo.ico"
+import NotificationSystem from "./NotificationSystem";
 
 export default function AppNavBar() {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ export default function AppNavBar() {
       <div className="navbar-end">
         {<ThemeChangerButton />}
 
-
+           {<NotificationSystem/>} 
         {/* Check if user is logged in */}
         {role ? (
           <div>
