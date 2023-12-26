@@ -4,10 +4,10 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
-import Admin from "./pages/AdminDashboard";
+import Admin from "./pages/adminDashboard";
+import AdminRegisterUser from "./pages/adminRegisterUser";
 import  ManagerDashboard  from "./pages/managerDashboard"; 
 //frontend\src\pages\ManagerDashboard.jsx
-//import ChatsPage from "./pages/ChatsPage";
 import Knowledgebase from "./pages/Knowledgebase";
 import AgentDashboard from "./pages/AgentDashboard";
 import ViewProfile from "./pages/viewProfile";
@@ -19,7 +19,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { useEffect } from "react";
 import AboutUs from "./components/AboutUs";
-
 
 function App() {
   const navigate = useNavigate();
@@ -50,12 +49,13 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/mfa" element={<MFA />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="/viewProfile" element={<ViewProfile />} />
           <Route path="/agent" element={<AgentDashboard />} />
           <Route path="/knowledgebase" element={<Knowledgebase />} />
           <Route path="/client" element={<ClientHome />} />
-        <Route path="/messenger" element={<Messenger />} />
+          <Route path="/messenger" element={<Messenger />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/adminRegisterUser" element={<AdminRegisterUser />} />
           <Route path="/manager" element={<ManagerDashboard />} />
         </Routes>
       </section>

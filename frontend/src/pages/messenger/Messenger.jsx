@@ -68,7 +68,7 @@ export default function Messenger() {
     const getMessages = async () => {
       if (currentChat) {
         try {
-          const res = await axios.get(`${backend_url}/messages/${currentChat._id}`);
+          const res = await axios.get(`${backend_url}/messages/${currentChat._id}`, { withCredentials: true });
           setMessages(res.data);
         } catch (err) {
           console.log(err);
@@ -97,7 +97,7 @@ export default function Messenger() {
     });
 
     try {
-      const res = await axios.post(`${backend_url}/messages`, message);
+      const res = await axios.post(`${backend_url}/messages`, message, { withCredentials: true });
       setMessages([...messages, res.data]);
       setNewMessage("");
     } catch (err) {

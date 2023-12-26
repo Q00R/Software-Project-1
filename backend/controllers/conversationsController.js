@@ -1,11 +1,10 @@
 const Conversation = require("../models/Conversation");
 const supportAgentModel = require("../models/supportagentModel");
+const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 
 const conversationsController = {
   getAgentByIssue: async (req, res) => {
-    console.log("ana henaaa");
     const { mainIssue } = req.params;
     try {
       const agent = await supportAgentModel.findOne({
@@ -16,7 +15,16 @@ const conversationsController = {
       res.status(400).json({ error: "Error 400: Support agent not found" });
     }
   },
-
+  getAgentUsername: async (req, res) => {
+    try {
+      const agent = await supportAgentModel.findOne({
+        _id: req.params.id,
+      });
+      res.status(200).json((await userModel.findById({ _id: agent.user })).username);
+    } catch (error) {
+      res.status(400).json({ error: "Error 400: Support agent not found" });
+    }
+  },
   // new conv
   createConversation: async (req, res) => {
     const decode = jwt.verify(

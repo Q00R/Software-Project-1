@@ -15,7 +15,6 @@ const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const sessionModel = require("../models/sessionModel");
 const { ObjectId } = require("mongodb");
-const { json } = require("express");
 
 var transporter = nodemailer.createTransport({
   host: "smtp-mail.outlook.com",
@@ -35,12 +34,16 @@ var transporter = nodemailer.createTransport({
 
 const userController =
 {
-  registerFunc: async (username, email, password, DOB, name, address, role) => {
+  register: async (req, res) => {
     try {
+      const { username, email, password, DOB, name, address } = req.body;
+      if (password.length < 8) return res.status(400).json({ message: "Password must be at least 8 characters long", error: "Password must be at least 8 characters long" });
+
+      const role = "client";
       // Check if the user already exists
       const existingUser = await userModel.findOne({ email });
       if (existingUser) {
-        return json({ error: 'User already exists',message: 'User already exists' });
+        return res.status(400).json({ message: 'User already exists' });
       }
 
       // Hash and salt the password
@@ -61,6 +64,7 @@ const userController =
             name: "Login MFA secret",
             length: 20
           });
+          console.log(secret);
           QRCode.toDataURL(secret.otpauth_url, function (err, data_url) {
             console.log("start" + data_url + "end");
           })
@@ -72,7 +76,7 @@ const userController =
             })
             .catch(err => {
               console.log(err);
-              return json({
+              res.json({
                 status: "FAILED",
                 message: "OTP could not be created",
                 error: err.message,
@@ -80,31 +84,23 @@ const userController =
             });
           // return with successful status code
           console.log("result" + result);
-          return json({ status: 200, result });
+          res.status(200).json({ result });
         })
         .catch(err => {
-          return json({
+          console.log(err);
+          res.json({
             status: "FAILED",
             message: "User could not be created",
             error: err.message,
           });
         });
-    } catch (error) {
-      return { error: error.message };
-    }
-  },
-  register: async (req, res) => {
-    try {
-      const { username, email, password, DOB, name, address } = req.body;
-      const role = "client";
-      const user = await userController.registerFunc(username, email, password, DOB, name, address, role);
-      if (user.error) {
-        return res.status(400).json({message: user.message, error: user.error });
-      }
-      return res.status(200).json({ message: "User created successfully" });
     }
     catch (error) {
-      return res.status(500).json({ message: "Server error", error: error.message });
+      res.json({
+        status: "FAILED",
+        message: "User could not be created",
+        error: error.message,
+      });
     }
   },
   verifyEmail: async (req, res) => {
@@ -434,16 +430,6 @@ const userController =
     }
     catch (error) {
       res.status(500).json({ message: "Server error" });
-    }
-  },
-  getUser: async (req, res) => {
-    try {
-      const user = await userModel.findById({ _id: new ObjectId(req.params.id) });
-      user.hashedPassword = undefined;
-      user.salt = undefined;
-      return res.status(200).json(user);
-    } catch (error) {
-      return res.status(500).json(error.message);
     }
   },
   getRole: async (req, res) => {
