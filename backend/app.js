@@ -18,6 +18,7 @@ const clientRouter = require("./routes/clientRouter");
 const managerRouter = require("./routes/manager");
 const conversationsRouter = require("./routes/conversationsRouter");
 const messagesRouter = require("./routes/messagesRouter");
+const openai = require("./routes/openai");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -57,6 +58,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/v1", authRouter);
 app.use(authenticationMiddleware);
+app.use("/openai", openai);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
 app.use("/knowledgebase", authorizationMiddleware(['agent','admin','client']), knowledgebaseRouter);

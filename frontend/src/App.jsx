@@ -17,7 +17,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { useEffect } from "react";
 import AboutUs from "./components/AboutUs";
-import { useEffect } from "react";
 
 function App() {
   const navigate = useNavigate();
