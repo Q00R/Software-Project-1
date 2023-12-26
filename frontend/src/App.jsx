@@ -4,7 +4,7 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
-import Admin from "./pages/adminDashboard";
+import Admin from "./pages/AdminDashboard";
 import  ManagerDashboard  from "./pages/managerDashboard"; 
 //frontend\src\pages\ManagerDashboard.jsx
 //import ChatsPage from "./pages/ChatsPage";
