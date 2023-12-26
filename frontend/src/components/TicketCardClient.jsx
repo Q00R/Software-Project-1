@@ -13,8 +13,32 @@ const TicketCardClient = ({
   response,
   creationDate,
   resolutionDate,
+  ticketId,
 }) => {
-  const clientURL = "http://localhost:3000/client";
+  const [selectedRating, setSelectedRating] = useState(0);
+  const handleRating = (e) => {
+    setSelectedRating(parseInt(e.target.value, 10));
+  };
+
+  useEffect(() => {
+    setSelectedRating(rating);
+  }, []);
+
+  const handleSubmit = async (e) => {
+    try{
+      const response = await axios.put(
+        `http://localhost:3000/client/tickets/rate/${ticketId}`,
+        {
+          rating: selectedRating,
+        },
+        { withCredentials: true }
+      );
+      console.log(response);
+    }
+    catch(error){
+      console.error(error);
+    }
+  }
 
   const inputDateCreation = new Date(creationDate);
   const inputDateResolution = new Date(resolutionDate);
@@ -64,10 +88,22 @@ const TicketCardClient = ({
         </div>
         {ticketStatus === "Closed" ? (
           <div>
-            Rating:
-            <p>{rating}</p>
+            Current Rating: {selectedRating}
+            <br/>
+            Change Your Rating: &nbsp;
+            <div className="rating rating-md">
+              <p>
+                <input type="radio" name="rating-5" value="1" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
+                <input type="radio" name="rating-5" value="2" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/> 
+                <input type="radio" name="rating-5" value="3" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
+                <input type="radio" name="rating-5" value="4" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
+                <input type="radio" name="rating-5" value="5" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
+              </p>
+            </div>
+            <button className="btn ml-2" onClick={handleSubmit}>Confirm</button>
           </div>
         ) : null}
+
         {ticketStatus === "Closed" ? (
           <div>
             Response:

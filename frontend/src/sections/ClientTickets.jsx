@@ -125,7 +125,7 @@ const ClientTickets = () => {
             closedTickets.map(
               (element) => (
                 console.log(element),
-                (<TicketCardClient key={element._id} {...element} />)
+                (<TicketCardClient key={element._id} ticketId={element._id} {...element} />)
               )
             )
           ) : (
