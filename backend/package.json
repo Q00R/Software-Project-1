@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "chart.js": "^4.4.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "daisyui": "^4.4.23",
@@ -22,6 +23,7 @@
     "nodemailer-dkim": "^1.0.5",
     "openssl": "^2.0.0",
     "qrcode": "^1.5.3",
+    "react-chartjs-2": "^5.2.0",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {

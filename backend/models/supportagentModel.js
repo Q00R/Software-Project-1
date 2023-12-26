@@ -52,7 +52,7 @@ const SupportAgentSchema = new mongoose.Schema(
     }, // Embedding the User schema
     rating: {
       type: Number,
-      min: 0,
+      min: -1,
       max: 5,
       default: -1
     },

@@ -11,6 +11,7 @@ import {
   AgentDashboard,
   ClientHome,
   TrySearchParams,
+  ManagerDashboard,
   viewProfile,
 } from "./pages";
 import "./index.css"; // Import your CSS file
@@ -48,6 +49,9 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/viewProfile" element={<viewProfile />} />
         <Route path="/agent" element={<AgentDashboard />} />
+
+       
+        <Route path="/manager" element={<ManagerDashboard />} />
         <Route path="/client" element={<ClientHome />} />
       </Routes>
       <Footer />

@@ -89,6 +89,31 @@ const managerController = {
       const analyticsOn = req.params.type;
       if (analyticsOn === 'ticket') {
 
+        try {
+          const allAgents = await supportAgentModel.find();
+          console.log("allAgents");
+          console.log(allAgents);
+          
+          // Extract user IDs from support agents
+          const allAgentUserIds = allAgents.map((data) => data.user);
+          console.log("allAgentUserIds");
+          console.log(allAgentUserIds);
+          
+          // const agent_acting_as_user = await Promise.all(
+          //   allAgentUserIds.map((userId) => userModel.findById(userId))
+          // );
+          // console.log("agent_acting_as_user");
+          // console.log(agent_acting_as_user);
+          // // Now agent_acting_as_user contains the user information for the support agents
+         
+        } catch (error) {
+          // Handle any errors that might occur during the database queries
+          console.error("Error fetching agent information:", error);
+        }
+      console.log("agent_acting_as_user");
+      //console.log("All agents userId chaeckinggg" + allAgentUserId);
+      //con
+      // AllAgen = await userModel.findById(agentUserId); // the user who is an agent
         const allData_TicketUserAgent = await ticketModel.aggregate([
           {
             $lookup: {
@@ -108,6 +133,16 @@ const managerController = {
             },
           },
           { $unwind: { path: "$assignedAgentData", preserveNullAndEmptyArrays: true } }, // Unwind the assignedAgentData array
+          {
+            $lookup: {
+              from: "users", // Assuming your Support_Agent model is named "Support_Agent" and the collection is named "support_agents"
+              localField: "_id",
+              foreignField: "user",
+              as: "assignedAgentFullData",
+            },
+          },         
+           { $unwind: { path: "$assignedAgentFullData", preserveNullAndEmptyArrays: true } }, // Unwind the assignedAgentData array
+
           {
             $project: {
               ticketId: "$_id",
@@ -138,14 +173,20 @@ const managerController = {
                   else: "Not rated",
                 },
               },
-              assignedAgentEmail: "$assignedAgentData.email",
-              assignedAgentUserName: "$assignedAgentData.username",
-              assignedAgentStatus: "$assignedAgentData.status",
+              assignedAgentEmail: "$assignedAgentFullData.email",
+              assignedAgentUserName: "$assignedAgentFullData.username",
+              assignedAgentStatus: "$assignedAgentFullData.status",
+              // assignedAgentEmail: "$assignedAgentFullData.email",
+              // assignedAgentUserName: "$assignedAgentFullData.username",
+              // assignedAgentStatus: "$assignedAgentFullData.status",
               assigbedAgentMainRole: "$assignedAgentData.main_role",
             },
           },
         ]);
+        // join agents on users 
 
+        console.log("allData_TicketUserAgent.assignedAgentFullData");
+console.log(allData_TicketUserAgent.assignedAgentFullData);
         console.log('ticket');
         const mainTicketId = req.body.id; // The id of the ticket to generate a report for
         if (mainTicketId) {
@@ -404,16 +445,16 @@ const managerController = {
 */
 
 //function to calculate the resolution time of a ticket
-function calculateResolutionTime(creationDate, resolutionDate) {
-  console.log("we are in calculateResolutionTime function");
-  if (creationDate && resolutionDate) {
-    const resolutionTimeMs = new Date(resolutionDate) - new Date(creationDate);
-    const resolutionTime = resolutionTimeMs / (1000 * 60); // Convert milliseconds to minutes
+// function calculateResolutionTime(creationDate, resolutionDate) {
+//   console.log("we are in calculateResolutionTime function");
+//   if (creationDate && resolutionDate) {
+//     const resolutionTimeMs = new Date(resolutionDate) - new Date(creationDate);
+//     const resolutionTime = resolutionTimeMs / (1000 * 60); // Convert milliseconds to minutes
 
-    return resolutionTime;
-  } else {
-    return null;
-  }
-}
+//     return resolutionTime;
+//   } else {
+//     return null;
+//   }
+// }
 
 module.exports = managerController;
