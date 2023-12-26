@@ -227,24 +227,21 @@ const clientController = {
     }
   },
   rateTicket: async (req, res) => {
+    console.log("rating ticket");
     try {
       const ticketId = req.params.ticketId;
-      const clientId = req.body.clientId;
       const rating = req.body.rating;
 
       console.log("ticketId: " + ticketId);
 
-      if (!ticketId || !clientId)
+      if (!ticketId)
         return res
           .status(400)
-          .json({ message: "Ticket ID and Client ID are required" });
+          .json({ message: "Ticket ID is required" });
       const ticket = await ticketModel.findOne({
-        $and: [{ _id: ticketId }, { userId: clientId }],
+        $and: [{ _id: ticketId }],
       });
       if (!ticket) return res.status(400).json({ message: "Ticket not found" });
-      if (ticket.rating != -1)
-        return res.status(400).json({ message: "Ticket already rated" });
-
       ticket.rating = rating;
       const updatedTicket = await ticket.save();
       const agent = await supportAgentModel.findById(ticket.assignedAgent);
