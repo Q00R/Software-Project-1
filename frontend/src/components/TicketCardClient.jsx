@@ -5,7 +5,7 @@ import axios from "axios";
 const TicketCardClient = ({
   title,
   description,
-  status,
+  ticketStatus,
   priority,
   mainIssue,
   subIssue,
@@ -15,40 +15,6 @@ const TicketCardClient = ({
   resolutionDate,
 }) => {
   const clientURL = "http://localhost:3000/client";
-
-  const [ticket, setTicket] = useState({});
-
-  const [fetchData, setfetchData] = useState(false);
-
-  const [showModel, setShowModel] = useState(false);
-
-  //const ticketId = cardKey;
-
-  const handleViewTicket = () => {
-    console.log(title);
-    // // setfetchData(true);
-    // //console.log("ticket id: ", cardKey);
-    // await axios.get(`${clientURL}/tickets/${ticketId}`, {withCredentials: true}).then((response) => {
-    //   setTicket((ticket)=>{response.data});
-    setShowModel((old) => {
-      true;
-    });
-    //   console.log("ticket: ", ticket);
-    document.getElementById("my_modal_3").showModal();
-
-    //}).catch((error) => console.error("Could not fetch data", error));
-  };
-
-  // useEffect(() => {
-
-  // }, [showModel]);
-
-  useEffect(() => {
-    console.log("Show Model: ", showModel);
-    // if (showModel) {
-    //   document.getElementById("my_modal_3").showModal();
-    // }
-  }, []);
 
   const inputDateCreation = new Date(creationDate);
   const inputDateResolution = new Date(resolutionDate);
@@ -83,7 +49,7 @@ const TicketCardClient = ({
               {priority}
             </div>
             <div className="badge badge-secondary bg-primary border-none">
-              {status}
+              {ticketStatus}
             </div>
           </div>
         </h2>
@@ -96,40 +62,29 @@ const TicketCardClient = ({
           Description:
           <p>{description}</p>
         </div>
-        <div>
-          Rating:
-          <p>{rating}</p>
-        </div>
-        <div>
-          Response:
-          <p>{response}</p>
-        </div>
-        <button className="btn btn-primary" onClick={handleViewTicket}>
-          View Ticket
-        </button>
-
-        <dialog id="my_modal_3" className="modal">
-          <div className="modal-box">
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                ✕
-              </button>
-            </form>
-
-            {/* <ViewTicketForm
-              title={title}
-              description={description}
-              status={status}
-              priority={priority}
-              mainIssue={mainIssue}
-              subIssue={subIssue}
-              rating={rating}
-              response={response}
-              creationDate={formattedDateCreation}
-              resolutionDate={formattedDateResolution}
-            /> */}
+        {ticketStatus === "Closed" ? (
+          <div>
+            Rating:
+            <p>{rating}</p>
           </div>
-        </dialog>
+        ) : null}
+        {ticketStatus === "Closed" ? (
+          <div>
+            Response:
+            <p>{response}</p>
+          </div>
+        ) : null}
+        <div>
+          Created on:
+          <p>{formattedDateCreation}</p>
+        </div>
+
+        {ticketStatus === "Closed" ? (
+          <div>
+            Resolved on:
+            <p>{formattedDateResolution}</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );

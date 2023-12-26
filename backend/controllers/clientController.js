@@ -1,5 +1,4 @@
 const ticketModel = require("../models/ticketModel");
-const workflowModel = require("../models/workflowsModel");
 const supportAgentModel = require("../models/supportagentModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -15,6 +14,7 @@ const {
   LowPriority,
 } = require("../Queue");
 const { ObjectId } = require("mongodb");
+const workflowsModel = require("../models/workflowsModel");
 
 function isFree(agent) {
   return (
@@ -132,14 +132,18 @@ setInterval(async () => {
 
 const clientController = {
   generateWorkflow: async (req, res) => {
+    console.log("generating workflow");
     try {
       const { mainIssue, subIssue } = req.query;
-      const workflow = await workflowModel.find({
+      console.log("main issue: ", mainIssue);
+      console.log("sub issue: ", subIssue);
+      const workflow = await workflowsModel.find({
         $and: [
-          { mainIssue: { $eq: mainIssue } },
-          { subIssue: { $eq: subIssue } },
+          { mainIssue: mainIssue },
+          { subIssue: subIssue },
         ],
       });
+      console.log("workflow: ", workflow);
       return res.status(200).json(workflow);
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -160,18 +164,23 @@ const clientController = {
       priority: req.body.priority,
     });
 
+    console.log("priority: ", req.body.priority);
     switch (req.body.priority) {
+      
       case "High":
+        console.log("ticket adding to high");
         HighPriority.enqueue(ticket);
-        console.log("ticket added to high");
+        console.log(HighPriority.size());
         break;
       case "Medium":
+        console.log("ticket adding to medium");
         MediumPriority.enqueue(ticket);
-        console.log("ticket added to mid");
+        console.log(MediumPriority.size());
         break;
       case "Low":
+        console.log("ticket adding to low");
         LowPriority.enqueue(ticket);
-        console.log("ticket added to low");
+        console.log(LowPriority.size());
         break;
     }
 
@@ -189,42 +198,30 @@ const clientController = {
     );
     const { userId } = decode.user;
     try {
-      const tickets = await ticketModel.find({ userId: userId });
+      const tickets = {
+        opened: await ticketModel.find({userId: userId, ticketStatus: "Opened"}),
+        inProgress: await ticketModel.find({userId: userId, ticketStatus: "In Progress"}),
+        closed: await ticketModel.find({userId: userId, ticketStatus: "Closed"}),
+      }
       return res.status(200).json(tickets);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
   },
-  getTicketByStatus: async (req, res) => {
+  getTicketByMainIssue: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],
       process.env.SECRET_KEY
     );
     const { userId } = decode.user;
-    const { status } = req.params;
-    const query = {
-      userId: userId,
-      ticketStatus: status,
-    };
+    const { mainIssue } = req.params;
     try {
-      const tickets = await ticketModel.find(query);
+      const tickets = {
+        opened: await ticketModel.find({userId: userId, ticketStatus: "Opened", mainIssue: mainIssue}),
+        inProgress: await ticketModel.find({userId: userId, ticketStatus: "In Progress", mainIssue: mainIssue}),
+        closed: await ticketModel.find({userId: userId, ticketStatus: "Closed", mainIssue: mainIssue}),
+      }
       return res.status(200).json(tickets);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
-  },
-  getTicket: async (req, res) => {
-    const { ticketId } = req.params;
-    console.log("get certain ticket with id: ", ticketId);
-    const ticketIdObject = new ObjectId(ticketId);
-    console.log(ticketIdObject);
-    try {
-      const ticket = await ticketModel.findOne({
-        _id: ticketIdObject,
-      });
-      console.log("ticket sending");
-      console.log(ticket);
-      return res.status(200).json(ticket);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }

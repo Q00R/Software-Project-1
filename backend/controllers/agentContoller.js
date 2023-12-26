@@ -10,6 +10,7 @@ const nodemailer = require("nodemailer");
 const { ObjectId } = require("mongodb");
 
 const agentController = {
+
   viewMyActiveTickets: async (req, res) => {
     const decode = jwt.verify(
       req.headers.cookie.split("token=")[1],
@@ -119,8 +120,8 @@ const agentController = {
       const agentUserId = req.user.userId;
       const response = req.body.response;
       const ticketStatus = req.body.ticketStatus;
-      const agent = await supportAgentModel.findOne({ user: agentUserId});
-      console.log("agent "+agent);
+      const agent = await supportAgentModel.findOne({ user: agentUserId });
+      console.log("agent " + agent);
 
       console.log("Ticket" + id);
       if (!id || !response) {
@@ -186,10 +187,10 @@ const agentController = {
         await ticket.save();
       }
 
-        else{
-      ticket.ticketStatus = "In Progress";
-      await ticket.save();
-        }
+      else {
+        ticket.ticketStatus = "In Progress";
+        await ticket.save();
+      }
       // Send email to the user from the agent's email
       if (agent) {
         const transporter = nodemailer.createTransport({ // as if we are logging in by gmail
