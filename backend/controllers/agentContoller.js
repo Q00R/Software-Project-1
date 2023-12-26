@@ -68,7 +68,7 @@ const agentController = {
         // Concatenating all active tickets of the support agent
         allResolvedTickets = allResolvedTickets.concat(supportAgent.resolved_tickets.Software, supportAgent.resolved_tickets.Hardware, supportAgent.resolved_tickets.Network);
         const resolvedTicketsDetails = await ticketModel.find({ _id: { $in: allResolvedTickets }, status: 'Open' });
-        return res.status(200).json({ message: "Active tickets", activeTickets: resolvedTicketsDetails });
+        return res.status(200).json({ message: "Active tickets", resolvedTickets: resolvedTicketsDetails });
       }
     } catch (err) {
       console.error(err);

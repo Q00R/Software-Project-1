@@ -54,7 +54,7 @@ export default function Messenger() {
     if (user) {
       const getConversations = async () => {
         try {
-          const res = await axios.get(`${backend_url}/conversations/${user._id}`, { withCredentials: true });
+          const res = await axios.get(`${backend_url}/conversations/`, { withCredentials: true });
           setConversations(res.data);
         } catch (err) {
           console.log(err);
