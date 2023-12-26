@@ -8,6 +8,7 @@ import AgentDashboard from "../pages/AgentDashboard";
 import ClientHome from "../pages/ClientHome";
 import TrySearchParams from "../pages/TrySearchParams";
 import viewProfile from "../pages/viewProfile";
+import ManagerDashboard from "../pages/ManagerDashboard";
 
 export {
     HomePage,
@@ -19,5 +20,6 @@ export {
     AgentDashboard,
     ClientHome,
     TrySearchParams,
-    viewProfile
+    viewProfile,
+    ManagerDashboard
 };
