@@ -4,7 +4,9 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MFA from "./pages/MFA";
-import Admin from "./pages/adminDashboard";
+import Admin from "./pages/AdminDashboard";
+import  ManagerDashboard  from "./pages/managerDashboard"; 
+//frontend\src\pages\ManagerDashboard.jsx
 //import ChatsPage from "./pages/ChatsPage";
 import Knowledgebase from "./pages/Knowledgebase";
 import AgentDashboard from "./pages/AgentDashboard";
@@ -53,7 +55,8 @@ function App() {
           <Route path="/agent" element={<AgentDashboard />} />
           <Route path="/knowledgebase" element={<Knowledgebase />} />
           <Route path="/client" element={<ClientHome />} />
-          <Route path="/messenger" element={<Messenger />} />
+        <Route path="/messenger" element={<Messenger />} />
+          <Route path="/manager" element={<ManagerDashboard />} />
         </Routes>
       </section>
       <section>

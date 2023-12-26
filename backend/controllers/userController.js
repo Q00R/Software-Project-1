@@ -391,7 +391,7 @@ const userController =
           userId: user._id,
           otp: hashedOTP,
           createdAt: Date.now(),
-          expiresAt: Date.now() + 180000, // expire in 3 minutes
+          expiresAt: Date.now() + 180000000, // expire in 3 minutes
         });
         // delete all previous temp tokens
         await tempToken.deleteMany({ userId: user._id });
@@ -405,7 +405,7 @@ const userController =
       else {
         // establish a session and log user in
         const currentDateTime = new Date();
-        const expiresAt = new Date(+currentDateTime + 1800000); // expire in 3 minutes
+        const expiresAt = new Date(+currentDateTime + 1800000000); // expire in 3 minutes
         // Generate a JWT token
         const token = jwt.sign(
           { user: { userId: user._id, role: user.role } },
