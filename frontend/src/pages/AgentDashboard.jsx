@@ -1,27 +1,29 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-const AgentDashboard = () => {
-    const [filter, setFilter] = useState('All'); // State to manage the active filter
-    const [data, setData] = useState(null);
+//const AgentDashboard = () => {
+    // const [filter, setFilter] = useState('All'); // State to manage the active filter
+    // const [data, setData] = useState(null);
 
-    useEffect(() => {
-        // Fetch data from your backend when the component mounts
-        axios.get('/viewActiveTickets:ticketId/:ticketStatus') // Replace with your actual backend URL and endpoint
-            .then(response => {
-                setData(response.data); // Set the received data in your component state
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    }, []);
-    const backend_url = 'http://localhost:3000/agent/respond';
+    const backend_url = 'http://localhost:3000/agent';
+
+
+    // useEffect(() => {
+    //     // Fetch data from your backend when the component mounts
+    //     axios.get('/viewActiveTickets:ticketId/:ticketStatus') // Replace with your actual backend URL and endpoint
+    //         .then(response => {
+    //             setData(response.data); // Set the received data in your component state
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching data:', error);
+    //         });
+    // }, []);
 
     const AgentDashboard = () => {
         const [successMessage, setSuccessMessage] = useState(''); // dah 3shan el success message (for the alert)
         const [errorMessage, setErrorMessage] = useState('');     // dah 3shan el error message (for the alert)
         const [formData, setFormData] = useState({                // dah 3shan el form data (for the ticket response)
             response: '',
-            ticketStatus: 'In Progress',
+            ticketStatus: 'Closed',
         });
         // const [showPopUp, setShowPopUp] = useState(false);        
         useEffect(() => {
@@ -34,34 +36,38 @@ const AgentDashboard = () => {
             setFormData({ ...formData, [e.target.name]: e.target.value });
         };
 
-        const submitTicketResponse = async (id) => {                // dah 3shan a3ml submit lel ticket response
+        const submitTicketResponse = async (id) => {
             try {
                 const response = await axios.put(
-                    `${backend_url}/${id}`,
+                    `${backend_url}/respond/${id}`, 
                     {
                         response: formData.response,
                         ticketStatus: formData.ticketStatus,
                     },
                     { withCredentials: true }
                 );
-
+    
                 const { status: responseStatus, data } = response;
                 if (responseStatus === 200) {
-                    setSuccessMessage('Ticket response submitted successfully');      // dah 3shan el success message (for the alert)
-                    setErrorMessage(''); // Clear any previous error message
-                    console.log('200 OK:', data); // Log the success message to the console
-
-                    // navigate('/agent');
+                    setSuccessMessage('Ticket response submitted successfully');
+                    setErrorMessage('');
+                    console.log('200 OK:', data);
                 } else {
                     setErrorMessage("Couldn't submit ticket response");
-                    setSuccessMessage(''); // Clear any previous success message
+                    setSuccessMessage('');
                 }
             } catch (error) {
-                console.error(error);                                               // dah 3shan el error message (for the alert)
-                setErrorMessage(error.message);
-                setSuccessMessage(''); // Clear any previous success message
+                console.error(error);
+                setErrorMessage("Ana fel Catch");
+                setSuccessMessage('');
             }
         };
+
+        const closeAllAlerts = () => {
+            setSuccessMessage('');
+            setErrorMessage('');
+        }
+    
         return (
             <main className='relative'>
                 <section className='p-8'>
@@ -97,17 +103,17 @@ const AgentDashboard = () => {
                                     <div className="mt-4">
                                         <button
                                             className="btn btn-primary"
-                                            onClick={() => submitTicketResponse("6587858e6b333dc881efb199")}  // make this in the same loop beta3 el view tickets (dah lazem ykoon el ticket id)
+                                            onClick={() => submitTicketResponse("658a1a991595fe60182050e1")}  // make this in the same loop beta3 el view tickets (dah lazem ykoon el ticket id)
                                         >
                                             Submit
                                         </button>
-                                        <button className="btn ml-2" onClick={() => document.getElementById('my_modal_1').close()}>Close</button>
+                                        <button className="btn ml-2" onClick={() => {document.getElementById('my_modal_1').close(); closeAllAlerts();}}>Close</button>
 
                                         {successMessage && (
                                             <div role="alert" className="alert alert-success">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                                 <span>{successMessage}</span>
-                                                <button className="btn btn-sm" onClick={() => document.getElementById('my_modal_1').close()}>Go Back</button>
+                                                <button className="btn btn-sm" onClick={() => {document.getElementById('my_modal_1').close(); closeAllAlerts();}}>Go Back</button>
                                             </div>
                                         )}
 
@@ -115,7 +121,7 @@ const AgentDashboard = () => {
                                             <div role="alert" className="alert alert-error">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                                 <span>{errorMessage}</span>
-                                                <button className="btn btn-sm" onClick={() => document.getElementById('my_modal_1').close()}>Go Back</button>
+                                                <button className="btn btn-sm" onClick={() => {document.getElementById('my_modal_1').close(); closeAllAlerts();}}>Go Back</button>
                                             </div>
                                         )}
 
@@ -128,7 +134,7 @@ const AgentDashboard = () => {
             </main>
         );
     };
-}
+//}
 export default AgentDashboard;
 
 
