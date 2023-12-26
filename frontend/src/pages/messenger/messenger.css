@@ -7,13 +7,6 @@
   flex: 2.5;
 }
 
-.chatMenuInput {
-  width: 90%;
-  padding: 10px 0;
-  border: none;
-  border-bottom: 1px solid gray;
-}
-
 .chatBox {
   flex: 7.5;
 }
@@ -54,13 +47,13 @@
   color: white;
 }
 
-.chatOnline {
-  flex: 3;
+.chatMenuWrapper {
+  padding: 10px;
+  height: 100%;
+  overflow-y: scroll;
 }
 
-.chatMenuWrapper,
-.chatBoxWrapper,
-.chatOnlineWrapper {
+.chatBoxWrapper {
   padding: 10px;
   height: 100%;
 }
@@ -78,15 +71,11 @@
     flex: 1;
   }
 
-  .chatMenuInput {
-    display: none;
-  }
-
-  .chatBox{
+  .chatBox {
     flex: 10;
   }
 
-  .chatOnline{
+  .chatOnline {
     flex: 1px;
   }
 }
