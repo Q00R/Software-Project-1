@@ -36,6 +36,7 @@ export default function Messenger() {
         text: data.text,
         createdAt: Date.now(),
       });
+      window.alert("An agent has responded to you in chat!");
     });
   }, []);
 
@@ -62,13 +63,13 @@ export default function Messenger() {
       };
       getConversations();
     }
-  }, [user?._id]);
+  }, [user?._id, newMessage, arrivalMessage]);
 
   useEffect(() => {
     const getMessages = async () => {
       if (currentChat) {
         try {
-          const res = await axios.get(`${backend_url}/messages/${currentChat._id}`);
+          const res = await axios.get(`${backend_url}/messages/${currentChat._id}`, { withCredentials: true });
           setMessages(res.data);
         } catch (err) {
           console.log(err);
@@ -97,7 +98,7 @@ export default function Messenger() {
     });
 
     try {
-      const res = await axios.post(`${backend_url}/messages`, message);
+      const res = await axios.post(`${backend_url}/messages`, message, { withCredentials: true });
       setMessages([...messages, res.data]);
       setNewMessage("");
     } catch (err) {
@@ -106,7 +107,7 @@ export default function Messenger() {
   };
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
   return (
@@ -114,7 +115,6 @@ export default function Messenger() {
       <div className="messenger">
         <div className="chatMenu">
           <div className="chatMenuWrapper">
-            <input placeholder="Search for friends" className="chatMenuInput" />
             {conversations.map((c) => (
               <div onClick={() => setCurrentChat(c)}>
                 <Conversation conversation={c} currentUser={user} />
@@ -127,8 +127,8 @@ export default function Messenger() {
             {currentChat ? (
               <>
                 <div className="chatBoxTop">
-                  {messages.map((m) => (
-                    <div ref={scrollRef}>
+                  {messages.map((m, index) => (
+                    <div key={index} ref={scrollRef}>
                       <Message message={m} own={m.sender === user._id} />
                     </div>
                   ))}

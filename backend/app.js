@@ -13,7 +13,6 @@ const authRouter = require("./routes/authentication");
 const agentRouter = require("./routes/agentRouter");
 const knowledgebaseRouter = require("./routes/knowledgebaseRouter");
 const adminRouter = require("./routes/adminRouter");
-//const chatRouter = require("./routes/chatRouter");
 const clientRouter = require("./routes/clientRouter");
 const managerRouter = require("./routes/managerRouter");
 const conversationsRouter = require("./routes/conversationsRouter");
@@ -111,7 +110,7 @@ const getUser = (userId) => {
 
 io.on("connection", (socket) => {
   //when connect
-  console.log("a user connected.");
+  //console.log("a user connected.");
 
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
@@ -132,7 +131,7 @@ io.on("connection", (socket) => {
 
   //when disconnect
   socket.on("disconnect", () => {
-    console.log("a user disconnected!");
+    //console.log("a user disconnected!");
     removeUser(socket.id);
   });
 });

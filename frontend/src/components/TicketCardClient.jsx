@@ -15,17 +15,18 @@ const TicketCardClient = ({
   resolutionDate,
   ticketId,
 }) => {
-  const [selectedRating, setSelectedRating] = useState(0);
+  const [selectedRating, setSelectedRating] = useState(rating);
   const handleRating = (e) => {
     setSelectedRating(parseInt(e.target.value, 10));
   };
 
   useEffect(() => {
-    setSelectedRating(rating);
-  }, []);
+    handleSubmit();
+  }, [selectedRating]);
 
   const handleSubmit = async (e) => {
-    try{
+    try {
+      console.log(selectedRating)
       const response = await axios.put(
         `http://localhost:3000/client/tickets/rate/${ticketId}`,
         {
@@ -35,7 +36,7 @@ const TicketCardClient = ({
       );
       console.log(response);
     }
-    catch(error){
+    catch (error) {
       console.error(error);
     }
   }
@@ -83,24 +84,22 @@ const TicketCardClient = ({
           </p>
         </div>
         <div className="text-wrap break-words">
-          Description: 
+          Description:
           <p>{description}</p>
-          </div>
+        </div>
         {ticketStatus === "Closed" ? (
           <div>
             Current Rating: {selectedRating}
-            <br/>
+            <br />
             Change Your Rating: &nbsp;
             <div className="rating rating-md">
-              <p>
-                <input type="radio" name="rating-5" value="1" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
-                <input type="radio" name="rating-5" value="2" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/> 
-                <input type="radio" name="rating-5" value="3" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
-                <input type="radio" name="rating-5" value="4" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
-                <input type="radio" name="rating-5" value="5" className="mask mask-star-2 bg-orange-400" onChange={handleRating}/>
-              </p>
+
+              <input type="radio" name="rating-5" value="1" className="mask mask-star-2 bg-orange-400" onChange={(e) => handleRating(e)} />
+              <input type="radio" name="rating-5" value="2" className="mask mask-star-2 bg-orange-400" onChange={(e) => handleRating(e)} />
+              <input type="radio" name="rating-5" value="3" className="mask mask-star-2 bg-orange-400" onChange={(e) => handleRating(e)} />
+              <input type="radio" name="rating-5" value="4" className="mask mask-star-2 bg-orange-400" onChange={(e) => handleRating(e)} />
+              <input type="radio" name="rating-5" value="5" className="mask mask-star-2 bg-orange-400" onChange={(e) => handleRating(e)} />
             </div>
-            <button className="btn ml-2" onClick={handleSubmit}>Confirm</button>
           </div>
         ) : null}
 

@@ -18,10 +18,10 @@ function NotificationSystem() {
   };
   return (
     <div>
-      <button onClick={notify}><FaBell/></button>
+      <button onClick={notify}><FaBell /></button>
       <ToastContainer />
     </div>
   );
 }
-  
-  export default NotificationSystem;
+
+export default NotificationSystem;

@@ -9,7 +9,6 @@ import AdminRegisterUser from "./pages/adminRegisterUser";
 import AdminSetThemes from "./pages/adminSetThemes";
 import  ManagerDashboard  from "./pages/managerDashboard"; 
 //frontend\src\pages\ManagerDashboard.jsx
-//import ChatsPage from "./pages/ChatsPage";
 import Knowledgebase from "./pages/Knowledgebase";
 import AgentDashboard from "./pages/AgentDashboard";
 import ViewProfile from "./pages/viewProfile";

@@ -430,16 +430,6 @@ const userController =
       res.status(500).json({ message: "Server error" });
     }
   },
-  getUser: async (req, res) => {
-    try {
-      const user = await userModel.findById({ _id: new ObjectId(req.params.id) });
-      user.hashedPassword = undefined;
-      user.salt = undefined;
-      return res.status(200).json(user);
-    } catch (error) {
-      return res.status(500).json(error.message);
-    }
-  },
   getRole: async (req, res) => {
     try {
       const user = await userModel.findById({ _id: new ObjectId(req.user.userId) });

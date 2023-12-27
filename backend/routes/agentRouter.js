@@ -8,9 +8,10 @@ const authorizationMiddleware = require("../middleware/authorizationMiddleware")
 //respond to user ticket
 router.put("/respond/:ticketId", agentController.respondToTicket);
 //Resolve ticket
-router.put("/resolve/:ticketId", authMiddleware(['agent']), agentController.resolveTicket);
+router.put("/resolve/:ticketId", agentController.resolveTicket);
 //View assigned agent's tickets
-router.get("/viewActiveTickets/", authMiddleware(['agent']), agentController.viewMyActiveTickets);
-router.get("/viewResolvedTickets", authMiddleware(['agent']), agentController.viewMyResolvedTickets);
+router.get("/viewAgentTickets", agentController.viewAllTickets);
+router.get("/viewActiveTickets", agentController.viewMyActiveTickets);
+router.get("/viewResolvedTickets", agentController.viewMyResolvedTickets);
 
 module.exports = router;
