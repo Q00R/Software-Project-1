@@ -30,16 +30,12 @@ const AdminDashboard = () => {
 
   const changeRole = async (userId, newRole) => {
     try {
-      const response = await axios.put(
-        "http://localhost:3000/admin/changeRole",
-        { userId: userId, newRole: newRole },
-        { withCredentials: true }
-      );
+      const response = await axios.put("http://localhost:3000/admin/changeRole", { userId: userId, newRole: newRole }, { withCredentials: true });
       const { data } = response;
       if (response.status == 200) {
         fetchUsers();
       } else {
-        console.error("Failed to change role:", data.message);
+        console.error('Failed to change role:', data.message);
       }
     } catch (error) {
       console.error("Error fetching users:", error);

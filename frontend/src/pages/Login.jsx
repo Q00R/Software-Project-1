@@ -67,6 +67,7 @@ export default function SignInSide() {
       await axios.post(`${backend_url}/logout`, {}, { withCredentials: true });
       window.dispatchEvent(new CustomEvent('role', { detail: { role: "" } }));
       localStorage.clear();
+      
     } catch (error) {
       console.error(error.message);
     }
@@ -127,6 +128,7 @@ export default function SignInSide() {
               <button
               className="btn btn-primary"
               type="submit"
+              style={{ width: "100%" }}
               >
                 Sign In
               </button>

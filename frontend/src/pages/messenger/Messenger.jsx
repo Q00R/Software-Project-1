@@ -36,6 +36,7 @@ export default function Messenger() {
         text: data.text,
         createdAt: Date.now(),
       });
+      window.alert("An agent has responded to you in chat!");
     });
   }, []);
 

@@ -2,6 +2,7 @@ const userModel = require("../models/userModel.js"); // lookup what to do in thi
 const agentModel = require("../models/supportagentModel.js");
 const bcrypt = require("bcrypt");
 const userController = require("./userController.js");
+const themeModel = require("../models/ThemesModel.js");
 
 const adminController = {
   createNewUser: async (req, res) => {
@@ -102,6 +103,41 @@ const adminController = {
         users[i].salt = undefined;
       }
       return res.status(200).json(users);
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  },
+  getAllThemes: async (req, res) => {
+    try {
+      const themes = await themeModel.find();
+      return res.status(200).json(themes);
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  },
+  createTheme: async (req, res) => {
+    try {
+      const { name } = req.body;
+      const newTheme = new themeModel({ themeName: name });
+      await newTheme.save();
+      return res.status(200).json({ message: "Theme created successfully" });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  },
+  updateTheme: async (req, res) => {
+    try {
+      const { _id, active } = req.body;
+      const theme = await themeModel.findByIdAndUpdate(_id, { active });
+      return res.status(200).json({ message: "Theme updated successfully" });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  },
+  deleteTheme: async (req, res) => {
+    try {
+      const theme = await themeModel.findByIdAndDelete(req.params.id);
+      return res.status(200).json({ message: "Theme deleted successfully" });
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }

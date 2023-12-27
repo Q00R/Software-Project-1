@@ -3,9 +3,8 @@ import AboutUs from "../components/AboutUs";
 
 const ClientHome = () => {
   return (
-    <main className="relative">
-      <div className="flex">
-      <div className="w-[80%] m-2">
+    <main className="relative flex">
+      <div className="flex-grow m-2">
         <section>
           <Search />
         </section>
@@ -22,14 +21,13 @@ const ClientHome = () => {
           position: "sticky",
           top: 0,
           right: 0,
-          width: "100%",
+          width: "fit-content",
           height: "100%",
         }}
       >
         <section>
           <FAQ />
         </section>
-      </div>
       </div>
       <section>
         <AboutUs />

@@ -10,7 +10,7 @@ const speakeasy = require("speakeasy");
 const QRCode = require("qrcode");
 const mongoose = require("mongoose");
 
-
+const themeModel = require("../models/ThemesModel.js");
 
 const nodemailer = require("nodemailer");
 const sessionModel = require("../models/sessionModel");
@@ -210,8 +210,6 @@ const userController =
       });
     }
   },
-
-
   verifyOTPLogin: async (req, res) => {
     try {
       const { email, enteredOTP } = req.body;
@@ -436,6 +434,14 @@ const userController =
     try {
       const user = await userModel.findById({ _id: new ObjectId(req.user.userId) });
       return res.status(200).json(user.role);
+    } catch (error) {
+      return res.status(505).json(error.message);
+    }
+  },
+  getAvialableThemes: async (req, res) => {
+    try {
+      const themes = (await themeModel.find({ active: true })).map((theme) => theme.themeName);
+      return res.status(200).json(themes);
     } catch (error) {
       return res.status(505).json(error.message);
     }

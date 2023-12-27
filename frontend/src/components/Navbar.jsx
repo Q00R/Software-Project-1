@@ -155,9 +155,10 @@ export default function AppNavBar() {
             >
               Logout
             </button>
+            
           </div>
         ) : (
-          <div>
+          <div >
             <button
               className="btn btn-ghost text-lg"
               onClick={() => {

@@ -23,5 +23,5 @@ function NotificationSystem() {
     </div>
   );
 }
-  
-  export default NotificationSystem;
+
+export default NotificationSystem;
