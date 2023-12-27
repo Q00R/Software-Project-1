@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const backend_url = "http://localhost:3000";
 
 const CreateTicket = () => {
   const navigate = useNavigate();
@@ -81,7 +82,7 @@ const CreateTicket = () => {
       }
     };
     fetchWorkflow();
-    
+
   }, [mainIssue, subIssue]);
 
   useEffect(() => {
@@ -96,6 +97,7 @@ const CreateTicket = () => {
             { withCredentials: true }
           );
           console.log(response);
+          window.alert("Your ticket has been submitted!");
         } catch (error) {
           console.error("Error submitting form", error);
         }
@@ -185,18 +187,18 @@ const CreateTicket = () => {
                 <option selected>Sub Issue</option>
                 {mainIssue === "Software"
                   ? subSoftware.map((subSoftware) => (
-                      <option id={subSoftware}>{subSoftware}</option>
-                    ))
+                    <option id={subSoftware}>{subSoftware}</option>
+                  ))
                   : null}
                 {mainIssue === "Hardware"
                   ? subHardware.map((subHardware) => (
-                      <option id={subHardware}>{subHardware}</option>
-                    ))
+                    <option id={subHardware}>{subHardware}</option>
+                  ))
                   : null}
                 {mainIssue === "Network"
                   ? subNetwork.map((subNetwork) => (
-                      <option id={subNetwork}>{subNetwork}</option>
-                    ))
+                    <option id={subNetwork}>{subNetwork}</option>
+                  ))
                   : null}
                 <option id="Other">Other</option>
               </select>
