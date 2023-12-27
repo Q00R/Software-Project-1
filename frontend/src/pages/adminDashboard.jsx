@@ -30,12 +30,16 @@ const AdminDashboard = () => {
 
   const changeRole = async (userId, newRole) => {
     try {
-      const response = await axios.put("http://localhost:3000/admin/changeRole", { userId: userId, newRole: newRole }, { withCredentials: true });
+      const response = await axios.put(
+        "http://localhost:3000/admin/changeRole",
+        { userId: userId, newRole: newRole },
+        { withCredentials: true }
+      );
       const { data } = response;
       if (response.status == 200) {
         fetchUsers();
       } else {
-        console.error('Failed to change role:', data.message);
+        console.error("Failed to change role:", data.message);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -45,7 +49,10 @@ const AdminDashboard = () => {
     // ... (other imports and component code)
 
     <div>
-      <div key="users" className="flex flex-row font-mono m-4 overflow-x-scroll scrollbar-thin items-start justify-start scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+      <div
+        key="users"
+        className="flex flex-row font-mono m-4 overflow-x-scroll scrollbar-thin items-start justify-start scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md"
+      >
         {users.map((user, i) => (
           <div
             className={`max-w-md shadow-md rounded-md overflow-hidden ease-in-out duration-300 hover:scale-105 border border-black bg-gradient-to-r from-secondary to-primary hover:from-accent hover:to-secondary w-[340px] h-[340px] flex-shrink-0 m-3 `}
@@ -151,7 +158,7 @@ const AdminDashboard = () => {
       <section>
         <AboutUs />
       </section>
-    </ div>
+    </div>
   );
 };
 
