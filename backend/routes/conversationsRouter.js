@@ -4,11 +4,11 @@ const authorizationMiddleware = require("../middleware/authorizationMiddleware")
 
 
 //get agent by issue type
-router.get("/agentFind/:mainIssue", authorizationMiddleware(['agent','admin','client']),conversationsController.getAgentByIssue);
+router.get("/agentFindUid/:mainIssue", authorizationMiddleware(['agent','admin','client']),conversationsController.getAgentByIssue);
 //new conv
 router.post("/", conversationsController.createConversation);
 //get agent username
-router.get("/agentUsername/:id", conversationsController.getAgentUsername);
+router.get("/getUsername/:id", conversationsController.getUsername);
 //get conv of a user
 router.get("/", conversationsController.getConversation);
 

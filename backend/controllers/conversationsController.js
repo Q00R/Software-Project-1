@@ -1,4 +1,4 @@
-const Conversation = require("../models/Conversation");
+const conversationModel = require("../models/Conversation");
 const supportAgentModel = require("../models/supportagentModel");
 const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
@@ -10,17 +10,14 @@ const conversationsController = {
       const agent = await supportAgentModel.findOne({
         main_role: mainIssue,
       });
-      res.status(200).json(agent._id);
+      res.status(200).json(agent.user);
     } catch (error) {
       res.status(400).json({ error: "Error 400: Support agent not found" });
     }
   },
-  getAgentUsername: async (req, res) => {
+  getUsername: async (req, res) => {
     try {
-      const agent = await supportAgentModel.findOne({
-        _id: req.params.id,
-      });
-      res.status(200).json((await userModel.findById({ _id: agent.user })).username);
+      res.status(200).json((await userModel.findById({ _id: req.params.id })).username);
     } catch (error) {
       res.status(400).json({ error: "Error 400: Support agent not found" });
     }
@@ -32,7 +29,7 @@ const conversationsController = {
       process.env.SECRET_KEY
     );
     const { userId } = decode.user;
-    const newConversation = new Conversation({
+    const newConversation = new conversationModel({
       members: [userId, req.body.receiverId],
     });
 
@@ -51,10 +48,9 @@ const conversationsController = {
     );
     const { userId } = decode.user;
     try {
-      const conversation = await Conversation.find({
+      const conversation = await conversationModel.find({
         members: { $in: userId },
-      });
-      console.log(conversation);
+      }).sort({ updatedAt: -1 });
       res.status(200).json(conversation);
     } catch (err) {
       res.status(500).json(err);
