@@ -29,11 +29,11 @@ const AdminDashboard = () => {
 
   const changeRole = async (userId, newRole) => {
     try {
-      const response = await axios.put("http://localhost:3000/admin/changeRole", {userId: userId, newRole: newRole}, { withCredentials: true });
+      const response = await axios.put("http://localhost:3000/admin/changeRole", { userId: userId, newRole: newRole }, { withCredentials: true });
       const { data } = response;
-      if(response.status == 200){
+      if (response.status == 200) {
         fetchUsers();
-      }else{
+      } else {
         console.error('Failed to change role:', data.message);
       }
     } catch (error) {
@@ -43,47 +43,47 @@ const AdminDashboard = () => {
   return (
     // ... (other imports and component code)
 
-<>
-  <div key="users" className="grid grid-cols-3 gap-4 ">
-    {users.map((user, i) => (
-      <div className={`max-w-md shadow-md rounded-md overflow-hidden ease-in-out duration-300 hover:scale-105`} key={i}>
-        <div className="p-4 bg-gradient-to-r  from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500">
-          <h1 className="font-bold text-xl mb-2">{user.username}</h1>
-          <p className="text-gray-600 mb-2">Role: {user.role}</p>
-          <p className="text-gray-600 mb-2">User ID: {user._id}</p>
-          <p className="text-gray-600 mb-2">Email: {user.email}</p>
-          <p className="text-gray-600 mb-2">DOB: {user.DOB}</p>
-          <p className="text-gray-600 mb-2">Status: {user.status}</p>
-        </div>
-        <div className="p-4">
-          <div className="dropdown dropdown-top">
-            <div
-              tabIndex={0}
-              role="button"
-              className={`btn btn-${user.role.toLowerCase()} rounded-full w-20 h-8 justify-center items-center`}
-            >
-              Change Role
+    <>
+      <div key="users" className="grid grid-cols-3 gap-4 ">
+        {users.map((user, i) => (
+          <div className={`max-w-md shadow-md rounded-md overflow-hidden ease-in-out duration-300 hover:scale-105`} key={i}>
+            <div className="p-4 bg-gradient-to-r  from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500">
+              <h1 className="font-bold text-xl mb-2">{user.username}</h1>
+              <p className="text-gray-600 mb-2">Role: {user.role}</p>
+              <p className="text-gray-600 mb-2">User ID: {user._id}</p>
+              <p className="text-gray-600 mb-2">Email: {user.email}</p>
+              <p className="text-gray-600 mb-2">DOB: {user.DOB}</p>
+              <p className="text-gray-600 mb-2">Status: {user.status}</p>
             </div>
-            <ul tabIndex={0} className="text-gray-600 mb-2 dropdown-content z-[1] menu p-2 shadow bg-gray-400 rounded-box w-40">
-              <li>
-                <a onClick={() => changeRole(user._id, "admin")}>Admin</a>
-              </li>
-              <li>
-                <a onClick={() => changeRole(user._id, "agent")}>Agent</a>
-              </li>
-              <li>
-                <a onClick={() => changeRole(user._id, "manager")}>Manager</a>
-              </li>
-              <li>
-                <a onClick={() => changeRole(user._id, "client")}>Client</a>
-              </li>
-            </ul>
+            <div className="p-4">
+              <div className="dropdown dropdown-top">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className={`btn btn-${user.role.toLowerCase()} rounded-full w-20 h-8 justify-center items-center`}
+                >
+                  Change Role
+                </div>
+                <ul tabIndex={0} className="text-gray-600 mb-2 dropdown-content z-[1] menu p-2 shadow bg-gray-400 rounded-box w-40">
+                  <li>
+                    <a onClick={() => changeRole(user._id, "admin")}>Admin</a>
+                  </li>
+                  <li>
+                    <a onClick={() => changeRole(user._id, "agent")}>Agent</a>
+                  </li>
+                  <li>
+                    <a onClick={() => changeRole(user._id, "manager")}>Manager</a>
+                  </li>
+                  <li>
+                    <a onClick={() => changeRole(user._id, "client")}>Client</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
-    ))}
-  </div>
-  {/* <div className="flex flex-row items-center overflow-auto h-screen">
+      {/* <div className="flex flex-row items-center overflow-auto h-screen">
       {users.map((user,i) => (
         <div
           key={user._id}
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
         </div>
       ))}
     </div> */}
-</>
+    </>
   );
 };
 
