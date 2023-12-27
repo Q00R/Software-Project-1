@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function NotificationSystem() {
   const notify = () => {
-    toast("Custom Style Notification with css class!", {
+    toast("cool notif", {
       position: toast.POSITION.BOTTOM_RIGHT,
       autoClose: 5000,
       hideProgressBar: false,
@@ -17,11 +17,11 @@ function NotificationSystem() {
     });
   };
   return (
-    <div className='mx-2'>
-      <button onClick={notify}><FaBell className='size-5'/></button>
+    <div>
+      <button onClick={notify}><FaBell/></button>
       <ToastContainer />
     </div>
   );
 }
-
-export default NotificationSystem;
+  
+  export default NotificationSystem;
