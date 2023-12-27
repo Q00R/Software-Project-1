@@ -125,6 +125,14 @@ const AgentTicket = () => {
         setSuccessMessage('');
         setErrorMessage('');
     }
+    // saving the ticket's (already saved) creation date:
+
+    //using the creation date saved on the ticket in the db:
+    // const inputDateCreation = 
+    // const formattedDateCreation = inputDateCreation.toLocaleString(
+    //     "en-US",
+    //     options
+    // );
 
     return (
         <main className='relative'>
@@ -141,60 +149,64 @@ const AgentTicket = () => {
                             return (
                                 <div className='bg-base-200 rounded-lg shadow-lg p-4'>
                                     <div className='bg-base-200 rounded-lg shadow-lg p-4'>
-                                        <span className="badge bg-red-500">{ticket.priority}</span>
-                                        <h1 className='text-2xl font-bold'>{ticket.title}</h1>
-                                        <p className='text-xl'>{ticket.description}</p>
-                                        <p className='text-xl'>{ticket.ticketStatus}</p>
-                                        <p className='text-xl'>{ticket.creationDate}</p>
-                                        <button className="btn btn-primary mt-4" onClick={() => document.getElementById('my_modal_1').showModal()}>Respond to ticket</button> {/* check en el ticket status tkoon not resolved 3shan kol el ta7t yezhar */}
-                                        <dialog id="my_modal_1" className="modal z-50">           {/* teb2y make el id different le kol ticket bas maykonsh el ticket id */}
-                                            <div className="modal-box p-6 bg-white rounded-lg shadow-lg text-center">
-                                                <h3 className="text-lg font-bold mb-4">Respond to the ticket!</h3>
-                                                <textarea
-                                                    onChange={getBodyOfTicketResponsePopUp}
-                                                    name="response"
-                                                    placeholder="Response"
-                                                    value={formData.response}
-                                                    className="textarea textarea-bordered textarea-md w-full max-w-xs"
-                                                ></textarea>
-                                                <select
-                                                    onChange={getBodyOfTicketResponsePopUp}
-                                                    name="ticketStatus"
-                                                    value={formData.ticketStatus}
-                                                    className="select select-bordered select-primary w-full max-w-xs mt-4"
-                                                >
-                                                    <option value="In Progress">In Progress</option>
-                                                    <option value="Closed">Closed</option>
-                                                </select>
-                                                <div className="mt-4">
-                                                    <button
-                                                        className="btn btn-primary"
-                                                        onClick={() => submitTicketResponse("658a1a991595fe60182050e1")}  // make this in the same loop beta3 el view tickets (dah lazem ykoon el ticket id)
-                                                    >
-                                                        Submit
-                                                    </button>
-                                                    <button className="btn ml-2" onClick={() => { document.getElementById('my_modal_1').close(); closeAllAlerts(); }}>Close</button>
-
-                                                    {successMessage && (
-                                                        <div role="alert" className="alert alert-success">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                                            <span>{successMessage}</span>
-                                                            <button className="btn btn-sm" onClick={() => { document.getElementById('my_modal_1').close(); closeAllAlerts(); }}>Go Back</button>
-                                                        </div>
-                                                    )}
-
-                                                    {errorMessage && (
-                                                        <div role="alert" className="alert alert-error">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                                            <span>{errorMessage}</span>
-                                                            <button className="btn btn-sm" onClick={() => { document.getElementById('my_modal_1').close(); closeAllAlerts(); }}>Go Back</button>
-                                                        </div>
-                                                    )}
-
-                                                </div>
-                                            </div>
-                                        </dialog>
+                                        <div className="badge badge-secondary bg-secondary border-none mr-1">{ticket.priority}</div>
+                                        <p className='badge badge-secondary bg-primary border-none'>{ticket.ticketStatus}</p>
+                                        <h1 className='text-2xl font-bold' style={{ marginTop: '10px' }}>{ticket.title}</h1>
+                                        <div className='text-balance'>
+                                            <h2 className='text-xl' style={{ marginTop: '10px' }}>Description: {ticket.description}</h2>
+                                        </div>
+                                        <div text-balance='text-x1' style={{ marginTop: '10px' }}>
+                                            <p className='text-xl'>Created on: {ticket.creationDate}</p>
+                                        </div>
                                     </div>
+                                    <button className="btn btn-primary mt-4" onClick={() => document.getElementById('my_modal_1').showModal()}>Respond to ticket</button> {/* check en el ticket status tkoon not resolved 3shan kol el ta7t yezhar */}
+                                    <dialog id="my_modal_1" className="modal z-50">           {/* teb2y make el id different le kol ticket bas maykonsh el ticket id */}
+                                        <div className="modal-box p-6 bg-white rounded-lg shadow-lg text-center">
+                                            <h3 className="text-lg font-bold mb-4">Respond to the ticket!</h3>
+                                            <textarea
+                                                onChange={getBodyOfTicketResponsePopUp}
+                                                name="response"
+                                                placeholder="Response"
+                                                value={formData.response}
+                                                className="textarea textarea-bordered textarea-md w-full max-w-xs"
+                                            ></textarea>
+                                            <select
+                                                onChange={getBodyOfTicketResponsePopUp}
+                                                name="ticketStatus"
+                                                value={formData.ticketStatus}
+                                                className="select select-bordered select-primary w-full max-w-xs mt-4"
+                                            >
+                                                <option value="In Progress">In Progress</option>
+                                                <option value="Closed">Closed</option>
+                                            </select>
+                                            <div className="mt-4">
+                                                <button
+                                                    className="btn btn-primary"
+                                                    onClick={() => submitTicketResponse("658a1a991595fe60182050e1")}  // make this in the same loop beta3 el view tickets (dah lazem ykoon el ticket id)
+                                                >
+                                                    Submit
+                                                </button>
+                                                <button className="btn ml-2" onClick={() => { document.getElementById('my_modal_1').close(); closeAllAlerts(); }}>Close</button>
+
+                                                {successMessage && (
+                                                    <div role="alert" className="alert alert-success">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                        <span>{successMessage}</span>
+                                                        <button className="btn btn-sm" onClick={() => { document.getElementById('my_modal_1').close(); closeAllAlerts(); }}>Go Back</button>
+                                                    </div>
+                                                )}
+
+                                                {errorMessage && (
+                                                    <div role="alert" className="alert alert-error">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                        <span>{errorMessage}</span>
+                                                        <button className="btn btn-sm" onClick={() => { document.getElementById('my_modal_1').close(); closeAllAlerts(); }}>Go Back</button>
+                                                    </div>
+                                                )}
+
+                                            </div>
+                                        </div>
+                                    </dialog>
                                 </div>
                             );
                         })}
@@ -209,7 +221,7 @@ const AgentTicket = () => {
                         return (
                             <div className='bg-base-200 rounded-lg shadow-lg p-4'>
                                 <div className='bg-base-200 rounded-lg shadow-lg p-4'>
-                                    <span className="badge bg-red-500">{ticket.priority}</span>
+                                    <div className="badge badge-secondary bg-secondary border-none mr-1">{ticket.priority}</div>
                                     <h1 className='text-2xl font-bold'>{ticket.title}</h1>
                                     <p className='text-xl'>{ticket.description}</p>
                                     <p className='text-xl'>{ticket.ticketStatus}</p>
@@ -275,7 +287,7 @@ const AgentTicket = () => {
                         return (
                             <div className='bg-base-200 rounded-lg shadow-lg p-4'>
                                 <div className='bg-base-200 rounded-lg shadow-lg p-4'>
-                                    <span className="badge bg-red-500">{ticket.priority}</span>
+                                    <div className="badge badge-secondary bg-secondary border-none mr-1">{ticket.priority}</div>
                                     <h1 className='text-2xl font-bold'>{ticket.title}</h1>
                                     <p className='text-xl'>{ticket.description}</p>
                                     <p className='text-xl'>{ticket.ticketStatus}</p>
