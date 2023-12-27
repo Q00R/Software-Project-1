@@ -86,7 +86,7 @@ const ClientTickets = () => {
         <div className="text-2xl font-semibold my-2">
           Opened Tickets
         </div>
-        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md flex-shrink-0 flex-grow-0">
           {openedTickets.length > 0 ? (
             openedTickets.map(
               (element) => (

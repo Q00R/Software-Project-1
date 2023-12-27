@@ -8,13 +8,11 @@ router.get("/getRole", authenticationMiddleware, userController.getRole);
 
 router.get("/getAvialableThemes", userController.getAvialableThemes);
 
-router.get("/:id", userController.getUser);
-
 router.post("/register", userController.register);
 
 router.post("/verifyEmail", userController.verifyEmail);
 
-router.post("/login", userController.login)
+router.post("/login", userController.login);
 
 router.post("/verifyOTP", userController.verifyOTPLogin);
 

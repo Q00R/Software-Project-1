@@ -93,7 +93,7 @@ const TicketCardClient = ({
   );
 
   return (
-    <div className="card bg-base-100 shadow-md m-1 w-[300px]">
+    <div className="card bg-base-100 shadow-md m-1 w-[350px]">
       <div className="card-body text-balance h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
         <div>
           <h2 className="card-title">{title}</h2>

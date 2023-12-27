@@ -4,7 +4,7 @@ import AboutUs from "../components/AboutUs";
 const ClientHome = () => {
   return (
     <main className="relative flex">
-      <div className="flex-grow m-2">
+      <div className="w-[80%] m-2">
         <section>
           <Search />
         </section>
@@ -16,7 +16,7 @@ const ClientHome = () => {
         </section>
       </div>
       <div
-        className=" padding m-2 grow"
+        className=" padding m-2"
         style={{
           position: "sticky",
           top: 0,
