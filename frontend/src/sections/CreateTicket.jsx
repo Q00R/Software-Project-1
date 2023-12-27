@@ -122,7 +122,7 @@ const CreateTicket = () => {
         mainIssue: mainIssue,
         subIssue: subIssue,
       });
-      toast(`Ticket ${document.getElementById("title").value} has been created`,{
+      {/*toast(`Ticket ${document.getElementById("title").value} has been created`,{
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 5000,
         hideProgressBar: false,
@@ -130,7 +130,7 @@ const CreateTicket = () => {
         pauseOnHover: true,
         progress: undefined,
         theme: "light",
-      });
+      });*/}
     }
   };
 
