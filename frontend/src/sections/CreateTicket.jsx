@@ -62,7 +62,7 @@ const CreateTicket = () => {
           console.log("getting agent id");
           console.log(mainIssue);
           const agentId = await axios
-            .get(`http://localhost:3000/conversations/agentFind/${mainIssue}`, {
+            .get(`http://localhost:3000/conversations/agentFindUid/${mainIssue}`, {
               withCredentials: true,
             })
             .then((response) => response.data);
