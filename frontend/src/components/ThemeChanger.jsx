@@ -21,7 +21,7 @@ const ThemeChangerButton = () => {
   handleThemeChange({ target: { value: theme } });
   return (
     <div className="dropdown dropdown-hover mb-18">
-      <div tabIndex={0} role="button" className="btn m-1">
+      <div tabIndex={0} role="button" className="btn mx-2 text-lg">
         Theme
         <svg
           width="12px"

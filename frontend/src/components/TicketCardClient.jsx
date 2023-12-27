@@ -30,7 +30,7 @@ const TicketCardClient = ({
       console.log("getting agent id");
       console.log(mainIssue);
       const agentId = await axios
-        .get(`http://localhost:3000/conversations/agentFind/${mainIssue}`, {
+        .get(`http://localhost:3000/conversations/agentFindUid/${mainIssue}`, {
           withCredentials: true,
         })
         .then((response) => response.data);
@@ -93,8 +93,8 @@ const TicketCardClient = ({
   );
 
   return (
-    <div className="card bg-base-100 shadow-xl m-1 w-[300px]">
-      <div className="card-body text-balance h-[350px] overflow-y-auto scrollbar-thin scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+    <div className="card bg-base-100 shadow-md m-1 w-[300px]">
+      <div className="card-body text-balance h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
         <div>
           <h2 className="card-title">{title}</h2>
           <div>

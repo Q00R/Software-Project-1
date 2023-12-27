@@ -17,8 +17,8 @@ function NotificationSystem() {
     });
   };
   return (
-    <div>
-      <button onClick={notify}><FaBell/></button>
+    <div className='mx-2'>
+      <button onClick={notify}><FaBell className='size-5'/></button>
       <ToastContainer />
     </div>
   );

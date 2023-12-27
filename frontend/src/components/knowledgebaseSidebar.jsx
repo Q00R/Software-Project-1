@@ -33,7 +33,7 @@ export default function KnowledgebaseSidebar() {
     
     return (
         <>
-            <ul className="menu bg-base-200 w-56 rounded-box">
+            <ul className="menu bg-base-200 w-56 rounded-box font-mono">
                 <div className="text-xl text-opacity-100">
                     FAQs Categories
                 </div>

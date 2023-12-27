@@ -27,7 +27,7 @@ export default function KnowledgebaseFAQs(faqsInput) {
   }
   return (
     <>
-    <dialog id="my_modal_2" className="modal">
+    <dialog id="my_modal_2" className="modal font-mono">
       <div className="modal-box w-11/12 max-w-7xl">
         <div className="border rounded-box" style={{ height: '100%' }}>
           <div className="border rounded-box" style={{ width: '100%', height: '8%', display: 'flex', marginBottom: '1%' }}>

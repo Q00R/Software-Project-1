@@ -13,12 +13,12 @@ import {
 
 const AboutUs = () => {
   return (
-    <div className="flex flex-col bg-white-50">
-      <h1 className="text-center font-semibold text-3xl font-palanquin m-2">
+    <div className="flex flex-col bg-white-50 font-mono">
+      <h1 className="text-center font-semibold text-3xl m-2">
         Meet The Team!
       </h1>
       <div className="flex justify-center items-center">
-        <h1 className="text-center font-extralight text-l text-gray-400 font-sans w-[65%] m-2">
+        <h1 className="text-center font-extralight text-l text-gray-400 w-[65%] m-2">
           Meet our innovative team of passionate young developers who brought
           Help Desk to life! Our diverse and talented group worked seamlessly
           each with a unique skill that contributed to design and develop a

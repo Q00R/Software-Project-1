@@ -80,7 +80,7 @@ export default function SignInSide() {
 
   return (
     <>
-      <div className="h-screen flex">
+      <div className="h-screen flex font-mono">
         <div
           className="hidden md:block md:w-7/12 bg-cover bg-center"
           style={{

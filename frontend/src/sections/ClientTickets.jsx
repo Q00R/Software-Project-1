@@ -51,42 +51,42 @@ const ClientTickets = () => {
 
   return (
     <section>
-      <div className="flex justify-center items-center m-2">
+      <div className="flex justify-center items-center">
         <button
           id="Software"
-          className="btn btn-primary mx-2 w-[100px]"
+          className="btn btn-primary m-1 text-lg w-[120px] hover:brightness-110 hover:animate-pulse rounded-full bg-gradient-to-r from-primary to-secondary"
           onClick={handleIssueSoftware}
         >
           Software
         </button>
         <button
           id="Hardware"
-          className="btn btn-primary mx-2 w-[100px]"
+          className="btn btn-primary m-1 text-lg w-[120px] hover:brightness-110 hover:animate-pulse rounded-full bg-gradient-to-r from-primary to-secondary"
           onClick={handleIssueHardware}
         >
           Hardware
         </button>
         <button
           id="Network"
-          className="btn btn-primary mx-2 w-[100px]"
+          className="btn btn-primary m-1 text-lg w-[120px] hover:brightness-110 hover:animate-pulse rounded-full bg-gradient-to-r from-primary to-secondary"
           onClick={handleIssueNetwork}
         >
           Network
         </button>
         <button
           id="All"
-          className="btn btn-primary mx-2 w-[100px]"
+          className="btn btn-primary m-1 text-lg w-[120px] hover:brightness-110 hover:animate-pulse rounded-full bg-gradient-to-r from-primary to-secondary"
           onClick={handleStatusAll}
         >
           All
         </button>
       </div>
 
-      <div className="my-3">
-        <div className="text-2xl font-montserrat font-semibold">
+      <div className="my-7">
+        <div className="text-2xl font-semibold my-2">
           Opened Tickets
         </div>
-        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
           {openedTickets.length > 0 ? (
             openedTickets.map(
               (element) => (
@@ -95,15 +95,15 @@ const ClientTickets = () => {
               )
             )
           ) : (
-            <div className="text-xl font-montserrat">No Tickets Here!</div>
+            <div className="text-xl">No Tickets Here!</div>
           )}
         </div>
       </div>
-      <div>
-        <div className="text-2xl font-montserrat font-semibold">
+      <div className="my-7">
+        <div className="text-2xl font-semibold my-2">
           In Progress Tickets
         </div>
-        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+        <div className="flex flex-row overflow-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
           {inProgressTickets.length > 0 ? (
             inProgressTickets.map(
               (element) => (
@@ -112,15 +112,15 @@ const ClientTickets = () => {
               )
             )
           ) : (
-            <div className="text-xl font-montserrat">No Tickets Here!</div>
+            <div className="text-xl">No Tickets Here!</div>
           )}
         </div>
       </div>
-      <div>
-        <div className="text-2xl font-montserrat font-semibold">
+      <div className="my-7">
+        <div className="text-2xl font-semibold my-2">
           Closed Tickets
         </div>
-        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+        <div className="flex flex-row overflow-x-auto scroll-smooth scrollbar-thin items-start justify-start scrollbar-track-transparent scrollbar-track-rounded-md hover:scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
           {closedTickets.length > 0 ? (
             closedTickets.map(
               (element) => (
@@ -129,7 +129,7 @@ const ClientTickets = () => {
               )
             )
           ) : (
-            <div className="text-xl font-montserrat">No Tickets Here!</div>
+            <div className="text-xl">No Tickets Here!</div>
           )}
         </div>
       </div>

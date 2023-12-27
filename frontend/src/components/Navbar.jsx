@@ -43,7 +43,7 @@ export default function AppNavBar() {
   }, []);
 
   return (
-    <div className="navbar bg-transparent">
+    <div className="navbar bg-transparent font-mono">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -74,9 +74,20 @@ export default function AppNavBar() {
               <></>
             )}
             {role === "admin" ? (
+              <>
               <li>
                 <a onClick={() => navigate("/admin")}>Admin Dashboard</a>
               </li>
+              <li>
+                <a onClick={() => navigate("/agent")}>Agent Dashboard</a>
+              </li>
+              <li>
+                <a onClick={() => navigate("/client")}>Client Dashboard</a>
+              </li>
+              <li>
+                <a onClick={() => navigate("/manager")}>Manager Dashboard</a>
+              </li>
+              </>
             ) : (
               <></>
             )}
@@ -97,13 +108,14 @@ export default function AppNavBar() {
           </ul>
         </div>
       </div>
-      <div className="navbar-center" onClick={handleTitleClick}>
-        <a className="btn btn-ghost text-xl text-opacity-100">Help Desk</a>
+      <div className="navbar-center flex-col" onClick={handleTitleClick}>
         <img
           src={websiteLogo}
           alt="Website Logo"
           style={{ maxWidth: "100px", maxHeight: "40px" }}
+          className=""
         />
+        <a className="btn btn-ghost text-2xl text-opacity-100">Help Desk</a>
       </div>
       <div className="navbar-end">
         {<ThemeChangerButton />}
@@ -112,13 +124,28 @@ export default function AppNavBar() {
         {/* Check if user is logged in */}
         {role ? (
           <div>
-            <div className="avatar" onClick={handleProfileClick} style={{top:6}}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <div
+              className="avatar mx-2"
+              onClick={handleProfileClick}
+              style={{ top: 6 }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
               </svg>
             </div>
             <button
-              className="btn btn-ghost"
+              className="btn btn-ghost text-lg"
               onClick={() => {
                 navigate("/login");
                 window.dispatchEvent(
@@ -132,7 +159,7 @@ export default function AppNavBar() {
         ) : (
           <div>
             <button
-              className="btn btn-ghost"
+              className="btn btn-ghost text-lg"
               onClick={() => {
                 navigate("/login");
               }}
@@ -140,7 +167,7 @@ export default function AppNavBar() {
               Login
             </button>
             <button
-              className="btn btn-ghost"
+              className="btn btn-ghost text-lg"
               onClick={() => {
                 navigate("/register");
               }}

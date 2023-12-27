@@ -57,7 +57,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex font-mono">
       {/* Right side: Photo */}
       <div
         className="hidden sm:block sm:flex-1 md:flex-1 bg-cover bg-center"

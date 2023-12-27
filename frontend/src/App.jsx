@@ -18,7 +18,7 @@ import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { useEffect } from "react";
-import AboutUs from "./components/AboutUs";
+
 
 function App() {
   const navigate = useNavigate();
@@ -58,9 +58,6 @@ function App() {
           <Route path="/adminRegisterUser" element={<AdminRegisterUser />} />
           <Route path="/manager" element={<ManagerDashboard />} />
         </Routes>
-      </section>
-      <section>
-        <AboutUs />
       </section>
       <section>
         <Footer />

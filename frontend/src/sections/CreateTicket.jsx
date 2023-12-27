@@ -130,14 +130,14 @@ const CreateTicket = () => {
       id="create-ticket"
     >
       <div>
-        <h3 className="text-3xl leading-[50px] font-palaquin font-bold">
+        <h3 className="text-3xl leading-[50px] font-bold">
           Need Help?
         </h3>
-        <h2 className="text-2xl mx-2">Open up a ticket!</h2>
+        <h2 className="text-2xl">Open up a ticket!</h2>
       </div>
-      <div className="w-[60%] flex items-center  p-2.5 border border-slate-gray rounded-full">
+      <div className="w-[60%] flex items-center p-2.5 border border-slate-gray rounded-full">
         <button
-          className="w-full btn btn-outline rounded-full text-2xl"
+          className="w-full btn btn-outline rounded-full text-2xl hover:brightness-110 hover:animate-pulse bg-gradient-to-r from-primary to-secondary"
           onClick={() => document.getElementById("createForm").showModal()}
         >
           Open Ticket!
@@ -151,14 +151,14 @@ const CreateTicket = () => {
               ✕
             </button>
           </form>
-          <h2 className="text-2xl font-montserrat font-semibold mb-2 ">
+          <h2 className="text-2xl font-semibold mb-2 ">
             Create Ticket
           </h2>
           <form className="w-full">
             <div className="mb-3">
               <select
                 required
-                className="select select-primary w-full max-w-xs"
+                className="select select-primary w-full max-w-xs text-lg"
                 id="selectMainIssue"
                 key="selectMainIssue"
                 onChange={(event) => {
@@ -177,7 +177,7 @@ const CreateTicket = () => {
               <select
                 required
                 key="selectSubIssue"
-                className="select select-primary w-full max-w-xs"
+                className="select select-primary w-full max-w-xs text-lg"
                 value={subIssue}
                 onChange={(event) => {
                   setSubIssue(() => event.target.value);
@@ -212,7 +212,7 @@ const CreateTicket = () => {
                   </h1>
                   {issues.map((issue) => (
                     <div>
-                      <p className="text-l font-normal text-gray-600">
+                      <p className="text-lg font-normal text-gray-600">
                         {issue}
                       </p>
                     </div>
@@ -227,7 +227,7 @@ const CreateTicket = () => {
                   </h1>
                   {suggest.map((suggestion) => (
                     <div>
-                      <p className="text-l font-normal text-gray-600">
+                      <p className="text-lg font-normal text-gray-600">
                         {suggestion}
                       </p>
                     </div>
@@ -245,7 +245,7 @@ const CreateTicket = () => {
                 id="title"
                 type="text"
                 placeholder="Title"
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs text-lg"
               />
             </div>
 
@@ -254,7 +254,7 @@ const CreateTicket = () => {
                 <textarea
                   required
                   id="description"
-                  className="textarea textarea-bordered w-full max-w-xs h-40 scrollbar-thin"
+                  className="textarea textarea-bordered w-full max-w-xs h-40 scrollbar-thin text-lg"
                   placeholder="Description"
                 ></textarea>
               </div>
@@ -262,7 +262,7 @@ const CreateTicket = () => {
             <div className="mb-3">
               <select
                 required
-                className="select select-primary w-full max-w-xs"
+                className="select select-primary w-full max-w-xs text-lg"
                 id="selectPriority"
                 value={prioritySelected}
                 onChange={(event) => {
@@ -278,7 +278,7 @@ const CreateTicket = () => {
             <div>
               <button
                 type="submit"
-                className="bg-blue-400 text-white px-4 py-2 rounded-md"
+                className="bg-blue-400 text-white px-4 py-2 rounded-md text-lg"
                 onClick={(e) => handleFormSubmission(e)}
               >
                 Submit

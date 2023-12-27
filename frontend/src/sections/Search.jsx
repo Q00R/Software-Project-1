@@ -38,13 +38,13 @@ const Search = () => {
       <div className="rounded-full mx-2 flex items-center justify-center">
         <input
           id="question"
-          className="rounded-full w-[90%] text-2xl h-[45px] items-center p-2.5 border border-slate-gray mx-2"
+          className="rounded-full w-[90%] text-xl h-[45px] items-center p-2.5 border border-slate-gray mx-2 font-mono"
           type="text"
           placeholder="Type here your question..."
           onKeyDown={handleKeyPress}
         />
         <button
-          className="btn px-7 btn-active btn-circle btn-outline btn-primary mx-3 text-lg w-[100px]"
+          className="btn px-7 btn-active btn-circle btn-outline btn-primary mx-3 text-lg w-[100px] font-mono hover:brightness-110 hover:animate-pulse rounded-full bg-gradient-to-r from-primary to-secondary"
           onClick={callAPI}
         >
           Go!
@@ -53,7 +53,7 @@ const Search = () => {
 
       {response && (
       <dialog id="searchResponse" className="modal">
-        <div className="modal-box  overflow-y-auto scrollbar-thin scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md">
+        <div className="modal-box  overflow-y-auto scrollbar-thin scrollbar-track-gray-50 scrollbar-track-rounded-md scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md font-mono">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
