@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import MFA from "./pages/MFA";
 import Admin from "./pages/adminDashboard";
 import AdminRegisterUser from "./pages/adminRegisterUser";
+import AdminSetThemes from "./pages/adminSetThemes";
 import  ManagerDashboard  from "./pages/managerDashboard"; 
 //frontend\src\pages\ManagerDashboard.jsx
 //import ChatsPage from "./pages/ChatsPage";
@@ -58,6 +59,7 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/adminRegisterUser" element={<AdminRegisterUser />} />
           <Route path="/manager" element={<ManagerDashboard />} />
+          <Route path="/adminSetThemes" element={<AdminSetThemes />} />
         </Routes>
       </section>
       <section>

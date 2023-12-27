@@ -1,24 +1,34 @@
 import { useState, useEffect } from "react";
 import { themeChange } from "theme-change";
+import axios from "axios";
 
 const ThemeChangerButton = () => {
-  const themevalues = [
-    "light",
-    "dark",
-    "cupcake",
-    "valentine",
-    "halloween",
-    "nord",
-    "retro",
-    "pastel",
-  ];
+
+  const [Themes, setThemes] = useState([]);
 
   const handleThemeChange = (event) => {
     document.documentElement.setAttribute("data-theme", event.target.value);
     sessionStorage.setItem("theme", event.target.value);
   };
-  const theme = sessionStorage.getItem("theme") || "light";
-  handleThemeChange({ target: { value: theme } });
+
+  const fetchThemes = async () => {
+      const res = await axios.get("http://localhost:3000/api/v1/getAvialableThemes", { withCredentials: true })
+      .then((res) => {
+        setThemes(res.data);
+        const theme = (sessionStorage.getItem("theme") ? (res.data.includes(sessionStorage.getItem("theme")) ? sessionStorage.getItem("theme") : null) : null) || res.data[0];
+        handleThemeChange({ target: { value: theme } });
+        return res;
+      });
+  };
+
+  useEffect(() => {
+    fetchThemes();
+    window.addEventListener("themeChange", function (e) {
+    fetchThemes();
+  });
+  }, []);
+  // Set Theme to Default theme
+
   return (
     <div className="dropdown dropdown-hover mb-18">
       <div tabIndex={0} role="button" className="btn m-1">
@@ -37,7 +47,7 @@ const ThemeChangerButton = () => {
         tabIndex={0}
         className="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52"
       >
-        {themevalues.map((theme, index) => (
+        {Themes.map((theme, index) => (
           <li key={index}>
             <input
               type="radio"

@@ -6,6 +6,8 @@ const authenticationMiddleware = require("../middleware/authenticationMiddleware
 
 router.get("/getRole", authenticationMiddleware, userController.getRole);
 
+router.get("/getAvialableThemes", userController.getAvialableThemes);
+
 router.get("/:id", userController.getUser);
 
 router.post("/register", userController.register);

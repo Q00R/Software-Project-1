@@ -64,6 +64,7 @@ export default function AppNavBar() {
                 <li>
                   <a onClick={() => navigate("/admin")}>Admin Dashboard</a>
                   <a onClick={() => navigate("/adminRegisterUser")}>Register User</a>
+                  <a onClick={() => navigate("/adminSetThemes")}>Admin Set Themes</a>
                 </li>
               ) : role === "agent" ? (
                 <li>
@@ -109,9 +110,10 @@ export default function AppNavBar() {
             >
               Logout
             </button>
+            
           </div>
         ) :
-          <div>
+          <div >
             <button
               className="btn btn-ghost"
               onClick={() => {

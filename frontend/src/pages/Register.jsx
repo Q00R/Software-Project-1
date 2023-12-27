@@ -44,11 +44,11 @@ const Register = () => {
       );
       console.log(response);
       const { status, data } = response;
-      if (status === 200) {
+      if (!response.data.error && status === 200) {
         setSuccessMessage('SignUp successful');
         navigate('/login');
       } else {
-        setErrorMessage(data.message);
+        setErrorMessage(data.message, response.data.error);
       }
     } catch (error) {
       console.error(error);
@@ -66,112 +66,130 @@ const Register = () => {
         }}
       />
       {/* Left side: Form */}
-        <div className="p-8 rounded shadow-md w-full max-w-md">
+        <div className="h-full md:w-5/12 p-8 flex flex-col items-center justify-center h-full">
           {/* Logo and Company Name Section */}
-          <div className="flex items-center mb-8">
+          <div className="flex mb-8 items-center justify-center">
             <img src={logo} alt="Logo" className="h-16 max-w-full mr-4" />
             <h2 className="text-3xl">Sign up</h2>
           </div>
 
-          <form onSubmit={handleSubmit} autoComplete="off">
+          <form className="w-full max-w-sm" onSubmit={handleSubmit} autoComplete="off">
             {/* Full Name */}
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2">
                 Full Name
               </label>
               <input
+                className="input input-bordered input-primary rounded w-full py-2 px-3"
+                placeholder="eg: Boraie Abd el Hamed"
+                autoFocus
                 type="text"
                 name="name"
                 onChange={handleChange}
                 value={formData.name}
-                className="input input-bordered input-primary w-full max-w-xs"
                 required
               />
             </div>
 
             {/* Username */}
+            
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2">
                 Username
               </label>
               <input
+                className="input input-bordered input-primary rounded w-full py-2 px-3"
+                placeholder="eg: BoraieBob"
+                autoFocus
                 type="text"
                 name="username"
                 onChange={handleChange}
                 value={formData.username}
-                className="input input-bordered input-primary w-full max-w-xs"
                 required
               />
             </div>
-
-            {/* Email Address */}
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2">
                 Email Address
               </label>
               <input
+                className="input input-bordered input-primary rounded w-full py-2 px-3"
+                placeholder="eg: BoraieSigma@gmail.com"
+                autoFocus
                 type="email"
                 name="email"
                 onChange={handleChange}
                 value={formData.email}
-                className="input input-bordered input-primary w-full max-w-xs"
                 required
               />
             </div>
 
-            {/* Password */}
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2">
                 Password
               </label>
               <input
+                className="input input-bordered input-primary rounded w-full py-2 px-3"
+                placeholder="eg: Bora3y123"
+                autoFocus
                 type="password"
                 name="password"
                 onChange={handleChange}
                 value={formData.password}
-                className="input input-bordered input-primary w-full max-w-xs"
                 required
               />
             </div>
 
-            {/* Date of Birth */}
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2">
                 Date of Birth
               </label>
               <input
+                className="input input-bordered input-primary rounded w-full py-2 px-3"
+                autoFocus
                 type="date"
                 name="DOB"
                 onChange={handleChange}
                 value={formData.DOB}
-                className="input input-bordered input-primary w-full max-w-xs"
                 required
               />
             </div>
 
-            {/* Address */}
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2">
                 Address
               </label>
-              <textarea
+              <input
+                className="input input-bordered input-primary rounded w-full py-2 px-3"
+                placeholder="eg: Mansoura, Egypt"
+                autoFocus
                 name="address"
                 onChange={handleChange}
                 value={formData.address}
                 rows={4}
-                className="input input-bordered input-primary w-full max-w-xs"
                 required
               />
             </div>
 
             {/* Error and Success Messages */}
-            <span className="text-red-500">{errorMessage}</span>
-            <span className="text-green-500">{successMessage}</span>
-
+            {(errorMessage && (
+            <div role="alert" className="alert alert-error" style={{width:"100%"}}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span>{errorMessage}</span>
+            </div>
+            ))}
+            {(successMessage && (
+            <div role="alert" className="alert alert-success" style={{width:"100%"}}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span>{successMessage}</span>
+            </div>
+            ))}
+            <br/>
             {/* Sign Up Button */}
-            <button
+            <button 
+              style={{width:"100%"}}
               type="submit"
-              className="btn btn-primary"
+              className="mb-4 btn btn-primary rounded w-full py-2 px-3"
             >
               Sign Up
             </button>
