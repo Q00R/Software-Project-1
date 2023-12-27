@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import NotificationSystem from "../components/NotificationSystem";
 const CreateTicket = () => {
   const navigate = useNavigate();
@@ -63,9 +63,12 @@ const CreateTicket = () => {
           console.log("getting agent id");
           console.log(mainIssue);
           const agentId = await axios
-            .get(`http://localhost:3000/conversations/agentFindUid/${mainIssue}`, {
-              withCredentials: true,
-            })
+            .get(
+              `http://localhost:3000/conversations/agentFindUid/${mainIssue}`,
+              {
+                withCredentials: true,
+              }
+            )
             .then((response) => response.data);
           console.log("creating convo");
           await axios.post(
@@ -75,14 +78,13 @@ const CreateTicket = () => {
             },
             { withCredentials: true }
           );
-          navigate("/messenger")
+          navigate("/messenger");
         } catch (error) {
           console.error("Error getting agent", error);
         }
       }
     };
     fetchWorkflow();
-    
   }, [mainIssue, subIssue]);
 
   useEffect(() => {
@@ -90,7 +92,7 @@ const CreateTicket = () => {
       console.log("use effect bta3et el form");
       if (sumbitted) {
         try {
-          document.getElementById("createForm").style.display = "none";
+          document.getElementById("createForm").close();
           const response = await axios.post(
             `${clientURL}/ticketrequest`,
             formData,
@@ -122,7 +124,8 @@ const CreateTicket = () => {
         mainIssue: mainIssue,
         subIssue: subIssue,
       });
-      {/*toast(`Ticket ${document.getElementById("title").value} has been created`,{
+      {
+        /*toast(`Ticket ${document.getElementById("title").value} has been created`,{
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 5000,
         hideProgressBar: false,
@@ -130,7 +133,8 @@ const CreateTicket = () => {
         pauseOnHover: true,
         progress: undefined,
         theme: "light",
-      });*/}
+      });*/
+      }
     }
   };
 
@@ -140,9 +144,7 @@ const CreateTicket = () => {
       id="create-ticket"
     >
       <div>
-        <h3 className="text-3xl leading-[50px] font-bold">
-          Need Help?
-        </h3>
+        <h3 className="text-3xl leading-[50px] font-bold">Need Help?</h3>
         <h2 className="text-2xl">Open up a ticket!</h2>
       </div>
       <div className="w-[60%] flex items-center p-2.5 border border-slate-gray rounded-full">
@@ -161,9 +163,7 @@ const CreateTicket = () => {
               ✕
             </button>
           </form>
-          <h2 className="text-2xl font-semibold mb-2 ">
-            Create Ticket
-          </h2>
+          <h2 className="text-2xl font-semibold mb-2 ">Create Ticket</h2>
           <form className="w-full">
             <div className="mb-3">
               <select
@@ -194,7 +194,7 @@ const CreateTicket = () => {
                 }}
                 defaultValue="Sub Issue"
               >
-                <option >Sub Issue</option>
+                <option>Sub Issue</option>
                 {mainIssue === "Software"
                   ? subSoftware.map((subSoftware) => (
                       <option id={subSoftware}>{subSoftware}</option>
