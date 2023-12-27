@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const backend_url = "http://localhost:3000";
-
+import { ToastContainer, toast } from 'react-toastify';
+import NotificationSystem from "../components/NotificationSystem";
 const CreateTicket = () => {
   const navigate = useNavigate();
 
@@ -82,7 +82,7 @@ const CreateTicket = () => {
       }
     };
     fetchWorkflow();
-
+    
   }, [mainIssue, subIssue]);
 
   useEffect(() => {
@@ -97,7 +97,6 @@ const CreateTicket = () => {
             { withCredentials: true }
           );
           console.log(response);
-          window.alert("Your ticket has been submitted!");
         } catch (error) {
           console.error("Error submitting form", error);
         }
@@ -122,6 +121,15 @@ const CreateTicket = () => {
         priority: prioritySelected,
         mainIssue: mainIssue,
         subIssue: subIssue,
+      });
+      toast(`Ticket ${document.getElementById("title").value} has been created`,{
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light",
       });
     }
   };
@@ -187,18 +195,18 @@ const CreateTicket = () => {
                 <option selected>Sub Issue</option>
                 {mainIssue === "Software"
                   ? subSoftware.map((subSoftware) => (
-                    <option id={subSoftware}>{subSoftware}</option>
-                  ))
+                      <option id={subSoftware}>{subSoftware}</option>
+                    ))
                   : null}
                 {mainIssue === "Hardware"
                   ? subHardware.map((subHardware) => (
-                    <option id={subHardware}>{subHardware}</option>
-                  ))
+                      <option id={subHardware}>{subHardware}</option>
+                    ))
                   : null}
                 {mainIssue === "Network"
                   ? subNetwork.map((subNetwork) => (
-                    <option id={subNetwork}>{subNetwork}</option>
-                  ))
+                      <option id={subNetwork}>{subNetwork}</option>
+                    ))
                   : null}
                 <option id="Other">Other</option>
               </select>

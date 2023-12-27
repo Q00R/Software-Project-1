@@ -66,7 +66,7 @@ const Register = () => {
         }}
       />
       {/* Left side: Form */}
-        <div className="h-full md:w-5/12 p-8 flex flex-col items-center justify-center h-full">
+        <div className="h-full md:w-5/12 p-8 flex flex-col items-center justify-center">
           {/* Logo and Company Name Section */}
           <div className="flex mb-8 items-center justify-center">
             <img src={logo} alt="Logo" className="h-16 max-w-full mr-4" />
